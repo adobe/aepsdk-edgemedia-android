@@ -13,6 +13,8 @@ package com.adobe.marketing.mobile;
 
 public class MediaConstants {
 
+    private MediaConstants() {}
+
     public static final class Config {
         public static final String CHANNEL = "config.channel";
         public static final String DOWNLOADED_CONTENT = "config.downloadedcontent";

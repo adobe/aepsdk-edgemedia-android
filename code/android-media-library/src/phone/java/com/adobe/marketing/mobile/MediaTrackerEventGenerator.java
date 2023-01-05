@@ -29,8 +29,12 @@ class MediaTrackerEventGenerator implements MediaTracker {
     private static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
 
     private static class EventDataKeys {
+        private EventDataKeys() {}
+
         // Event Data Key Constants - Tracker
         static final class Tracker {
+            private Tracker() {}
+
             static final String ID = "trackerid";
             static final String SESSION_ID = "sessionid";
             static final String EVENT_NAME = "event.name";
@@ -43,6 +47,8 @@ class MediaTrackerEventGenerator implements MediaTracker {
 
         // Event Data Key Constants - EventName
         static final class MediaEventName {
+            private MediaEventName() {}
+
             static final String SESSION_START = "sessionstart";
             static final String SESSION_END = "sessionend";
             static final String PLAY = "play";
@@ -69,6 +75,8 @@ class MediaTrackerEventGenerator implements MediaTracker {
         }
 
         static final class ErrorInfo {
+            private ErrorInfo() {}
+
             static final String ID = "error.id";
         }
     }
