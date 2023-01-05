@@ -11,6 +11,9 @@
 
 package com.adobe.marketing.mobile;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 public interface MediaTracker {
@@ -20,7 +23,7 @@ public interface MediaTracker {
      * @param mediaInfo A Map instance created using createMediaObjectWithName method
      * @param contextData a map containing the context data to be tracked.
      */
-    void trackSessionStart(Map<String, Object> mediaInfo, Map<String, String> contextData);
+    void trackSessionStart(@NotNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
 
     /** Video playback tracking method to track Video Play triggers VIDEO_PLAY event */
     void trackPlay();
@@ -45,7 +48,7 @@ public interface MediaTracker {
      *
      * @param errorId Error Id
      */
-    void trackError(String errorId);
+    void trackError(@NotNull String errorId);
 
     /**
      * Video playback tracking method to track an event
@@ -54,7 +57,7 @@ public interface MediaTracker {
      * @param info a MediaObject instance containing event info
      * @param contextData a Map containing the context data to be tracked.
      */
-    void trackEvent(Media.Event event, Map<String, Object> info, Map<String, String> contextData);
+    void trackEvent(@NotNull Media.Event event, @Nullable Map<String, Object> info, @Nullable Map<String, String> contextData);
 
     /**
      * Method to update current QoS information.
@@ -63,7 +66,7 @@ public interface MediaTracker {
      *     multiple times during a playback session. Player implementation must always return the
      *     most recently available QoS data.
      */
-    void updateQoEObject(Map<String, Object> qoeData);
+    void updateQoEObject(@NotNull Map<String, Object> qoeData);
 
     /**
      * Method to update current playhead.

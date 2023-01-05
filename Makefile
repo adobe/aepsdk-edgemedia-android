@@ -15,6 +15,9 @@ clean:
 	(rm -rf $(AAR_FILE_DIR))
 	(./code/gradlew -p code clean)
 
+checkstyle: 
+	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) checkstyle)
+
 checkformat:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessCheck)
 

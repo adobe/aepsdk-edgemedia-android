@@ -21,7 +21,7 @@ class MediaSessionCreatedDispatcher {
 
     private final ExtensionApi extensionApi;
 
-    MediaSessionCreatedDispatcher(ExtensionApi extensionApi) {
+    MediaSessionCreatedDispatcher(final ExtensionApi extensionApi) {
         this.extensionApi = extensionApi;
     }
 

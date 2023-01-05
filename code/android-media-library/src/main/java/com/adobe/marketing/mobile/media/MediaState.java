@@ -357,7 +357,7 @@ class MediaState {
         }
     }
 
-    public static List<VisitorID> convertToVisitorIds(List<Map<String, Object>> data) {
+    public static List<VisitorID> convertToVisitorIds(final List<Map<String, Object>> data) {
         List<VisitorID> visitorIDList = new ArrayList<>();
         for (Map item : data) {
             if (item != null) {

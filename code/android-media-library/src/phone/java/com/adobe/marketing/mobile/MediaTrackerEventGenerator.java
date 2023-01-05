@@ -87,7 +87,7 @@ class MediaTrackerEventGenerator implements MediaTracker {
     MediaTrackerEventGenerator(
             final Map<String, Object> config,
             final String trackerId,
-            AdobeCallback<Event> eventConsumer) {
+            final AdobeCallback<Event> eventConsumer) {
         this.config = config;
         this.eventConsumer = eventConsumer;
         this.trackerId = trackerId;
@@ -96,7 +96,7 @@ class MediaTrackerEventGenerator implements MediaTracker {
     }
 
     public static MediaTrackerEventGenerator create(
-            final Map<String, Object> config, AdobeCallback<Event> eventConsumer) {
+            final Map<String, Object> config, final AdobeCallback<Event> eventConsumer) {
         final String trackerId = getUniqueId();
 
         final Map<String, Object> cleanedConfig = new HashMap<>();
@@ -182,7 +182,7 @@ class MediaTrackerEventGenerator implements MediaTracker {
     }
 
     public void trackEvent(
-            Media.Event event, Map<String, Object> info, Map<String, String> metadata) {
+            final Media.Event event, final Map<String, Object> info, final Map<String, String> metadata) {
         trackInternal(eventToString(event), info, metadata);
     }
 
@@ -303,7 +303,7 @@ class MediaTrackerEventGenerator implements MediaTracker {
         }
     }
 
-    private String eventToString(Media.Event event) {
+    private String eventToString(final Media.Event event) {
         switch (event) {
             case AdBreakStart:
                 return EventDataKeys.MediaEventName.ADBREAK_START;

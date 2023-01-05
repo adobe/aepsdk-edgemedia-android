@@ -288,7 +288,7 @@ class MediaReportHelper {
         return report.toString();
     }
 
-    static boolean hasNetworkConnection(DeviceInforming deviceInforming) {
+    static boolean hasNetworkConnection(final DeviceInforming deviceInforming) {
         DeviceInforming.ConnectionStatus connStatus = deviceInforming.getNetworkConnectionStatus();
         // Todo -: Should we try sending a ping and fail if it returns ConnectionStatus.UNKNOWN
         return connStatus == DeviceInforming.ConnectionStatus.CONNECTED;
