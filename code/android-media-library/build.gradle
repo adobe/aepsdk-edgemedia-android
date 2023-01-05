@@ -17,6 +17,7 @@ android {
         targetSdk 33
 
         consumerProguardFiles "consumer-rules.pro"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     flavorDimensions "target"
