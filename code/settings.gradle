@@ -1,0 +1,3 @@
+rootProject.name = "aepsdk-media-android"
+include ':android-media-library'
+include ':testapp'
