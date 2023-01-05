@@ -182,7 +182,9 @@ class MediaTrackerEventGenerator implements MediaTracker {
     }
 
     public void trackEvent(
-            final Media.Event event, final Map<String, Object> info, final Map<String, String> metadata) {
+            final Media.Event event,
+            final Map<String, Object> info,
+            final Map<String, String> metadata) {
         trackInternal(eventToString(event), info, metadata);
     }
 

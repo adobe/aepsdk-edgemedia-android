@@ -11,10 +11,9 @@
 
 package com.adobe.marketing.mobile;
 
+import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public interface MediaTracker {
     /**
@@ -23,7 +22,8 @@ public interface MediaTracker {
      * @param mediaInfo A Map instance created using createMediaObjectWithName method
      * @param contextData a map containing the context data to be tracked.
      */
-    void trackSessionStart(@NotNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
+    void trackSessionStart(
+            @NotNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
 
     /** Video playback tracking method to track Video Play triggers VIDEO_PLAY event */
     void trackPlay();
@@ -57,7 +57,10 @@ public interface MediaTracker {
      * @param info a MediaObject instance containing event info
      * @param contextData a Map containing the context data to be tracked.
      */
-    void trackEvent(@NotNull Media.Event event, @Nullable Map<String, Object> info, @Nullable Map<String, String> contextData);
+    void trackEvent(
+            @NotNull Media.Event event,
+            @Nullable Map<String, Object> info,
+            @Nullable Map<String, String> contextData);
 
     /**
      * Method to update current QoS information.
