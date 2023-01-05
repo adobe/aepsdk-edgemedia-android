@@ -26,14 +26,14 @@ import com.adobe.marketing.mobile.Identity;
 import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.LoggingMode;
+import com.adobe.marketing.mobile.VisitorID;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class MediaAnalyticsTestApp extends Application {
 	//Insert Launch App id
-	//For internal testing: Launch Property - Media Extension 2.x (development)
-	//"94f571f308d5/94a488607fd6/launch-d60a0f869a40-development"
-	private static final String LAUNCH_ENVIRONMENT_FILE_ID = "94f571f308d5/94a488607fd6/launch-d60a0f869a40-development";
+	private static final String LAUNCH_ENVIRONMENT_FILE_ID = "";
 
 	@Override
 	public void onCreate() {
@@ -41,6 +41,11 @@ public class MediaAnalyticsTestApp extends Application {
 		MobileCore.setApplication(this);
 		MobileCore.setLogLevel(LoggingMode.VERBOSE);
 
-		MobileCore.registerExtensions(Arrays.asList(Assurance.EXTENSION, Identity.EXTENSION, Analytics.EXTENSION, Media.EXTENSION), (AdobeCallback) o -> MobileCore.configureWithAppID(LAUNCH_ENVIRONMENT_FILE_ID));
+		MobileCore.registerExtensions(
+				Arrays.asList(Assurance.EXTENSION,
+						Identity.EXTENSION,
+						Analytics.EXTENSION,
+						Media.EXTENSION),
+				(AdobeCallback) o -> MobileCore.configureWithAppID(LAUNCH_ENVIRONMENT_FILE_ID));
 	}
 }
