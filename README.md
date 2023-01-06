@@ -4,14 +4,14 @@
 
 ## About this project
 
-The `Media` extension represents the Adobe Experience Platform SDK's Media Analytics extension that provides clients with robust measurement for audio, video and advertisements.
+The [`Media`](https://developer.adobe.com/client-sdks/documentation/adobe-media-analytics) extension represents the Adobe Experience Platform SDK's Media Analytics extension that provides clients with robust measurement for audio, video and advertisements.
 
 ## Prerequisites
 The Media extension has the following peer dependencies, which must be installed prior to installing the Media Extension:
 
-Mobile Core
-Identity
-Analytics 
+- [Mobile Core](https://developer.adobe.com/client-sdks/documentation/mobile-core)
+- [Identity](https://developer.adobe.com/client-sdks/documentation/mobile-core/identity)
+- [Analytics](https://developer.adobe.com/client-sdks/documentation/adobe-analytics)
 
 ## Installing the AEP Media SDK for Android
 
