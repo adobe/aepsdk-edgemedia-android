@@ -15,6 +15,8 @@ import com.adobe.marketing.mobile.media.MediaExtension;
 import com.adobe.marketing.mobile.media.MediaObject;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Media {
     private static final String EXTENSION_VERSION = "3.0.0";
@@ -33,7 +35,7 @@ public class Media {
      *
      * @return a media tracker instance
      */
-    public static MediaTracker createTracker() {
+    public static @NotNull MediaTracker createTracker() {
         return createTracker((Map<String, Object>) null);
     }
 
@@ -44,7 +46,7 @@ public class Media {
      * @param config optional configuration
      * @return A media tracker instance based on configuration
      */
-    public static MediaTracker createTracker(Map<String, Object> config) {
+    public static @NotNull MediaTracker createTracker(@Nullable final Map<String, Object> config) {
         return MediaTrackerEventGenerator.create(config, MobileCore::dispatchEvent);
     }
 
@@ -55,7 +57,7 @@ public class Media {
      *     deprecated
      */
     @Deprecated
-    public static void createTracker(AdobeCallback<MediaTracker> callback) {
+    public static void createTracker(@NotNull final AdobeCallback<MediaTracker> callback) {
         MediaTracker tracker = createTracker((Map<String, Object>) null);
         callback.call(tracker);
     }
@@ -68,7 +70,8 @@ public class Media {
      */
     @Deprecated
     public static void createTracker(
-            Map<String, Object> config, final AdobeCallback<MediaTracker> callback) {
+            @Nullable final Map<String, Object> config,
+            @NotNull final AdobeCallback<MediaTracker> callback) {
         MediaTracker tracker = createTracker(config);
         callback.call(tracker);
     }
@@ -78,7 +81,7 @@ public class Media {
      *
      * @return The version string
      */
-    public static String extensionVersion() {
+    public static @NotNull String extensionVersion() {
         return EXTENSION_VERSION;
     }
 
@@ -93,8 +96,12 @@ public class Media {
      * @param mediaType Mediatype
      * @return A MediaObject instance representing the media.
      */
-    public static HashMap<String, Object> createMediaObject(
-            String name, String mediaId, double length, String streamType, MediaType mediaType) {
+    @NotNull public static HashMap<String, Object> createMediaObject(
+            @NotNull final String name,
+            @NotNull final String mediaId,
+            final double length,
+            @NotNull final String streamType,
+            @NotNull final MediaType mediaType) {
         return MediaObject.createMediaInfo(mediaId, name, streamType, mediaType, length);
     }
 
@@ -106,8 +113,8 @@ public class Media {
      * @param startTime The start time of the ad break relative to the main media
      * @return A MediaObject instance representing the AdBreak.
      */
-    public static HashMap<String, Object> createAdBreakObject(
-            String name, long position, double startTime) {
+    @NotNull public static HashMap<String, Object> createAdBreakObject(
+            @NotNull final String name, final long position, final double startTime) {
         return MediaObject.createAdBreakInfo(name, position, startTime);
     }
 
@@ -120,8 +127,11 @@ public class Media {
      * @param length The length of the ad in seconds
      * @return A MediaObject instance representing the Ad.
      */
-    public static HashMap<String, Object> createAdObject(
-            String name, String adId, long position, double length) {
+    @NotNull public static HashMap<String, Object> createAdObject(
+            @NotNull final String name,
+            @NotNull final String adId,
+            final long position,
+            final double length) {
         return MediaObject.createAdInfo(name, adId, position, length);
     }
 
@@ -134,8 +144,11 @@ public class Media {
      * @param startTime The start of the chapter relative to the main media
      * @return A MediaObject instance representing the Chapter.
      */
-    public static HashMap<String, Object> createChapterObject(
-            String name, long position, double length, double startTime) {
+    @NotNull public static HashMap<String, Object> createChapterObject(
+            @NotNull final String name,
+            final long position,
+            final double length,
+            final double startTime) {
         return MediaObject.createChapterInfo(name, position, startTime, length);
     }
 
@@ -148,8 +161,11 @@ public class Media {
      * @param droppedFrames The number of dropped frames so far
      * @return A MediaObject instance representing the QoSObject.
      */
-    public static HashMap<String, Object> createQoEObject(
-            long bitrate, double startupTime, double fps, long droppedFrames) {
+    @NotNull public static HashMap<String, Object> createQoEObject(
+            final long bitrate,
+            final double startupTime,
+            final double fps,
+            final long droppedFrames) {
         return MediaObject.createQoEInfo(bitrate, droppedFrames, fps, startupTime);
     }
 
@@ -159,7 +175,7 @@ public class Media {
      * @param stateName The bitrate of media in bits per second
      * @return A MediaObject instance representing the state.
      */
-    public static HashMap<String, Object> createStateObject(String stateName) {
+    @NotNull public static HashMap<String, Object> createStateObject(@NotNull final String stateName) {
         return MediaObject.createStateInfo(stateName);
     }
 

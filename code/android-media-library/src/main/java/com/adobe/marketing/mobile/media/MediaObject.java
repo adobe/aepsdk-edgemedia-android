@@ -125,7 +125,7 @@ public class MediaObject {
         return stateInfo.toObjectMap();
     }
 
-    public static boolean isValidMediaInfo(Map<String, Object> mediaInfo) {
+    public static boolean isValidMediaInfo(final Map<String, Object> mediaInfo) {
         return MediaInfo.fromObjectMap(mediaInfo) != null;
     }
 }

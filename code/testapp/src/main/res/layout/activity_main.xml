@@ -23,7 +23,7 @@
         android:cursorVisible="true"
         android:gravity="left"
         android:hint="Enter Assurance Url"
-        android:text="mediaapp://?adb_validation_sessionid=466dbe70-f864-4104-8121-d844dc34d179" />
+        android:text="" />
 
 
     <Button

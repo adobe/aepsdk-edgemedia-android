@@ -13,6 +13,8 @@ package com.adobe.marketing.mobile.media;
 
 class MediaCollectionConstants {
 
+    private MediaCollectionConstants() {}
+
     static final class EventType {
         private EventType() {}
 

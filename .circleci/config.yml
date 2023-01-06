@@ -83,7 +83,7 @@ jobs:
 
 workflows:
   version: 2
-  aepsdk-core-ci: 
+  aepsdk-media-ci: 
     jobs:
       - build-and-unit-test
       - functional-test
