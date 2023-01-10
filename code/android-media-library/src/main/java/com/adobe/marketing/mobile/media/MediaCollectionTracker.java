@@ -11,6 +11,7 @@
 
 package com.adobe.marketing.mobile.media;
 
+import androidx.annotation.VisibleForTesting;
 import com.adobe.marketing.mobile.Event;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
@@ -1071,6 +1072,11 @@ class MediaCollectionTracker implements MediaTrackerInterface {
         }
 
         return reorderedRules;
+    }
+
+    @VisibleForTesting
+    MediaHitProcessor getHitProcessor() {
+        return hitProcessor;
     }
 }
 

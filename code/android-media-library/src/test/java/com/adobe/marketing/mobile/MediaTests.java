@@ -12,6 +12,7 @@
 package com.adobe.marketing.mobile;
 
 import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertEquals;
 
 import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class MediaTests {
                     .thenAnswer(Answers.RETURNS_DEFAULTS);
 
             MediaTracker tracker = Media.createTracker(config);
+            assertNotNull(tracker);
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
@@ -74,6 +76,7 @@ public class MediaTests {
                     .thenAnswer(Answers.RETURNS_DEFAULTS);
 
             MediaTracker tracker = Media.createTracker();
+            assertNotNull(tracker);
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
@@ -89,5 +92,196 @@ public class MediaTests {
 
             assertEquals(event.getEventData(), expectedEventData);
         }
+    }
+
+    @Test
+    public void test_asyncCreateTrackerEventDatawithConfig() {
+        Map<String, Object> config = new HashMap<>();
+        config.put("booleanKey", true);
+        config.put("stringKey", "string");
+        config.put("invalidKey1", 12);
+        config.put("invalidKey2", 100.100);
+        config.put("invalidKey3", new HashMap<String, String>());
+
+        try (MockedStatic<MobileCore> mobileCoreMockedStatic =
+                Mockito.mockStatic(MobileCore.class)) {
+            ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+            mobileCoreMockedStatic
+                    .when(() -> MobileCore.dispatchEvent(eventCaptor.capture()))
+                    .thenAnswer(Answers.RETURNS_DEFAULTS);
+
+            Media.createTracker(
+                    config,
+                    tracker -> {
+                        assertNotNull(tracker);
+                    });
+
+            Event event = eventCaptor.getValue();
+            assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
+            assertEquals(EventType.MEDIA, event.getType());
+
+            String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
+            assertNotNull(trackerId);
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("booleanKey", true);
+            params.put("stringKey", "string");
+            Map<String, Object> expectedEventData = new HashMap<>();
+            expectedEventData.put(TRACKER_ID, trackerId);
+            expectedEventData.put(TRACKER_EVENT_PARAM, params);
+
+            assertEquals(event.getEventData(), expectedEventData);
+        }
+    }
+
+    @Test
+    public void test_asyncCreateTrackerEventData() {
+        try (MockedStatic<MobileCore> mobileCoreMockedStatic =
+                Mockito.mockStatic(MobileCore.class)) {
+            ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+            mobileCoreMockedStatic
+                    .when(() -> MobileCore.dispatchEvent(eventCaptor.capture()))
+                    .thenAnswer(Answers.RETURNS_DEFAULTS);
+
+            Media.createTracker(
+                    tracker -> {
+                        assertNotNull(tracker);
+                    });
+
+            Event event = eventCaptor.getValue();
+            assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
+            assertEquals(EventType.MEDIA, event.getType());
+
+            String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
+            assertNotNull(trackerId);
+
+            Map<String, Object> params = new HashMap<>();
+            Map<String, Object> expectedEventData = new HashMap<>();
+            expectedEventData.put(TRACKER_ID, trackerId);
+            expectedEventData.put(TRACKER_EVENT_PARAM, params);
+
+            assertEquals(event.getEventData(), expectedEventData);
+        }
+    }
+
+    @Test
+    public void test_mediaObject() {
+        Map<String, Object> actualObject =
+                Media.createMediaObject("name", "id", 60.0, "vod", Media.MediaType.Video);
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("media.name", "name");
+                expectedObject.put("media.id", "id");
+                expectedObject.put("media.length", 60.0);
+                expectedObject.put("media.streamtype", "vod");
+                expectedObject.put("media.type", "video");
+                expectedObject.put("media.resumed", false);
+                expectedObject.put("media.prerollwaitingtime", 250L);
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject =
+                Media.createMediaObject(null, "id", 60.0, "vod", Media.MediaType.Audio);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
+    }
+
+    @Test
+    public void test_adbreakObject() {
+        Map<String, Object> actualObject = Media.createAdBreakObject("name", 1, 60.0);
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("adbreak.name", "name");
+                expectedObject.put("adbreak.position", 1L);
+                expectedObject.put("adbreak.starttime", 60.0);
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject = Media.createAdBreakObject(null, 1, 60.0);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
+    }
+
+    @Test
+    public void test_adObject() {
+        Map<String, Object> actualObject = Media.createAdObject("name", "id", 1, 60.0);
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("ad.name", "name");
+                expectedObject.put("ad.id", "id");
+                expectedObject.put("ad.position", 1L);
+                expectedObject.put("ad.length", 60.0);
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject = Media.createAdObject(null, "id", 1, 60.0);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
+    }
+
+    @Test
+    public void test_chapterObject() {
+        Map<String, Object> actualObject = Media.createChapterObject("name", 1, 60.0, 30.0);
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("chapter.name", "name");
+                expectedObject.put("chapter.position", 1L);
+                expectedObject.put("chapter.length", 60.0);
+                expectedObject.put("chapter.starttime", 30.0);
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject = Media.createChapterObject(null, 1, 60.0, 30.0);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
+    }
+
+    @Test
+    public void test_qoeObject() {
+        Map<String, Object> actualObject = Media.createQoEObject(1, 2, 3, 4);
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("qoe.bitrate", 1.0);
+                expectedObject.put("qoe.startuptime", 2.0);
+                expectedObject.put("qoe.fps", 3.0);
+                expectedObject.put("qoe.droppedframes", 4.0);
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject = Media.createQoEObject(-1, 2, 3, 4);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
+    }
+
+    @Test
+    public void test_stateObject() {
+        Map<String, Object> actualObject = Media.createStateObject("state");
+        Map<String, Object> expectedObject = new HashMap<>();
+        {
+            {
+                expectedObject.put("state.name", "state");
+            }
+        }
+        ;
+        assertEquals(expectedObject, actualObject);
+
+        // invalid params
+        Map<String, Object> invalidObject = Media.createStateObject(null);
+        assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 }
