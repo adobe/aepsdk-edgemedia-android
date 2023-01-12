@@ -30,10 +30,11 @@ import java.util.Map;
 public class MediaExtension extends Extension {
 
     private static final String LOG_TAG = "MediaExtension";
-    private final Map<String, MediaTrackerInterface> trackers;
-    private MediaState mediaState;
-    private MediaRealTimeService mediaRealTimeService;
-    private MediaOfflineService mediaOfflineService;
+
+    final Map<String, MediaTrackerInterface> trackers;
+    MediaState mediaState;
+    MediaRealTimeService mediaRealTimeService;
+    MediaOfflineService mediaOfflineService;
 
     MediaExtension(final ExtensionApi extensionApi) {
         super(extensionApi);

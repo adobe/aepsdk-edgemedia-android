@@ -18,7 +18,7 @@ import com.adobe.marketing.mobile.services.ServiceProvider;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class MediaRealTimeServiceTest {
+public class MediaRealTimeServiceTests {
     class TestMediaRealTimeService extends MediaRealTimeService {
 
         TestMediaRealTimeService(MediaState mediaState, MediaSessionCreatedDispatcher dispatcher) {
@@ -32,7 +32,7 @@ public class MediaRealTimeServiceTest {
     TestMediaRealTimeService realTimeService;
     MockMediaSessionCreatedDispatcher mockDispatcherSessionCreated;
 
-    public MediaRealTimeServiceTest() {
+    public MediaRealTimeServiceTests() {
         ServiceProvider.getInstance().setNetworkService(Mockito.mock(Networking.class));
         mockData = new MockMediaOfflineHits();
         mediaState = new MediaState();

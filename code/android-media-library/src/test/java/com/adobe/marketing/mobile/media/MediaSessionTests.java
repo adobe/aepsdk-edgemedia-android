@@ -24,7 +24,7 @@ import java.util.HashMap;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class MediaSessionTest {
+public class MediaSessionTests {
     MockMediaOfflineHits mockData;
     MediaState mediaState;
     MediaSession mediaSession;
@@ -35,7 +35,7 @@ public class MediaSessionTest {
     MockNetworkService mockNetworkService;
     DeviceInforming mockDeviceInfoServie;
 
-    public MediaSessionTest() {
+    public MediaSessionTests() {
         mockNetworkService = new MockNetworkService();
         mockDeviceInfoServie = mock(DeviceInforming.class);
         ServiceProviderExtension.setDeviceInfoService(mockDeviceInfoServie);
@@ -329,9 +329,10 @@ public class MediaSessionTest {
         assertNull(mediaSession.getSessionId());
         assertEquals(1, mediaSession.getQueueSize());
 
+        // Valid http code but no location is considered a failure
         // 2nd
         resetNetworkRequest();
-        expectNetworkDataAndRespond(mockData.sessionStartJsonWithState, 404);
+        expectNetworkDataAndRespond(mockData.sessionStartJsonWithState, 201, null);
         mediaSession.process();
 
         assertTrue(didSendNetworkRequest());
