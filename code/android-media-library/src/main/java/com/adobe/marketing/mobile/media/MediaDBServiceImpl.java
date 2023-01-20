@@ -13,6 +13,7 @@ package com.adobe.marketing.mobile.media;
 
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
+import com.adobe.marketing.mobile.util.FileUtils;
 import com.adobe.marketing.mobile.util.JSONUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,9 @@ import org.json.JSONObject;
 
 class MediaDBServiceImpl implements MediaDBService {
     private static final String LOG_TAG = "MediaDBService";
+    private static final String MEDIA_DB_FILE_NAME = MediaInternalConstants.Media.SHARED_STATE_NAME;
+    private static final String DEPRECATED_2X_DB_FILE_NAME = "ADBMobileMedia.sqlite";
+
     private MediaDatabase database;
 
     private static final String KEY_EVENT_TYPE = "eventtype";
@@ -36,7 +40,16 @@ class MediaDBServiceImpl implements MediaDBService {
 
     MediaDBServiceImpl() {
         try {
-            database = new MediaDatabase();
+            // Delete deprecated 2X database from cache directory.
+            if (FileUtils.deleteFileFromCacheDir(DEPRECATED_2X_DB_FILE_NAME)) {
+                Log.debug(
+                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        LOG_TAG,
+                        "Media 2.x database file (%s) deleted.",
+                        DEPRECATED_2X_DB_FILE_NAME);
+            }
+
+            database = new MediaDatabase(MEDIA_DB_FILE_NAME);
         } catch (Exception ex) {
             Log.trace(
                     MediaInternalConstants.EXTENSION_LOG_TAG,
@@ -47,7 +60,7 @@ class MediaDBServiceImpl implements MediaDBService {
         }
     }
 
-    String serializeHit(final MediaHit mediaHit) {
+    private String serializeHit(final MediaHit mediaHit) {
         if (mediaHit == null) {
             return null;
         }
@@ -62,7 +75,7 @@ class MediaDBServiceImpl implements MediaDBService {
         return new JSONObject(mediaHitMap).toString();
     }
 
-    MediaHit deserializeHit(final String mediaHitStr) {
+    private MediaHit deserializeHit(final String mediaHitStr) {
         try {
             Map<String, Object> mediaHitMap = JSONUtils.toMap(new JSONObject(mediaHitStr));
 
