@@ -270,6 +270,12 @@ class MediaCollectionTracker implements MediaTrackerInterface {
                 return info != null && StateInfo.fromObjectMap(info) != null;
             };
 
+    IMediaRuleCallback isValidErrorInfo =
+            (rule, context) -> {
+                String errorId = getError(context);
+                return errorId != null && !errorId.isEmpty();
+            };
+
     IMediaRuleCallback isDifferentAdBreakInfo =
             (rule, context) -> {
                 if (!mediaContext.isInAdBreak()) {
@@ -753,7 +759,9 @@ class MediaCollectionTracker implements MediaTrackerInterface {
 
         // MediaRule::trackError
         MediaRule error = new MediaRule(MediaRuleName.Error.ordinal(), "API::trackError");
-        error.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia).addAction(cmdError);
+        error.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
+                .addPredicate(isValidErrorInfo, true, ErrorMessage.ErrInvalidErrorId)
+                .addAction(cmdError);
 
         ruleEngine.addRule(error);
 
@@ -1233,6 +1241,9 @@ class ErrorMessage {
             "Media tracker is not tracking the State passed into 'API:trackEvent(StateEnd)'.";
     static final String ErrTrackedStatesLimitReached =
             "Media tracker is already tracking maximum allowed states (10) per session.";
+    static final String ErrInvalidErrorId =
+            "ErrorId passed into 'API:trackError' is invalid. Please pass valid non-empty non-null"
+                    + " string for ErrorId.";
 }
 
 class PrerollQueuedRule {

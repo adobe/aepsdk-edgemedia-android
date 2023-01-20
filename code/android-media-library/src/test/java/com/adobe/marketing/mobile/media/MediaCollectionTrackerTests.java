@@ -407,12 +407,21 @@ public class MediaCollectionTrackerTests {
     }
 
     @Test
-    public void test_trackError_withNULLErrorid_pass() {
+    public void test_trackError_withNullErrorID_fail() {
         mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
         mediaTrackerAPIEventGenertor.trackError(null);
+        assertFalse(trackerHandleAPI());
+    }
+
+    @Test
+    public void test_trackError_withEmptyID_fail() {
+        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
+
+        mediaTrackerAPIEventGenertor.trackError("");
+        assertFalse(trackerHandleAPI());
     }
 
     @Test
