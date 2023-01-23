@@ -175,17 +175,7 @@ class MediaTrackerEventGenerator implements MediaTracker {
 
     public void trackError(final String errorId) {
         Map<String, Object> params = new HashMap<>();
-
-        if (errorId == null) {
-            params.put(EventDataKeys.ErrorInfo.ID, "unknown");
-            Log.debug(
-                    EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "trackError - Invalid error id, setting error id as unknown");
-        } else {
-            params.put(EventDataKeys.ErrorInfo.ID, errorId);
-        }
-
+        params.put(EventDataKeys.ErrorInfo.ID, errorId);
         trackInternal(EventDataKeys.MediaEventName.ERROR, params, null);
     }
 

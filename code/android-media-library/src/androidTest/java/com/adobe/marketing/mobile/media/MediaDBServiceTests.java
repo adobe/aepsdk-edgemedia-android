@@ -17,6 +17,8 @@ import android.content.Context;
 import androidx.test.core.app.ApplicationProvider;
 import com.adobe.marketing.mobile.services.MockAppContextService;
 import com.adobe.marketing.mobile.services.ServiceProviderExtension;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import org.junit.Test;
 
@@ -272,5 +274,27 @@ public class MediaDBServiceTests {
             List<MediaHit> hits = mediaDBService.getHits(session);
             assertTrue(hits.isEmpty());
         }
+    }
+
+    @Test
+    public void test_deleteDeprecatedDatabaseFile() throws IOException {
+        // Setup
+        Context context = ApplicationProvider.getApplicationContext();
+        final String DEPRECATED_2X_DB_FILE_NAME = "ADBMobileMedia.sqlite";
+        File oldDB = new File(context.getCacheDir(), DEPRECATED_2X_DB_FILE_NAME);
+        oldDB.createNewFile();
+
+        File newDB = context.getDatabasePath(MEDIA_DATABASE);
+        newDB.delete();
+
+        // Before upgrade
+        assertTrue(oldDB.exists());
+        assertFalse(newDB.exists());
+
+        MediaDBService dbService = new MediaDBServiceImpl();
+
+        // After upgrade
+        assertFalse(oldDB.exists());
+        assertTrue(newDB.exists());
     }
 }

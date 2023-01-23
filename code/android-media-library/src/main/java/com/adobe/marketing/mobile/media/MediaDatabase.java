@@ -28,7 +28,6 @@ import java.util.Set;
 
 class MediaDatabase {
     private static final String LOG_TAG = "MediaDatabase";
-    private static final String MEDIA_DB_FILE_NAME = MediaInternalConstants.Media.SHARED_STATE_NAME;
     private static final String MEDIA_TABLE_NAME = "MEDIAHITS";
 
     private static final String TB_KEY_ID = "id";
@@ -38,13 +37,13 @@ class MediaDatabase {
     private final String dbPath;
     private final Object dbMutex;
 
-    MediaDatabase() {
+    MediaDatabase(final String dbName) {
         Context context =
                 ServiceProvider.getInstance().getAppContextService().getApplicationContext();
         if (context == null) {
             throw new IllegalStateException("Context is null");
         }
-        File database = context.getDatabasePath(MEDIA_DB_FILE_NAME);
+        File database = context.getDatabasePath(dbName);
         dbPath = database.getPath();
         dbMutex = new Object();
         createTableIfNotExist();
