@@ -11,7 +11,6 @@
 
 package com.adobe.marketing.mobile.media;
 
-import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.MobilePrivacyStatus;
 import com.adobe.marketing.mobile.VisitorID;
 import com.adobe.marketing.mobile.services.DeviceInforming;
@@ -155,7 +154,8 @@ class MediaReportHelper {
             }
 
             params.put(
-                    MediaCollectionConstants.Session.MEDIA_VERSION.key, Media.extensionVersion());
+                    MediaCollectionConstants.Session.MEDIA_VERSION.key,
+                    MediaCollectionConstants.MEDIA_LIBRARY_VERSION);
 
             // Remove sessionID from params
             params.remove(MediaInternalConstants.EventDataKeys.Tracker.SESSION_ID);
