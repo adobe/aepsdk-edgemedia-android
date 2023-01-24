@@ -11,8 +11,8 @@
 
 package com.adobe.marketing.mobile;
 
-import com.adobe.marketing.mobile.media.MediaExtension;
-import com.adobe.marketing.mobile.media.MediaObject;
+import com.adobe.marketing.mobile.media.internal.MediaExtension;
+import com.adobe.marketing.mobile.media.internal.MediaObject;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
