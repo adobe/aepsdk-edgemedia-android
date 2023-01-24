@@ -24,7 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 class MockMediaOfflineHits {
-    String mediaExtensionVersion = Media.extensionVersion();
+    String mediaLibraryVersion = "android-media-" + Media.extensionVersion();
 
     Map<String, Object> analyticsSharedState;
     Map<String, Object> identitySharedState;
@@ -227,7 +227,7 @@ class MockMediaOfflineHits {
                                 + "      \"media.playerName\" : \"unknown\","
                                 + "      \"analytics.enableSSL\":true,"
                                 + "      \"media.libraryVersion\":\""
-                                + mediaExtensionVersion
+                                + mediaLibraryVersion
                                 + "\""
                                 + "    },"
                                 + "    \"qoeData\" : {"
@@ -271,7 +271,7 @@ class MockMediaOfflineHits {
                                 + "      \"media.playerName\" : \"unknown\","
                                 + "      \"analytics.enableSSL\":true,"
                                 + "      \"media.libraryVersion\":\""
-                                + mediaExtensionVersion
+                                + mediaLibraryVersion
                                 + "\""
                                 + "    },"
                                 + "    \"qoeData\" : {"
@@ -312,7 +312,7 @@ class MockMediaOfflineHits {
                                 + "      \"visitor.aamLocationHint\" : 9,"
                                 + "      \"media.sdkVersion\" : \"app_version\","
                                 + "      \"media.libraryVersion\":\""
-                                + mediaExtensionVersion
+                                + mediaLibraryVersion
                                 + "\","
                                 + "      \"visitor.customerIDs\": {"
                                 + "           \"id_type1\": {"
@@ -365,7 +365,7 @@ class MockMediaOfflineHits {
                                 + "      \"visitor.aamLocationHint\" : 9,"
                                 + "      \"media.sdkVersion\" : \"app_version\","
                                 + "      \"media.libraryVersion\":\""
-                                + mediaExtensionVersion
+                                + mediaLibraryVersion
                                 + "\","
                                 + "      \"visitor.customerIDs\": {"
                                 + "           \"id_type1\": {"
