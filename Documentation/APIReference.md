@@ -720,4 +720,4 @@ tracker.updateQoEObject(qoeObject);
 
 ## Media Constants
 
-Refer [MediaConstants.java](../code/android-media-library/src/phone/java/com/adobe/marketing/mobile/MediaConstants.java) to see the constants exposed by Media extension. 
+Refer [MediaConstants.java](../code/media/src/phone/java/com/adobe/marketing/mobile/MediaConstants.java) to see the constants exposed by Media extension. 
