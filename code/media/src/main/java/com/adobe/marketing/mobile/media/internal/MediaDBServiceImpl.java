@@ -13,8 +13,8 @@ package com.adobe.marketing.mobile.media.internal;
 
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
-import com.adobe.marketing.mobile.util.FileUtils;
 import com.adobe.marketing.mobile.util.JSONUtils;
+import com.adobe.marketing.mobile.util.SQLiteUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +41,7 @@ class MediaDBServiceImpl implements MediaDBService {
     MediaDBServiceImpl() {
         try {
             // Delete deprecated 2X database from cache directory.
-            if (FileUtils.deleteFileFromCacheDir(DEPRECATED_2X_DB_FILE_NAME)) {
+            if (SQLiteUtils.deleteDBFromCacheDir(DEPRECATED_2X_DB_FILE_NAME)) {
                 Log.debug(
                         MediaInternalConstants.EXTENSION_LOG_TAG,
                         LOG_TAG,
