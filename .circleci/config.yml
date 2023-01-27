@@ -44,12 +44,12 @@ jobs:
           command: make unit-test-coverage
 
       - store_test_results:
-          path: code/android-media-library/build/test-results/testPhoneDebugUnitTest
+          path: code/media/build/test-results/testPhoneDebugUnitTest
 
       - run:
           name: Upload unit test coverage
           command: |            
-            bash ./codecov -v -X s3 -c -D "./code/android-media-library/build/reports/coverage/test/phone/debug" -F unit-tests
+            bash ./codecov -v -X s3 -c -D "./code/media/build/reports/coverage/test/phone/debug" -F unit-tests
 
   functional-test:
       executor:
@@ -79,7 +79,7 @@ jobs:
         - run:
             name: Upload coverage report
             command: |                        
-              bash ./codecov -v -X s3 -c -D "./code/android-media-library/build/reports/coverage/androidTest/phone/debug" -F functional-tests
+              bash ./codecov -v -X s3 -c -D "./code/media/build/reports/coverage/androidTest/phone/debug" -F functional-tests
 
 workflows:
   version: 2
