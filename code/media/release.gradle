@@ -47,8 +47,8 @@ publishing {
                 name = mavenRepoName
                 description = mavenRepoDescription                
                 licenses {
-                    license {
-                        name = 'Adobe Proprietary'
+                   license {
+                        name = 'The Apache License, Version 2.0'
                     }
                 }
                 developers {
