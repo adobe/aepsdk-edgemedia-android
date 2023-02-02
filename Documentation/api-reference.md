@@ -11,7 +11,7 @@ public static String extensionVersion() {
 
 #### Example
 
-#### Java
+##### Java
 ```java
 String mediaExtensionVersion = Media.extensionVersion();
 ```
