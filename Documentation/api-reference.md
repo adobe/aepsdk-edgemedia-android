@@ -1,4 +1,4 @@
-## Media API Usage
+## Media API Reference
 
 ### extensionVersion
 
