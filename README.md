@@ -13,11 +13,11 @@ Refer to the [getting started](./Documentation/getting-started.md) guide for set
 
 ## Development
 
-**Open the project**
+### Open the project
 
 To open and run the project, open the `code/build.gradle` file in Android Studio
 
-**Run test application**
+### Run test application
 
 Once you open the project in Android Studio (see above), select the `testapp` runnable and your favorite emulator and run the program.
 

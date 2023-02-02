@@ -20,3 +20,10 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
+
+ext {
+    minSdkVersion = 19
+    targetSdkVersion = 33
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
