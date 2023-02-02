@@ -822,8 +822,7 @@ class TestMediaOfflineService extends MediaOfflineService {
             MediaDBService mediaDBService,
             MediaState mediaState,
             final MediaSessionCreatedDispatcher dispatcher) {
-        super(mediaDBService, mediaState, dispatcher);
-        stopFlushTimer();
+        super(mediaDBService, mediaState, dispatcher, false);
     }
 
     @Override
