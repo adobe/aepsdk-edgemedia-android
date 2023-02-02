@@ -48,14 +48,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     implementation project(':media')
-    implementation 'com.adobe.marketing.mobile:core:2.0.0-SNAPSHOT'
-    implementation ('com.adobe.marketing.mobile:identity:2.0.0-SNAPSHOT'){
-        transitive = false
-    }
-    implementation ('com.adobe.marketing.mobile:analytics:2.0.0-SNAPSHOT'){
-        transitive = false
-    }
-    implementation ('com.adobe.marketing.mobile:assurance:2.0.0-SNAPSHOT'){
-        transitive = false
-    }
+    implementation 'com.adobe.marketing.mobile:core:2.+'
+    implementation 'com.adobe.marketing.mobile:analytics:2.+'
+    implementation 'com.adobe.marketing.mobile:identity:2.+'
+    implementation 'com.adobe.marketing.mobile:assurance:2.+'
 }

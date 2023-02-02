@@ -1,4 +1,5 @@
 # Media extension documentation
 
 ## Contents
-- [API reference](APIReference.md)
+- [Getting Started](./getting-started.md)
+- [API Reference](./api-reference.md)
