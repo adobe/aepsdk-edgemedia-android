@@ -15,7 +15,7 @@ Media extension depends on the following extensions:
    implementation 'com.adobe.marketing.mobile:core:2.+'
    implementation 'com.adobe.marketing.mobile:identity:2.+'
    implementation 'com.adobe.marketing.mobile:analytics:2.+'
-   implementation 'com.adobe.marketing.mobile:media:2.+'
+   implementation 'com.adobe.marketing.mobile:media:3.+'
    ```
 
 > **Warning**  
