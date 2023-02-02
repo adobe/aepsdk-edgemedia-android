@@ -1,20 +1,22 @@
-## Media API Usage
+## Media API Reference
 
 ### extensionVersion
 
 The extensionVersion() API returns the version of the Media extension that is registered with the Mobile Core extension.
 
-#### Signature
+#### Syntax
 ```java
 public static String extensionVersion() {
-````
+```
 
-#### Java
+#### Example
+
+##### Java
 ```java
 String mediaExtensionVersion = Media.extensionVersion();
 ```
 
-#### Kotlin 
+##### Kotlin 
 ```kotlin 
 val mediaExtensionVersion = Media.extensionVersion()
 ```
@@ -23,12 +25,12 @@ val mediaExtensionVersion = Media.extensionVersion()
 
 Represents a reference to AssuranceExtension.class that can be used to register with MobileCore via its registerExtensions api.
 
-#### Signature
+#### Syntax
 ```java
 public static final Class<? extends Extension> EXTENSION = AssuranceExtension.class;
 ````
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -48,13 +50,13 @@ MobileCore.registerExtensions(listOf(Assurance.EXTENSION, ...)){
 
 Creates a media tracker instance that tracks the playback session. The tracker created should be used to track the streaming content and it sends periodic pings to the media analytics backend.
 
-#### Signature
+#### Syntax
 
 ```java
 public static MediaTracker createTracker()
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -75,13 +77,13 @@ Creates a media tracker instance based on the configuration to track the playbac
 | `config.channel` | Channel name for media. Set this to overwrite the channel name configured in the Data Collection UI for media tracked with this tracker instance. | String | No |
 | `config.downloadedcontent` | Creates a tracker instance to track downloaded media. Instead of sending periodic pings, the tracker only sends one ping for the entire content. | Boolean | No |
 
-#### Signature
+#### Syntax
 
 ```java
 public static MediaTracker createTracker(Map<String, Object> config)
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -113,7 +115,7 @@ Creates an instance of the Media object.
 | `mediaType` | Media type | Yes |
 
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createMediaObject(String name,
@@ -123,7 +125,7 @@ public static HashMap<String, Object> createMediaObject(String name,
                                                         MediaType mediaType);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -140,7 +142,7 @@ var mediaInfo = Media.createMediaObject("video-name",
                                         "video-id",
                                         60D,
                                         MediaConstants.StreamType.VOD,
-                                        Media.MediaType.Video);
+                                        Media.MediaType.Video)
 ```
 
 ### createAdBreakObject
@@ -153,13 +155,13 @@ Creates an instance of the AdBreak object.
 | `position` | The number position of the ad break within the content, starting with 1. | Yes |
 | `startTime` | Playhead value at the start of the ad break. | Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createAdBreakObject(String name, Long position, Double startTime);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -168,7 +170,7 @@ HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name"
 
 ##### Kotlin
 ```kotlin
-val adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D);
+val adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D)
 ```
 
 ### createAdObject
@@ -182,13 +184,13 @@ Creates an instance of the Ad object.
 | `position` | The number position of the ad within the ad break, starting with 1. | Yes |
 | `length` | Ad length in seconds| Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createAdObject(String name, String adId, Long position, Double length);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -197,7 +199,7 @@ HashMap<String, Object> adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15
 
 ##### Kotlin
 ```kotlin
-val adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15D);
+val adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15D)
 ```
 
 ### createChapterObject
@@ -211,7 +213,7 @@ Creates an instance of the Chapter object.
 | `length` | Chapter length in seconds | Yes |
 | `startTime` | Playhead value at the start of the chapter | Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createChapterObject(String name,
@@ -220,7 +222,7 @@ public static HashMap<String, Object> createChapterObject(String name,
                                                           Double startTime);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -229,7 +231,7 @@ HashMap<String, Object> chapterInfo = Media.createChapterObject("chapter-name", 
 
 ##### Kotlin
 ```java
-val chapterInfo = Media.createChapterObject("chapter-name", 1L, 60D, 0D);
+val chapterInfo = Media.createChapterObject("chapter-name", 1L, 60D, 0D)
 ```
 
 ### createQoEObject
@@ -243,7 +245,7 @@ Creates an instance of the QoE object.
 | `fps` | The current frames per second information | Yes |
 | `droppedFrames` | The number of dropped frames so far | Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createQoEObject(Long bitrate,
@@ -252,7 +254,7 @@ public static HashMap<String, Object> createQoEObject(Long bitrate,
                                                       Long droppedFrames);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -261,7 +263,7 @@ HashMap<String, Object> qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D)
 
 ##### Kotlin
 ```kotlin
-val qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D);
+val qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D)
 ```
 
 ### createStateObject
@@ -272,13 +274,13 @@ Creates an instance of the Player State object.
 | :--- | :--- | :---: |
 | `name` | State name\(Use Player State constants to track standard player states\) | Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public static HashMap<String, Object> createStateObject(String stateName);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -287,7 +289,7 @@ HashMap<String, Object> playerStateInfo = Media.createStateObject("fullscreen");
 
 ##### Kotlin
 ```kotlin
-val playerStateInfo = Media.createStateObject("fullscreen");
+val playerStateInfo = Media.createStateObject("fullscreen")
 ```
 
 ## Media tracker API reference
@@ -302,13 +304,13 @@ Tracks the intention to start playback. This starts a tracking session on the me
 | `contextData` | Optional Media context data. For standard metadata keys, use standard video constants or standard audio constants. | No |
 
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackSessionStart(Map<String, Object> mediaInfo, Map<String, String> contextData);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -351,13 +353,13 @@ tracker.trackSessionStart(mediaInfo, mediaMetadata)
 
 Tracks the media play, or resume, after a previous pause.
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackPause();
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -366,7 +368,7 @@ tracker.trackPause();
 
 ##### Kotlin
 ```kotlin
-tracker.trackPause();
+tracker.trackPause()
 ```
 
 ### trackComplete
@@ -374,13 +376,13 @@ tracker.trackPause();
 Tracks media complete. Call this method only when the media has been completely viewed.
 
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackComplete();
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -389,20 +391,20 @@ tracker.trackComplete();
 
 ##### Kotlin
 ```kotlin
-tracker.trackComplete();
+tracker.trackComplete()
 ```
 
 ### trackSessionEnd
 
 Tracks the end of a viewing session. Call this method even if the user does not view the media to completion.
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackSessionEnd();
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -411,7 +413,7 @@ tracker.trackSessionEnd();
 
 ##### Kotlin
 ```kotlin
-tracker.trackSessionEnd();
+tracker.trackSessionEnd()
 ```
 
 ### trackError
@@ -422,13 +424,13 @@ Tracks an error in media playback.
 | :--- | :--- | :---: |
 | `errorId` | Error Information | Yes |
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackError(String errorId);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -437,7 +439,7 @@ tracker.trackError("errorId");
 
 ##### Kotlin
 ```kotlin
-tracker.trackError("errorId");
+tracker.trackError("errorId")
 ```
 
 ### trackEvent
@@ -451,13 +453,13 @@ Tracks media events.
 | `data` | Optional context data can be provided for `AdStart` and `ChapterStart` events. This is not required for other events. |
 
 
-#### Signature
+#### Syntax
 
 ```java
 public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, String> data);
 ```
 
-#### Usage
+#### Example
 
 **Tracking player States**
 
@@ -583,10 +585,10 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
   tracker.trackEvent(Media.Event.ChapterStart, chapterObject, chapterMetadata)
 
 // ChapterComplete
-  tracker.trackEvent(Media.Event.ChapterComplete, null, null);
+  tracker.trackEvent(Media.Event.ChapterComplete, null, null)
 
 // ChapterSkip
-  tracker.trackEvent(Media.Event.ChapterSkip, null, null);
+  tracker.trackEvent(Media.Event.ChapterSkip, null, null)
 ```
 
 **Tracking playback events**
@@ -611,16 +613,16 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```kotlin
 // BufferStart
-   tracker.trackEvent(Media.Event.BufferStart, null, null);
+   tracker.trackEvent(Media.Event.BufferStart, null, null)
 
 // BufferComplete
-   tracker.trackEvent(Media.Event.BufferComplete, null, null);
+   tracker.trackEvent(Media.Event.BufferComplete, null, null)
 
 // SeekStart
-   tracker.trackEvent(Media.Event.SeekStart, null, null);
+   tracker.trackEvent(Media.Event.SeekStart, null, null)
 
 // SeekComplete
-   tracker.trackEvent(Media.Event.SeekComplete, null, null);
+   tracker.trackEvent(Media.Event.SeekComplete, null, null)
 ```
 
 **Tracking bitrate changes**
@@ -640,11 +642,11 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```kotlin
 // If the new bitrate value is available provide it to the tracker.
-  val qoeObject = Media.createQoEObject(2000000L, 2D, 25D, 10D);
-  tracker.updateQoEObject(qoeObject);
+  val qoeObject = Media.createQoEObject(2000000L, 2D, 25D, 10D)
+  tracker.updateQoEObject(qoeObject)
 
 // Bitrate change
-  tracker.trackEvent(Media.Event.BitrateChange, null, null);
+  tracker.trackEvent(Media.Event.BitrateChange, null, null)
 ```
 
 ### updateCurrentPlayhead
@@ -655,12 +657,12 @@ Provides the current media playhead to the media tracker instance. For accurate 
 | :--- | :--- |
 | `time` | Current playhead in seconds. <br /> <br />For video-on-demand \(VOD\), the value is specified in seconds from the beginning of the media item.<br /> <br />For live streaming, if the player does not provide information about the content duration, the value can be specified as the number of seconds since midnight UTC of that day. <br /> Note: When using progress markers, the content duration is required and the playhead needs to be updated as number of seconds from the beginning of the media item, starting with 0. |
 
-#### Signature
+#### Syntax
 ```java
 public void updateCurrentPlayhead(double time);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -669,7 +671,7 @@ tracker.updateCurrentPlayhead(1);
 
 ##### Kotlin
 ```kotlin
-tracker.updateCurrentPlayhead(1);
+tracker.updateCurrentPlayhead(1)
 }
 ```
 
@@ -698,12 +700,12 @@ Provides the media tracker with the current QoE information. For accurate tracki
 | `qoeObject` | Current QoE information that was created by using the createQoEObject method. |
 
 
-#### Signature
+#### Syntax
 ```java
 public void updateQoEObject(Map<String, Object> qoeObject);
 ```
 
-#### Usage
+#### Example
 
 ##### Java
 ```java
@@ -713,9 +715,8 @@ tracker.updateQoEObject(qoeObject);
 
 ##### Kotlin
 ```kotlin
-val qoeObject = Media.createQoEObject(1000000L, 2D, 25D, 10D);
-tracker.updateQoEObject(qoeObject);
-}
+val qoeObject = Media.createQoEObject(1000000L, 2D, 25D, 10D)
+tracker.updateQoEObject(qoeObject)
 ```
 
 ## Media Constants

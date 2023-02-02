@@ -37,13 +37,14 @@ class MediaOfflineService implements MediaHitProcessor {
 
     MediaOfflineService(
             final MediaState mediaState, final MediaSessionCreatedDispatcher dispatcher) {
-        this(new MediaDBServiceImpl(), mediaState, dispatcher);
+        this(new MediaDBServiceImpl(), mediaState, dispatcher, true);
     }
 
     MediaOfflineService(
             final MediaDBService mediaDBService,
             final MediaState mediaState,
-            final MediaSessionCreatedDispatcher dispatcher) {
+            final MediaSessionCreatedDispatcher dispatcher,
+            final boolean enableFlushTimer) {
         this.mediaDBService = mediaDBService;
         this.mediaState = mediaState;
         this.dispatcher = dispatcher;
@@ -55,7 +56,10 @@ class MediaOfflineService implements MediaHitProcessor {
         currentReportingSession = null;
 
         mutex = new Object();
-        startFlushTimer();
+
+        if (enableFlushTimer) {
+            startFlushTimer();
+        }
     }
 
     void destroy() {
@@ -291,12 +295,18 @@ class MediaOfflineService implements MediaHitProcessor {
                 return false;
             }
 
+            if (url == null || url.length() == 0) {
+                Log.warning(
+                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        LOG_TAG,
+                        "ReportCompletedSessions - Could not generate url for reporting downloaded"
+                                + " content report for session %s",
+                        sessionID);
+                return false;
+            }
+
             isReportingSession = true;
             currentReportingSession = sessionID;
-        }
-
-        if (url == null || body == null) {
-            return false;
         }
 
         HashMap<String, String> requestHeaders = new HashMap<>();
