@@ -44,7 +44,7 @@ class MediaOfflineService implements MediaHitProcessor {
             final MediaDBService mediaDBService,
             final MediaState mediaState,
             final MediaSessionCreatedDispatcher dispatcher,
-            boolean enableFlushTimer) {
+            final boolean enableFlushTimer) {
         this.mediaDBService = mediaDBService;
         this.mediaState = mediaState;
         this.dispatcher = dispatcher;
