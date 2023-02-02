@@ -6,29 +6,29 @@
 
 The [`Media`](https://developer.adobe.com/client-sdks/documentation/adobe-media-analytics) extension represents the Adobe Experience Platform SDK's Media Analytics extension that provides clients with robust measurement for audio, video and advertisements.
 
-## Prerequisites
-The Media extension has the following peer dependencies, which must be installed prior to installing the Media Extension:
+## Getting started
 
-- [Mobile Core](https://developer.adobe.com/client-sdks/documentation/mobile-core)
-- [Identity](https://developer.adobe.com/client-sdks/documentation/mobile-core/identity)
-- [Analytics](https://developer.adobe.com/client-sdks/documentation/adobe-analytics)
+Refer to the [getting started](./Documentation/getting-started.md) guide for setting up and using the SDK with your application.
 
-## Installing the AEP Media SDK for Android
-
-The AEP SDK supports Android API 19 (Kitkat) and newer.
-
-Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app.  In your `build.gradle` file, include the latest version of following dependencies:
-
-```gradle
-implementation 'com.adobe.marketing.mobile:core:2.x.x'
-implementation 'com.adobe.marketing.mobile:identity:2.x.x'
-implementation 'com.adobe.marketing.mobile:analytics:2.x.x'
-implementation 'com.adobe.marketing.mobile:media:3.x.x'
-```
 
 ## Development
 
+### Open the project
+
 To open and run the project, open the `code/build.gradle` file in Android Studio
+
+### Run test application
+
+Once you open the project in Android Studio (see above), select the `testapp` runnable and your favorite emulator and run the program.
+
+## Related Projects
+
+| Project                                                                              | Description                                                                                          |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| [Core extensions](https://github.com/adobe/aepsdk-core-android)                      | The Mobile Core represents the foundation of the Adobe Experience Platform mobile SDK.               |
+| [Analytics extension](https://github.com/adobe/aepsdk-analytics-android)             | The Analytics extension allows for sending mobile interaction data from your app to Adobe Analytics. |
+| [Assurance extension](https://github.com/adobe/aepsdk-assurance-android)             | The Assurance extension enables validation workflows for your SDK implementation.                    |
+| [AEP SDK sample app for Android](https://github.com/adobe/aepsdk-sample-app-android) | Contains Android sample app for the AEP SDKs.                                                        |
 
 ## Documentation
 
@@ -41,4 +41,3 @@ Contributions are welcomed! Read the [Contributing Guide](./.github/CONTRIBUTING
 ## Licensing
 
 This project is licensed under the Apache V2 License. See [LICENSE](LICENSE) for more information.
-
