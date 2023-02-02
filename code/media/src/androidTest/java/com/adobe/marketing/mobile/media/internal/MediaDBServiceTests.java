@@ -83,6 +83,9 @@ public class MediaDBServiceTests {
         mockAppContextService.appContext = context;
         ServiceProviderExtension.setAppContextService(mockAppContextService);
 
+        // Make sure databases dir exist before each test
+        context.getApplicationContext().getDatabasePath(MEDIA_DATABASE).getParentFile().mkdirs();
+        // Delete media database before each test
         context.getApplicationContext().getDatabasePath(MEDIA_DATABASE).delete();
 
         mediaDBService = new MediaDBServiceImpl();
@@ -296,5 +299,28 @@ public class MediaDBServiceTests {
         // After upgrade
         assertFalse(oldDB.exists());
         assertTrue(newDB.exists());
+    }
+
+    @Test
+    public void test_dbCreationWhenDatabaseDirAbsent() throws IOException {
+        // Setup
+        Context context = ApplicationProvider.getApplicationContext();
+        File dbPath = context.getDatabasePath(MEDIA_DATABASE);
+        // Delete databases directory
+        deleteDirectory(dbPath.getParentFile());
+
+        MediaDBService dbService = new MediaDBServiceImpl();
+
+        // Assert that database is properly created.
+        assertTrue(dbPath.exists());
+    }
+
+    private void deleteDirectory(File file) {
+        if (file.listFiles() != null) {
+            for (File child : file.listFiles()) {
+                deleteDirectory(child);
+            }
+        }
+        file.delete();
     }
 }

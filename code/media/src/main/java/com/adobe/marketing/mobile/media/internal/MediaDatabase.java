@@ -34,7 +34,7 @@ class MediaDatabase {
     private static final String TB_KEY_SESSION_ID = "sessionId";
     private static final String TB_KEY_DATA = "data";
 
-    private final String dbPath;
+    private final File dbPath;
     private final Object dbMutex;
 
     MediaDatabase(final String dbName) {
@@ -43,8 +43,14 @@ class MediaDatabase {
         if (context == null) {
             throw new IllegalStateException("Context is null");
         }
-        File database = context.getDatabasePath(dbName);
-        dbPath = database.getPath();
+        dbPath = context.getDatabasePath(dbName);
+
+        File databaseDir = dbPath.getParentFile();
+        // Create the parent directory if it does not exist
+        if (databaseDir != null && !databaseDir.exists()) {
+            databaseDir.mkdirs();
+        }
+
         dbMutex = new Object();
         createTableIfNotExist();
     }
@@ -248,7 +254,7 @@ class MediaDatabase {
     private SQLiteDatabase openDatabase() throws SQLiteException {
         SQLiteDatabase database =
                 SQLiteDatabase.openDatabase(
-                        dbPath,
+                        dbPath.getPath(),
                         null,
                         SQLiteDatabase.NO_LOCALIZED_COLLATORS
                                 | SQLiteDatabase.CREATE_IF_NECESSARY
@@ -257,7 +263,7 @@ class MediaDatabase {
                 MediaInternalConstants.EXTENSION_LOG_TAG,
                 LOG_TAG,
                 "openDatabase - Successfully opened the database at path (%s)",
-                dbPath);
+                dbPath.getPath());
         return database;
     }
 
