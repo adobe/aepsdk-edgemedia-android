@@ -38,7 +38,7 @@ Media extension depends on the following extensions:
    import com.adobe.marketing.mobile.MobileCore
    import com.adobe.marketing.mobile.Identity
    import com.adobe.marketing.mobile.Analytics
-   import com.adobe.marketing.mobile.Media;
+   import com.adobe.marketing.mobile.Media
    ```
 
 3. Import the Media library into your project and register it with `MobileCore`
