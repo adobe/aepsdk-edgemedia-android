@@ -1,4 +1,4 @@
-EXTENSION-LIBRARY-FOLDER-NAME = android-media-library
+EXTENSION-LIBRARY-FOLDER-NAME = media
 TEST-APP-FOLDER-NAME = testapp
 
 BUILD-ASSEMBLE-LOCATION = ./ci/assemble
@@ -14,6 +14,9 @@ AAR_FILE_DIR =  $(ROOT_DIR)/code/$(PROJECT_NAME)/build/outputs/aar
 clean:
 	(rm -rf $(AAR_FILE_DIR))
 	(./code/gradlew -p code clean)
+
+checkstyle: 
+	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) checkstyle)
 
 checkformat:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessCheck)

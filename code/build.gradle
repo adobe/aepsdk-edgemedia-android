@@ -7,7 +7,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.21'        
         classpath "com.diffplug.spotless:spotless-plugin-gradle:6.12.0"
     }
@@ -18,7 +18,12 @@ allprojects {
         mavenCentral()
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://jitpack.io"  }
-        mavenLocal()
     }
+}
+
+ext {
+    minSdkVersion = 19
+    targetSdkVersion = 33
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }

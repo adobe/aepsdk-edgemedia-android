@@ -1,19 +1,38 @@
 # Adobe Experience Platform - Media extension for Android
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/adobe/aepsdk-media-android/tree/dev-v2%2E0%2E0.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/adobe/aepsdk-media-android/tree/dev-v2%2E0%2E0)
-[![codecov](https://codecov.io/gh/adobe/aepsdk-media-android/branch/main/graph/badge.svg?token=UgtU9vDA6j)](https://codecov.io/gh/adobe/aepsdk-media-android)
-
-## BETA ACKNOWLEDGEMENT
-
-AEPUserProfile is currently in Beta. Use of this code is by invitation only and not otherwise supported by Adobe. Please contact your Adobe Customer Success Manager to learn more.
-
-By using the Beta, you hereby acknowledge that the Beta is provided "as is" without warranty of any kind. Adobe shall have no obligation to maintain, correct, update, change, modify or otherwise support the Beta. You are advised to use caution and not to rely in any way on the correct functioning or performance of such Beta and/or accompanying materials.
+[![Maven Central](https://img.shields.io/maven-central/v/com.adobe.marketing.mobile/media.svg?logo=android&logoColor=white&label=media)](https://mvnrepository.com/artifact/com.adobe.marketing.mobile/media)
 
 ## About this project
 
-The Adobe Experience Platform UserProfile Mobile Extension is an extension for the [Adobe Experience Platform SDK](https://github.com/Adobe-Marketing-Cloud/acp-sdks).
+The [`Media`](https://developer.adobe.com/client-sdks/documentation/adobe-media-analytics) extension represents the Adobe Experience Platform SDK's Media Analytics extension that provides clients with robust measurement for audio, video and advertisements.
 
-To learn more about this extension, read [Adobe Experience Platform Profile Mobile Extension](https://developer.adobe.com/client-sdks/documentation/adobe-media-analytics/).
+## Getting started
+
+Refer to the [getting started](./Documentation/getting-started.md) guide for setting up and using the SDK with your application.
+
+
+## Development
+
+### Open the project
+
+To open and run the project, open the `code/build.gradle` file in Android Studio
+
+### Run test application
+
+Once you open the project in Android Studio (see above), select the `testapp` runnable and your favorite emulator and run the program.
+
+## Related Projects
+
+| Project                                                                              | Description                                                                                          |
+| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| [Core extensions](https://github.com/adobe/aepsdk-core-android)                      | The Mobile Core represents the foundation of the Adobe Experience Platform mobile SDK.               |
+| [Analytics extension](https://github.com/adobe/aepsdk-analytics-android)             | The Analytics extension allows for sending mobile interaction data from your app to Adobe Analytics. |
+| [Assurance extension](https://github.com/adobe/aepsdk-assurance-android)             | The Assurance extension enables validation workflows for your SDK implementation.                    |
+| [AEP SDK sample app for Android](https://github.com/adobe/aepsdk-sample-app-android) | Contains Android sample app for the AEP SDKs.                                                        |
+
+## Documentation
+
+Additional documentation for usage and SDK architecture can be found under the [Documentation](Documentation) directory.
 
 ## Contributing
 

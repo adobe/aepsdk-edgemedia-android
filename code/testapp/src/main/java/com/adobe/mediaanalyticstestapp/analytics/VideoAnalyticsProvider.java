@@ -41,7 +41,7 @@ public class VideoAnalyticsProvider implements Observer {
 		HashMap<String, Object> config = new HashMap<>();
 		config.put(MediaConstants.Config.CHANNEL, "android_v5_sample");
 		// Enable this for tracking downloaded content.
-		 config.put(MediaConstants.Config.DOWNLOADED_CONTENT, true);
+		// config.put(MediaConstants.Config.DOWNLOADED_CONTENT, true);
 		_tracker = Media.createTracker(config);
 
 		_player.addObserver(this);
