@@ -383,6 +383,10 @@ class MediaOfflineService implements MediaHitProcessor {
                                 currentReportingSession = null;
                             }
 
+                            if (connection != null) {
+                                connection.close();
+                            }
+
                             // Note :- If http request succeeds, we can try sending next available
                             // sessions.
                             // If http fails, it does not make sense to retry it now and we will

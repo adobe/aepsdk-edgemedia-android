@@ -815,6 +815,30 @@ public class MediaOfflineServiceTests {
         expectedRequestProperty.put("Content-Type", "application/json");
         assertEquals(expectedRequestProperty, mockNetworkService.capturedRequest.getHeaders());
     }
+
+    @Test
+    public void test_reportCompletedSessions_nullConnection() {
+        mediaState.notifyMobileStateChanges(
+                MediaTestConstants.Configuration.SHARED_STATE_NAME, mockData.configSharedState);
+        mediaState.notifyMobileStateChanges(
+                MediaTestConstants.Identity.SHARED_STATE_NAME, mockData.identitySharedState);
+        mediaState.notifyMobileStateChanges(
+                MediaTestConstants.Analytics.SHARED_STATE_NAME, mockData.analyticsSharedState);
+        offlineService.notifyMobileStateChanges();
+
+        List<MediaHit> mediaHits = new ArrayList<MediaHit>();
+        mediaHits.add(mockData.sessionStart);
+        mediaHits.add(mockData.complete);
+        String sessionId = sessionWithHits(mediaHits);
+
+        List<String> jsonHits = new ArrayList<String>();
+        jsonHits.add(mockData.sessionStartJsonWithState);
+        jsonHits.add(mockData.completeJson);
+
+        expectNetworkDataAndRespond(jsonHits, -1);
+        assertTrue(offlineService.reportCompletedSessions());
+        assertTrue(mediaDBService.sessionPresent(sessionId));
+    }
 }
 
 class TestMediaOfflineService extends MediaOfflineService {
