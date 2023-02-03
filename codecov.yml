@@ -7,10 +7,16 @@ coverage:
   round: nearest
   range: "60...90"
 
-  status:
-    project: yes
-    patch: yes
-    changes: no
+status:
+  project:
+    default:
+      target: 90%
+      threshold: 5%
+  patch:
+    default:
+      target: 90%
+      threshold: 5%
+  changes: no
 
   ignore:
     - "code/android-core-library/src/main/java/com/adobe/marketing/mobile/ExtensionListener.java"
