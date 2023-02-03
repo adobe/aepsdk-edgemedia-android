@@ -69,7 +69,7 @@ publishing {
                     def coreDependencyNode = dependenciesNode.appendNode('dependency')
                     coreDependencyNode.appendNode('groupId', 'com.adobe.marketing.mobile')
                     coreDependencyNode.appendNode('artifactId', 'core')
-                    coreDependencyNode.appendNode('version', ${rootProject.mavenCoreVersion})
+                    coreDependencyNode.appendNode('version', mavenCoreVersion)
                 }
             }
         }
