@@ -45,7 +45,8 @@ publishing {
 
             pom {
                 name = mavenRepoName
-                description = mavenRepoDescription                
+                description = mavenRepoDescription
+                url = 'https://developer.adobe.com/client-sdks'
                 licenses {
                    license {
                         name = 'The Apache License, Version 2.0'
