@@ -1,38 +1,14 @@
-# Adobe Experience Platform - Media extension for Android
+# Adobe Experience Platform Media for Edge Network Extension
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.adobe.marketing.mobile/media.svg?logo=android&logoColor=white&label=media)](https://mvnrepository.com/artifact/com.adobe.marketing.mobile/media)
+## BETA ACKNOWLEDGEMENT
 
-## About this project
+The Media for Edge Network extension is currently in Beta. Use of this code is by invitation only and not otherwise supported by Adobe. Please contact your Adobe Customer Success Manager to learn more.
 
-The [`Media`](https://developer.adobe.com/client-sdks/documentation/adobe-media-analytics) extension represents the Adobe Experience Platform SDK's Media Analytics extension that provides clients with robust measurement for audio, video and advertisements.
-
-## Getting started
-
-Refer to the [getting started](./Documentation/getting-started.md) guide for setting up and using the SDK with your application.
-
-
-## Development
-
-### Open the project
-
-To open and run the project, open the `code/build.gradle` file in Android Studio
-
-### Run test application
-
-Once you open the project in Android Studio (see above), select the `testapp` runnable and your favorite emulator and run the program.
-
-## Related Projects
-
-| Project                                                                              | Description                                                                                          |
-| ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
-| [Core extensions](https://github.com/adobe/aepsdk-core-android)                      | The Mobile Core represents the foundation of the Adobe Experience Platform mobile SDK.               |
-| [Analytics extension](https://github.com/adobe/aepsdk-analytics-android)             | The Analytics extension allows for sending mobile interaction data from your app to Adobe Analytics. |
-| [Assurance extension](https://github.com/adobe/aepsdk-assurance-android)             | The Assurance extension enables validation workflows for your SDK implementation.                    |
-| [AEP SDK sample app for Android](https://github.com/adobe/aepsdk-sample-app-android) | Contains Android sample app for the AEP SDKs.                                                        |
+By using the Beta, you hereby acknowledge that the Beta is provided "as is" without warranty of any kind. Adobe shall have no obligation to maintain, correct, update, change, modify or otherwise support the Beta. You are advised to use caution and not to rely in any way on the correct functioning or performance of such Beta and/or accompanying materials.
 
 ## Documentation
 
-Additional documentation for usage and SDK architecture can be found under the [Documentation](Documentation) directory.
+Additional documentation for usage and SDK architecture can be found under the [Documentation](https://developer.adobe.com/client-sdks) directory.
 
 ## Contributing
 
