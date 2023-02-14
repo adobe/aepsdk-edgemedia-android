@@ -1,3 +1,3 @@
-rootProject.name = "aepsdk-media-android"
-include ':media'
+rootProject.name = "aepsdk-edgemedia-android"
+include ':edgemedia'
 include ':testapp'
