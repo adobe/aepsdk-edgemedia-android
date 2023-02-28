@@ -19,9 +19,6 @@ import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.Media;
-import com.adobe.marketing.mobile.SharedStateResolution;
-import com.adobe.marketing.mobile.SharedStateResult;
-import com.adobe.marketing.mobile.SharedStateStatus;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
@@ -65,8 +62,6 @@ public class MediaExtension extends Extension {
         mediaRealTimeService = new MediaRealTimeService(mediaState, mediaSessionCreatedDispatcher);
 
         getApi().registerEventListener(
-                        EventType.HUB, EventSource.SHARED_STATE, this::handleSharedStateUpdate);
-        getApi().registerEventListener(
                         EventType.GENERIC_IDENTITY,
                         EventSource.REQUEST_RESET,
                         this::handleResetIdentities);
@@ -78,12 +73,6 @@ public class MediaExtension extends Extension {
                         EventType.MEDIA,
                         MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA,
                         this::handleMediaTrackEvent);
-
-        // Retrieve latest shared state updates
-        notifySharedStateUpdate(MediaInternalConstants.Configuration.SHARED_STATE_NAME, null);
-        notifySharedStateUpdate(MediaInternalConstants.Identity.SHARED_STATE_NAME, null);
-        notifySharedStateUpdate(MediaInternalConstants.Analytics.SHARED_STATE_NAME, null);
-        notifySharedStateUpdate(MediaInternalConstants.Assurance.SHARED_STATE_NAME, null);
     }
 
     @Override
@@ -92,41 +81,6 @@ public class MediaExtension extends Extension {
         mediaOfflineService = null;
         mediaRealTimeService.destroy();
         mediaRealTimeService = null;
-    }
-
-    void handleSharedStateUpdate(final Event event) {
-        if (event.getEventData() == null) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleSharedStateUpdate - Failed to process shared state event (data was"
-                            + " null).");
-            return;
-        }
-
-        String stateOwner =
-                DataReader.optString(
-                        event.getEventData(), MediaInternalConstants.STATE_OWNER, null);
-        if (stateOwner == null) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleSharedStateUpdate - State owner null, cannot handle shared state"
-                            + " update");
-            return;
-        }
-
-        if (stateOwner.equals(MediaInternalConstants.Configuration.SHARED_STATE_NAME)
-                || stateOwner.equals(MediaInternalConstants.Identity.SHARED_STATE_NAME)
-                || stateOwner.equals(MediaInternalConstants.Analytics.SHARED_STATE_NAME)
-                || stateOwner.equals(MediaInternalConstants.Assurance.SHARED_STATE_NAME)) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleSharedStateUpdate - Processing shared state update event from %s",
-                    stateOwner);
-            notifySharedStateUpdate(stateOwner, event);
-        }
     }
 
     void handleMediaTrackerRequestEvent(final Event event) {
@@ -191,18 +145,6 @@ public class MediaExtension extends Extension {
 
         mediaOfflineService.reset();
         mediaRealTimeService.reset();
-    }
-
-    void notifySharedStateUpdate(final String stateOwner, final Event event) {
-        SharedStateResult res =
-                getApi().getSharedState(stateOwner, event, false, SharedStateResolution.ANY);
-        if (res == null || res.getStatus() != SharedStateStatus.SET) {
-            return;
-        }
-
-        mediaState.notifyMobileStateChanges(stateOwner, res.getValue());
-        mediaOfflineService.notifyMobileStateChanges();
-        mediaRealTimeService.notifyMobileStateChanges();
     }
 
     void createTracker(final String trackerId, final Event event) {
