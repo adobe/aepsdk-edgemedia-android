@@ -35,57 +35,11 @@ public final class MediaTestConstants {
     }
 
     static final class Configuration {
-        static final String SHARED_STATE_NAME = "com.adobe.module.configuration";
-
-        static final String GLOBAL_PRIVACY = "global.privacy";
-        static final String GLOBAL_SSL = "global.ssl";
-        static final String EXPERIENCE_CLOUD_ORGID = "experienceCloud.org";
-        static final String ANALYTICS_RSID = "analytics.rsids";
-        static final String ANALYTICS_TRACKING_SERVER = "analytics.server";
-        static final String MEDIA_TRACKING_SERVER = "media.trackingServer";
-        static final String MEDIA_COLLECTION_SERVER = "media.collectionServer";
         static final String MEDIA_CHANNEL = "media.channel";
-        static final String MEDIA_OVP = "media.ovp";
         static final String MEDIA_PLAYER_NAME = "media.playerName";
         static final String MEDIA_APP_VERSION = "media.appVersion";
-        static final String MEDIA_DEBUG_LOGGING = "media.debugLogging";
 
         private Configuration() {}
-    }
-
-    static final class Identity {
-        static final String SHARED_STATE_NAME = "com.adobe.module.identity";
-        static final String LOC_HINT = "locationhint";
-        static final String BLOB = "blob";
-        static final String MARKETING_VISITOR_ID = "mid";
-        static final String VISITOR_IDS_LIST = "visitoridslist";
-
-        private Identity() {}
-    }
-
-    static final class Analytics {
-        static final String SHARED_STATE_NAME = "com.adobe.module.analytics";
-        static final String ANALYTICS_VISITOR_ID = "aid";
-        static final String VISITOR_ID = "vid";
-        static final String CONFIG_TRACKING_SERVER = "analytics.server";
-        static final String CONFIG_RSID = "analytics.rsids";
-
-        private Analytics() {}
-    }
-
-    static final class Audience {
-        static final String SHARED_STATE_NAME = "com.adobe.module.audience";
-        static final String SHARED_STATE_DPID = "dpid";
-        static final String SHARED_STATE_DPUUID = "dpuuid";
-
-        private Audience() {}
-    }
-
-    static final class Assurance {
-        static final String SHARED_STATE_NAME = "com.adobe.assurance";
-        static final String INTEGRATION_ID = "integrationid";
-
-        private Assurance() {}
     }
 
     static final class EventDataKeys {
