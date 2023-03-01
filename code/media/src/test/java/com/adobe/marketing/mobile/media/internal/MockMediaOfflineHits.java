@@ -155,22 +155,7 @@ class MockMediaOfflineHits {
 
             {
                 mediaState = new MediaState();
-                mediaState.notifyMobileStateChanges(
-                        MediaTestConstants.Configuration.SHARED_STATE_NAME, configSharedState);
-                mediaState.notifyMobileStateChanges(
-                        MediaTestConstants.Identity.SHARED_STATE_NAME, identitySharedState);
-                mediaState.notifyMobileStateChanges(
-                        MediaTestConstants.Analytics.SHARED_STATE_NAME, analyticsSharedState);
-                mediaState.notifyMobileStateChanges(
-                        MediaTestConstants.Assurance.SHARED_STATE_NAME, assuranceSharedState);
-            }
-
-            {
-                mediaStateLocHintException = new MediaState();
-                Map<String, Object> identityEventData = new HashMap<>();
-                identityEventData.put(MediaInternalConstants.Identity.LOC_HINT, "exception");
-                mediaStateLocHintException.notifyMobileStateChanges(
-                        MediaInternalConstants.Identity.SHARED_STATE_NAME, identityEventData);
+                mediaState.updateState(configSharedState);
             }
 
             Map<String, String> emptyStringMap = new HashMap<String, String>();

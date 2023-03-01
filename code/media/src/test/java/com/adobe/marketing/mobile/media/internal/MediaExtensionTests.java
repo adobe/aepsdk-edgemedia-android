@@ -13,6 +13,7 @@ package com.adobe.marketing.mobile.media.internal;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -48,8 +49,6 @@ public class MediaExtensionTests {
 
     MediaExtension mediaExtension;
     ExtensionApi mockExtensionAPI;
-    MediaOfflineService mockOfflineService;
-    MediaRealTimeService mockRealTimeService;
     MediaState mockMediaState;
 
     Map<String, ExtensionEventListener> eventListerMap;
@@ -70,8 +69,6 @@ public class MediaExtensionTests {
         mockExtensionAPI = mock(ExtensionApi.class);
         mediaExtension = new MediaExtension(mockExtensionAPI);
 
-        mockOfflineService = mock(MediaOfflineService.class);
-        mockRealTimeService = mock(MediaRealTimeService.class);
         mockMediaState = mock(MediaState.class);
 
         eventListerMap = new HashMap<>();
@@ -92,68 +89,7 @@ public class MediaExtensionTests {
 
         mediaExtension.onRegistered();
 
-        mediaExtension.mediaRealTimeService = mockRealTimeService;
-        mediaExtension.mediaOfflineService = mockOfflineService;
         mediaExtension.mediaState = mockMediaState;
-    }
-
-    @Test
-    public void testRealTimeTrackerCreation() {
-        try (MockedStatic<MobileCore> mobileCoreMockedStatic =
-                Mockito.mockStatic(MobileCore.class)) {
-            ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
-            mobileCoreMockedStatic
-                    .when(() -> MobileCore.dispatchEvent(eventCaptor.capture()))
-                    .thenAnswer(Answers.RETURNS_DEFAULTS);
-
-            Media.createTracker();
-            Event event = eventCaptor.getValue();
-
-            // Create tracker event
-            ExtensionEventListener trackerListener =
-                    getListener(
-                            EventType.MEDIA, MediaTestConstants.Media.EVENT_SOURCE_TRACKER_REQUEST);
-            trackerListener.hear(event);
-
-            String trackerId =
-                    DataReader.optString(
-                            event.getEventData(), MediaTestConstants.EventDataKeys.Tracker.ID, "");
-            MediaCollectionTracker tracker =
-                    (MediaCollectionTracker) mediaExtension.trackers.get(trackerId);
-            assertNotNull(tracker);
-            assertEquals(mockRealTimeService, tracker.getHitProcessor());
-        }
-    }
-
-    @Test
-    public void testOfflineTrackerCreation() {
-        try (MockedStatic<MobileCore> mobileCoreMockedStatic =
-                Mockito.mockStatic(MobileCore.class)) {
-            ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
-            mobileCoreMockedStatic
-                    .when(() -> MobileCore.dispatchEvent(eventCaptor.capture()))
-                    .thenAnswer(Answers.RETURNS_DEFAULTS);
-
-            Map<String, Object> config = new HashMap<>();
-            config.put(MediaConstants.Config.DOWNLOADED_CONTENT, true);
-
-            Media.createTracker(config);
-            Event event = eventCaptor.getValue();
-
-            // Create tracker event
-            ExtensionEventListener trackerListener =
-                    getListener(
-                            EventType.MEDIA, MediaTestConstants.Media.EVENT_SOURCE_TRACKER_REQUEST);
-            trackerListener.hear(event);
-
-            String trackerId =
-                    DataReader.optString(
-                            event.getEventData(), MediaTestConstants.EventDataKeys.Tracker.ID, "");
-            MediaCollectionTracker tracker =
-                    (MediaCollectionTracker) mediaExtension.trackers.get(trackerId);
-            assertNotNull(tracker);
-            assertEquals(mockOfflineService, tracker.getHitProcessor());
-        }
     }
 
     @Test
@@ -207,6 +143,8 @@ public class MediaExtensionTests {
 
     @Test
     public void testRequestReset() {
+        MediaTrackerInterface tracker = mock(MediaTrackerInterface.class);
+        mediaExtension.trackers.put("key", tracker);
         Event event =
                 new Event.Builder("", EventType.GENERIC_IDENTITY, EventSource.REQUEST_RESET)
                         .build();
@@ -215,7 +153,6 @@ public class MediaExtensionTests {
                 getListener(EventType.GENERIC_IDENTITY, EventSource.REQUEST_RESET);
         resetListener.hear(event);
 
-        verify(mockOfflineService, times(1)).reset();
-        verify(mockRealTimeService, times(1)).reset();
+        assertTrue(mediaExtension.trackers.isEmpty());
     }
 }
