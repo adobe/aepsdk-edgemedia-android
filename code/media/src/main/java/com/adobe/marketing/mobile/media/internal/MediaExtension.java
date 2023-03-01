@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class MediaExtension extends Extension {
 
-    private static final String LOG_TAG = "MediaExtension";
+    private static final String SOURCE_TAG = "MediaExtension";
 
     final Map<String, MediaTrackerInterface> trackers;
     MediaState mediaState;
@@ -72,7 +72,7 @@ public class MediaExtension extends Extension {
                         this::handleMediaTrackEvent);
     }
 
-    void handleMediaTrackerRequestEvent(final Event event) {
+    void handleMediaTrackerRequestEvent(@NonNull final Event event) {
         String trackerId =
                 DataReader.optString(
                         event.getEventData(),
@@ -80,8 +80,8 @@ public class MediaExtension extends Extension {
                         null);
         if (StringUtils.isNullOrEmpty(trackerId)) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
+                    SOURCE_TAG,
                     "handleMediaTrackerRequestEvent - Public tracker ID is invalid, unable to create internal tracker.");
             return;
         }
@@ -93,63 +93,48 @@ public class MediaExtension extends Extension {
         );
 
         Log.debug(
-                MediaInternalConstants.EXTENSION_LOG_TAG,
-                LOG_TAG,
+                MediaInternalConstants.LOG_TAG,
+                SOURCE_TAG,
                 "handleMediaTrackerRequestEvent - Creating an internal tracker with tracker ID: %s.", trackerId);
 
         // TODO create MediaEventTracker
         //trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
     }
 
-    void handleMediaTrackEvent(final Event event) {
-        if (event.getEventData() == null) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleMediaTrackEvent - Failed to process media track event (data was null)");
-            return;
-        }
-
+    void handleMediaTrackEvent(@NonNull final Event event) {
         String trackerId =
                 DataReader.optString(
                         event.getEventData(),
                         MediaInternalConstants.EventDataKeys.Tracker.ID,
                         null);
-        if (trackerId == null) {
+        if (StringUtils.isNullOrEmpty(trackerId)) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleMediaTrackEvent - Tracker id missing in event data");
+                    MediaInternalConstants.LOG_TAG,
+                    SOURCE_TAG,
+                    "handleMediaTrackEvent - Public tracker ID is invalid, unable to get internal tracker.");
             return;
-        }
-
-        trackMedia(trackerId, event);
-    }
-
-    void handleResetIdentities(final Event event) {
-        if (event == null) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "handleResetIdentities - Ignoring null event");
-            return;
-        }
-
-        trackers.clear();
-    }
-
-    boolean trackMedia(final String trackerId, final Event event) {
-        if (!trackers.containsKey(trackerId)) {
-            Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
-                    LOG_TAG,
-                    "trackMedia - Tracker missing in store for id %s",
-                    trackerId);
-            return false;
         }
 
         MediaTrackerInterface tracker = trackers.get(trackerId);
+
+        if (tracker == null) {
+            Log.debug(
+                    MediaInternalConstants.LOG_TAG,
+                    SOURCE_TAG,
+                    "handleMediaTrackEvent - Unable to find internal tracker for the given tracker ID: %s",
+                    trackerId);
+            return;
+        }
+
         tracker.track(event);
-        return true;
+    }
+
+    void handleResetIdentities(@NonNull final Event event) {
+        Log.debug(
+                MediaInternalConstants.LOG_TAG,
+                SOURCE_TAG,
+                "handleResetIdentities - Clearing all tracking sessions.");
+
+        trackers.clear();
     }
 }

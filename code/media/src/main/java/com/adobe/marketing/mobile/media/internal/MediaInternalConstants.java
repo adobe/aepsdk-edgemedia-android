@@ -12,7 +12,7 @@
 package com.adobe.marketing.mobile.media.internal;
 
 final class MediaInternalConstants {
-    static final String EXTENSION_LOG_TAG = "Media";
+    static final String LOG_TAG = "Media";
     static final String FRIENDLY_NAME = "Media";
 
     private MediaInternalConstants() {}

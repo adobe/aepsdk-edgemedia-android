@@ -60,7 +60,7 @@ class MediaState {
     public void updateState(final Map<String, Object> data) {
         if (MapUtils.isNullOrEmpty(data)) {
             Log.trace(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     SOURCE_TAG,
                     "updateState - Failed to extract configuration data (event data was nil).");
             return;

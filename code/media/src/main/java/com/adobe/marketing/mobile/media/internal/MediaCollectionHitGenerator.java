@@ -269,7 +269,7 @@ class MediaCollectionHitGenerator {
 
         if (!isTracking) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "generateHit - Dropping hit as we have internally stopped tracking");
             return;
@@ -309,12 +309,12 @@ class MediaCollectionHitGenerator {
         isTracking = sessionID != null;
         if (sessionID == null) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "Unable to create a tracking session.");
         } else {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "Started a new session with id (%s).",
                     sessionID);
@@ -324,7 +324,7 @@ class MediaCollectionHitGenerator {
     void endTrackingSession() {
         if (isTracking) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "Ending the session with id (%s).",
                     sessionID);
