@@ -14,7 +14,9 @@ package com.adobe.marketing.mobile.edge.media.internal;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,9 +27,18 @@ import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.ExtensionEventListener;
 <<<<<<< HEAD:code/edgemedia/src/test/java/com/adobe/marketing/mobile/edge/media/internal/MediaExtensionTests.java
+<<<<<<< HEAD:code/edgemedia/src/test/java/com/adobe/marketing/mobile/edge/media/internal/MediaExtensionTests.java
 =======
 import java.util.ArrayList;
 >>>>>>> 259e920 (Add listeners for Edge events):code/media/src/test/java/com/adobe/marketing/mobile/media/internal/MediaExtensionTests.java
+=======
+import com.adobe.marketing.mobile.SharedStateResolution;
+import com.adobe.marketing.mobile.SharedStateResult;
+import com.adobe.marketing.mobile.SharedStateStatus;
+
+import java.util.ArrayList;
+import java.util.Collections;
+>>>>>>> 4e2bfc9 (Register listener for Configuration Response Content events):code/media/src/test/java/com/adobe/marketing/mobile/media/internal/MediaExtensionTests.java
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -46,14 +57,6 @@ public class MediaExtensionTests {
 
     ExtensionEventListener getListener(String type, String source) {
         return eventListerMap.get(type + source);
-    }
-
-    Event getSharedStateEvent(String owner) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(MediaTestConstants.STATE_OWNER, owner);
-        return new Event.Builder("Shared state", EventType.HUB, EventSource.SHARED_STATE)
-                .setEventData(data)
-                .build();
     }
 
     public MediaExtensionTests() {
@@ -414,7 +417,7 @@ public class MediaExtensionTests {
 
         Event event =
                 new Event.Builder(
-                                "Edge Media Session",
+                                "Edge Error Response",
                                 EventType.EDGE,
                                 MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE)
                         .setEventData(eventData)
@@ -452,7 +455,7 @@ public class MediaExtensionTests {
 
         Event event =
                 new Event.Builder(
-                                "Edge Media Session",
+                                "Edge Error Response",
                                 EventType.EDGE,
                                 MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE)
                         .setEventData(eventData)
@@ -492,7 +495,7 @@ public class MediaExtensionTests {
 
         Event event =
                 new Event.Builder(
-                                "Edge Media Session",
+                                "Edge Error Response",
                                 EventType.EDGE,
                                 MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE)
                         .setEventData(eventData)
@@ -532,7 +535,7 @@ public class MediaExtensionTests {
 
         Event event =
                 new Event.Builder(
-                                "Edge Media Session",
+                                "Edge Error Response",
                                 EventType.EDGE,
                                 MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE)
                         .setEventData(eventData)
@@ -551,7 +554,7 @@ public class MediaExtensionTests {
     public void testHandleEdgeErrorResponse_noEventData_doesNotCallEventProcessor() {
         Event event =
                 new Event.Builder(
-                                "Edge Media Session",
+                                "Edge Error Response",
                                 EventType.EDGE,
                                 MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE)
                         .build();
@@ -563,5 +566,123 @@ public class MediaExtensionTests {
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
+    }
+
+    @Test
+    public void
+    testHandleConfigurationResponseEvent_setSharedState_callsEventProcessor() {
+        Event event =
+                new Event.Builder(
+                        "Configuration",
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT)
+                        .build();
+        Map<String, Object> configState = new HashMap<>();
+        configState.put("media.channel", "testing");
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(SharedStateStatus.SET, configState);
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1)).updateMediaState(eq(configState));
+    }
+
+    @Test
+    public void
+    testHandleConfigurationResponseEvent_nullSharedState_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                        "Configuration",
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(SharedStateStatus.PENDING, null);
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
+    }
+
+    @Test
+    public void
+    testHandleConfigurationResponseEvent_emptySharedState_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                        "Configuration",
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(SharedStateStatus.PENDING, Collections.<String, Object>emptyMap());
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
+    }
+
+    @Test
+    public void
+    testHandleConfigurationResponseEvent_nullResult_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                        "Configuration",
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return null;
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
     }
 }

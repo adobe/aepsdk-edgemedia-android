@@ -20,8 +20,12 @@ import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.Media;
+import com.adobe.marketing.mobile.SharedStateResolution;
+import com.adobe.marketing.mobile.SharedStateResult;
+import com.adobe.marketing.mobile.SharedStateStatus;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
+import com.adobe.marketing.mobile.util.MapUtils;
 import com.adobe.marketing.mobile.util.StringUtils;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,6 +86,10 @@ public class MediaExtension extends Extension {
                         EventType.EDGE,
                         MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE,
                         this::handleEdgeErrorResponse);
+        getApi().registerEventListener(
+                        EventType.CONFIGURATION,
+                        EventSource.RESPONSE_CONTENT,
+                        this::handleConfigurationResponseEvent);
     }
 
     void handleMediaEdgeSessionDetails(@NonNull final Event event) {
@@ -118,6 +126,17 @@ public class MediaExtension extends Extension {
         }
 
         mediaEventProcessor.notifyErrorResponse(requestEventId, event.getEventData());
+    }
+
+    /**
+     * Handles configuration response events by notifying current sessions of the configuration change.
+     * @param event the configuration response event.
+     */
+    void handleConfigurationResponseEvent(@NonNull final Event event) {
+        SharedStateResult configStateResult = getApi().getSharedState(MediaInternalConstants.Configuration.SHARED_STATE_NAME, event,false, SharedStateResolution.ANY);
+        if (configStateResult != null && !MapUtils.isNullOrEmpty(configStateResult.getValue())) {
+            mediaEventProcessor.updateMediaState(configStateResult.getValue());
+        }
     }
 
     void handleMediaTrackerRequestEvent(@NonNull final Event event) {

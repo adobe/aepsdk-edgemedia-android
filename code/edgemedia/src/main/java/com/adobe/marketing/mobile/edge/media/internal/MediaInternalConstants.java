@@ -32,6 +32,7 @@ final class MediaInternalConstants {
     }
 
     static final class Configuration {
+        static final String SHARED_STATE_NAME = "com.adobe.module.configuration";
         static final String MEDIA_CHANNEL = "media.channel";
         static final String MEDIA_PLAYER_NAME = "media.playerName";
         static final String MEDIA_APP_VERSION = "media.appVersion";
