@@ -220,7 +220,7 @@ class MediaContext {
 
     void enterState(final MediaPlayBackState state) {
         Log.trace(
-                MediaInternalConstants.EXTENSION_LOG_TAG,
+                MediaInternalConstants.LOG_TAG,
                 LOG_TAG,
                 "enterState - " + state.toString());
 
@@ -241,7 +241,7 @@ class MediaContext {
 
             default:
                 Log.trace(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "enterState - Invalid state passed to Enter State ",
                         state.toString());
@@ -251,7 +251,7 @@ class MediaContext {
 
     void exitState(final MediaPlayBackState state) {
         Log.trace(
-                MediaInternalConstants.EXTENSION_LOG_TAG,
+                MediaInternalConstants.LOG_TAG,
                 LOG_TAG,
                 "exitState - " + state.toString());
 
@@ -266,7 +266,7 @@ class MediaContext {
 
             default:
                 Log.trace(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "exitState - Invalid state passed to Exit State",
                         state.toString());
@@ -308,7 +308,7 @@ class MediaContext {
     boolean startState(final StateInfo stateInfo) {
         if (!hasTrackedState(stateInfo) && hasReachedStateLimit()) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "startState failed, already tracked max states (%d) during the current"
                             + " session.",
@@ -318,7 +318,7 @@ class MediaContext {
 
         if (isInState(stateInfo)) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "startState failed, state %s is already being tracked.",
                     stateInfo.getStateName());
@@ -332,7 +332,7 @@ class MediaContext {
     boolean endState(final StateInfo stateInfo) {
         if (!isInState(stateInfo)) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "endState failed, state %s is not being tracked currently.",
                     stateInfo.getStateName());

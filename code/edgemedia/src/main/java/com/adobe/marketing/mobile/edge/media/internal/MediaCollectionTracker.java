@@ -97,7 +97,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
                         eventData, MediaInternalConstants.EventDataKeys.Tracker.EVENT_NAME, null);
         if (eventName == null) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "track - Event name is missing in track event data");
             return false;
@@ -106,7 +106,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
         MediaRuleName rule = MediaRuleName.eventNameToRule(eventName);
         if (rule == MediaRuleName.Invalid) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "track - Invalid event name passed in track event data");
             return false;
@@ -120,7 +120,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
             context.put(KEY_EVENT_TS, eventTS);
         } else {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "track - Event timestamp is missing in track event data");
             return false;
@@ -151,7 +151,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
 
         if (rule != MediaRuleName.PlayheadUpdate) {
             Log.trace(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "track - Processing event - %s",
                     eventName);
@@ -168,7 +168,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
         MediaRuleResponse response = this.ruleEngine.processRule(rule, context);
 
         if (!response.isValid) {
-            Log.warning(MediaInternalConstants.EXTENSION_LOG_TAG, LOG_TAG, response.message);
+            Log.warning(MediaInternalConstants.LOG_TAG, LOG_TAG, response.message);
         }
 
         return response.isValid;
@@ -993,7 +993,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
             if (value == null || key == null) {
                 // drop the metadata with null values
                 Log.debug(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "cleanMetadata - Dropping metadata entry key:%s, since the key/value is"
                                 + " null.");
@@ -1005,7 +1005,7 @@ class MediaCollectionTracker implements MediaTrackerInterface {
 
             if (!metadataMatcher.find()) {
                 Log.debug(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "cleanMetadata - Dropping metadata entry key:%s value:%s. Key should"
                                 + " contain only alphabets, digits, '_' and '.'.",
