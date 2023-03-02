@@ -12,8 +12,7 @@
 package com.adobe.marketing.mobile.media.internal;
 
 final class MediaInternalConstants {
-    static final String EXTENSION_LOG_TAG = "Media";
-    static final String STATE_OWNER = "stateowner";
+    static final String LOG_TAG = "Media";
     static final String FRIENDLY_NAME = "Media";
 
     private MediaInternalConstants() {}
@@ -29,60 +28,12 @@ final class MediaInternalConstants {
         private Media() {}
     }
 
-    static final class Networking {
-        static final String HEADER_KEY_AEP_VALIDATION_TOKEN = "X-Adobe-AEP-Validation-Token";
-        static final String HTTP_HEADER_KEY_CONTENT_TYPE = "Content-Type";
-        static final String HTTP_HEADER_CONTENT_TYPE_JSON_APPLICATION = "application/json";
-
-        private Networking() {}
-    }
-
     static final class Configuration {
-        static final String SHARED_STATE_NAME = "com.adobe.module.configuration";
-
-        static final String GLOBAL_PRIVACY = "global.privacy";
-        static final String EXPERIENCE_CLOUD_ORGID = "experienceCloud.org";
-        static final String ANALYTICS_RSID = "analytics.rsids";
-        static final String ANALYTICS_TRACKING_SERVER = "analytics.server";
-        static final String MEDIA_TRACKING_SERVER = "media.trackingServer";
-        static final String MEDIA_COLLECTION_SERVER = "media.collectionServer";
         static final String MEDIA_CHANNEL = "media.channel";
-        static final String MEDIA_OVP = "media.ovp";
         static final String MEDIA_PLAYER_NAME = "media.playerName";
         static final String MEDIA_APP_VERSION = "media.appVersion";
-        static final String MEDIA_DEBUG_LOGGING = "media.debugLogging";
 
         private Configuration() {}
-    }
-
-    static final class Identity {
-        static final String SHARED_STATE_NAME = "com.adobe.module.identity";
-        static final String LOC_HINT = "locationhint";
-        static final String BLOB = "blob";
-        static final String MARKETING_VISITOR_ID = "mid";
-        static final String VISITOR_IDS_LIST = "visitoridslist";
-
-        static final String VISITOR_ID_KEYS_ID = "ID";
-        static final String VISITOR_ID_KEYS_ID_ORIGIN = "ID_ORIGIN";
-        static final String VISITOR_ID_KEYS_ID_TYPE = "ID_TYPE";
-        static final String VISITOR_ID_KEYS_STATE = "STATE";
-
-        private Identity() {}
-    }
-
-    static final class Analytics {
-        static final String SHARED_STATE_NAME = "com.adobe.module.analytics";
-        static final String ANALYTICS_VISITOR_ID = "aid";
-        static final String VISITOR_ID = "vid";
-
-        private Analytics() {}
-    }
-
-    static final class Assurance {
-        static final String SHARED_STATE_NAME = "com.adobe.assurance";
-        static final String INTEGRATION_ID = "integrationid";
-
-        private Assurance() {}
     }
 
     static final class EventDataKeys {

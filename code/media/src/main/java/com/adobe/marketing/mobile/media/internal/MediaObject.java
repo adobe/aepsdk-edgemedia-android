@@ -39,7 +39,7 @@ public class MediaObject {
 
         if (mediaInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createTracker - Error creating media object");
             return new HashMap<>();
@@ -54,7 +54,7 @@ public class MediaObject {
 
         if (adBreakInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createAdBreakInfo - Error creating adBreak object");
             return new HashMap<>();
@@ -69,7 +69,7 @@ public class MediaObject {
 
         if (adInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createAdInfo - Error creating ad object");
             return new HashMap<>();
@@ -84,7 +84,7 @@ public class MediaObject {
 
         if (chapterInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createChapterInfo - Error creating chapter object");
             return new HashMap<>();
@@ -102,7 +102,7 @@ public class MediaObject {
 
         if (qoeInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createQoEInfo - Error creating qoe object");
             return new HashMap<>();
@@ -116,7 +116,7 @@ public class MediaObject {
 
         if (stateInfo == null) {
             Log.error(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "createStateInfo - Error creating state object");
             return new HashMap<>();
@@ -298,7 +298,7 @@ class MediaInfo {
 
         if (mediaTypeVal == null) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "fromObjectMap - Error parsing MediaInfo, invalid media type");
             return null;
@@ -312,7 +312,7 @@ class MediaInfo {
             mediaType = MediaType.Video;
         } else {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "fromObjectMap - Error parsing MediaInfo, invalid media type");
             return null;
@@ -396,7 +396,7 @@ class MediaInfo {
             final boolean isGranularAdTrackingEnabled) {
         if (id == null || id.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating MediaInfo, id must not be empty");
             return null;
@@ -404,7 +404,7 @@ class MediaInfo {
 
         if (name == null || name.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating MediaInfo, name must not be empty");
             return null;
@@ -412,7 +412,7 @@ class MediaInfo {
 
         if (streamType == null || streamType.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating MediaInfo, stream type must not be empty");
             return null;
@@ -420,7 +420,7 @@ class MediaInfo {
 
         if (length < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating MediaInfo, length must not be less than zero");
             return null;
@@ -524,7 +524,7 @@ class AdInfo {
 
         if (id == null || id.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdInfo, id must not be empty");
             return null;
@@ -532,7 +532,7 @@ class AdInfo {
 
         if (name == null || name.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdInfo, name must not be empty");
             return null;
@@ -540,7 +540,7 @@ class AdInfo {
 
         if (position < 1) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdInfo, position must be greater than zero");
             return null;
@@ -548,7 +548,7 @@ class AdInfo {
 
         if (length < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdInfo, length cannot be less than zero");
             return null;
@@ -651,7 +651,7 @@ class AdBreakInfo {
             final String name, final long position, final double startTime) {
         if (name == null || name.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdBreakInfo, name must not be empty");
             return null;
@@ -659,7 +659,7 @@ class AdBreakInfo {
 
         if (position < 1) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdBreakInfo, position must be greater than zero");
             return null;
@@ -667,7 +667,7 @@ class AdBreakInfo {
 
         if (startTime < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating AdBreakInfo, start time must not be less than zero");
             return null;
@@ -780,7 +780,7 @@ class ChapterInfo {
             final String name, final long position, final double startTime, final double length) {
         if (name == null || name.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating ChapterInfo, name must not be empty");
             return null;
@@ -788,7 +788,7 @@ class ChapterInfo {
 
         if (position < 1) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating ChapterInfo, position must be greater than zero");
             return null;
@@ -796,7 +796,7 @@ class ChapterInfo {
 
         if (startTime < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating ChapterInfo, start time must not be less than zero");
             return null;
@@ -804,7 +804,7 @@ class ChapterInfo {
 
         if (length < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating ChapterInfo, length must not be less than zero");
             return null;
@@ -926,7 +926,7 @@ class QoEInfo {
             final double startupTime) {
         if (bitrate < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating QoEInfo, bitrate must not be less than zero");
             return null;
@@ -934,7 +934,7 @@ class QoEInfo {
 
         if (droppedFrames < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating QoEInfo, dropped frames must not be less than zero");
             return null;
@@ -942,7 +942,7 @@ class QoEInfo {
 
         if (fps < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating QoEInfo, fps must not be less than zero");
             return null;
@@ -950,7 +950,7 @@ class QoEInfo {
 
         if (startupTime < 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating QoEInfo, startup time must not be less than zero");
             return null;
@@ -1035,7 +1035,7 @@ class StateInfo {
     public static StateInfo create(final String stateName) {
         if (stateName == null || stateName.length() == 0) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error parsing StateInfo, state name cannot be empty");
             return null;
@@ -1046,7 +1046,7 @@ class StateInfo {
 
         if (!matcher.find()) {
             Log.debug(
-                    MediaInternalConstants.EXTENSION_LOG_TAG,
+                    MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
                     "create - Error creating StateInfo, state name cannot contain special"
                             + " characters. Only alphabets, digits, '_' and '.' are allowed.");

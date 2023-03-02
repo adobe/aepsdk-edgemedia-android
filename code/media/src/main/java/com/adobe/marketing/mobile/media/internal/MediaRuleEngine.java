@@ -62,7 +62,7 @@ class MediaRuleEngine {
         do {
             if (!response.isValid) {
                 Log.trace(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "processRule - Predicates failed for MediaRule " + rule.getDescription());
                 break;
@@ -70,7 +70,7 @@ class MediaRuleEngine {
 
             if (enterFunction != null && !enterFunction.call(rule, context)) {
                 Log.trace(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "processRule - Enter actions prevents further processing for MediaRule "
                                 + rule.getDescription());
@@ -79,7 +79,7 @@ class MediaRuleEngine {
 
             if (!rule.runActions(context)) {
                 Log.trace(
-                        MediaInternalConstants.EXTENSION_LOG_TAG,
+                        MediaInternalConstants.LOG_TAG,
                         LOG_TAG,
                         "processRule - MediaRule action prevents further processing for MediaRule "
                                 + rule.getDescription());
