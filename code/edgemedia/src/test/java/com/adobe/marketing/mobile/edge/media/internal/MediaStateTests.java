@@ -74,7 +74,7 @@ public class MediaStateTests {
     }
 
     @Test
-    public void test_getMediaChannel() {
+    public void test_updateState_getMediaChannel() {
         testStringState(
                 MediaTestConstants.Configuration.MEDIA_CHANNEL,
                 new TestCallback() {
@@ -87,7 +87,7 @@ public class MediaStateTests {
     }
 
     @Test
-    public void test_getMediaPlayerName() {
+    public void test_updateState_getMediaPlayerName() {
         testStringState(
                 MediaTestConstants.Configuration.MEDIA_PLAYER_NAME,
                 new TestCallback() {
@@ -100,7 +100,7 @@ public class MediaStateTests {
     }
 
     @Test
-    public void test_getMediaAPPVersion() {
+    public void test_updateState_getMediaAPPVersion() {
         testStringState(
                 MediaTestConstants.Configuration.MEDIA_APP_VERSION,
                 new TestCallback() {
@@ -110,5 +110,69 @@ public class MediaStateTests {
                     }
                 },
                 null);
+    }
+
+    @Test
+    public void test_isValid_validPlayerName_validChannel_validAppVersion_isValidTrue() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.playerName", "name");
+        states.put("media.channel", "channel");
+        states.put("media.appVersion", "1.0.0");
+        mediaState.updateState(states);
+
+        assertTrue(mediaState.isValid());
+    }
+
+    @Test
+    public void test_isValid_validPlayerName_validChannel_noAppVersion_isValidTrue() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.playerName", "name");
+        states.put("media.channel", "channel");
+        mediaState.updateState(states);
+
+        // Is valid if playerName and channel are valid, appVersion not considered
+        assertTrue(mediaState.isValid());
+    }
+
+    @Test
+    public void test_isValid_validPlayerName_noChannel_validAppVersion_isValidFalse() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.playerName", "name");
+        states.put("media.appVersion", "1.0.0");
+        mediaState.updateState(states);
+
+        assertFalse(mediaState.isValid());
+    }
+
+    @Test
+    public void test_isValid_noPlayerName_validChannel_validAppVersion_isValidFalse() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.channel", "channel");
+        states.put("media.appVersion", "1.0.0");
+        mediaState.updateState(states);
+
+        assertFalse(mediaState.isValid());
+    }
+
+    @Test
+    public void test_isValid_validPlayerName_emptyChannel_validAppVersion_isValidFalse() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.playerName", "name");
+        states.put("media.channel", "");
+        states.put("media.appVersion", "1.0.0");
+        mediaState.updateState(states);
+
+        assertFalse(mediaState.isValid());
+    }
+
+    @Test
+    public void test_isValid_emptyPlayerName_validChannel_validAppVersion_isValidFalse() {
+        Map<String, Object> states = new HashMap<>();
+        states.put("media.playerName", "");
+        states.put("media.channel", "channel");
+        states.put("media.appVersion", "1.0.0");
+        mediaState.updateState(states);
+
+        assertFalse(mediaState.isValid());
     }
 }
