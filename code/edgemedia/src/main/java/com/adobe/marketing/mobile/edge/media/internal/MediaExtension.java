@@ -22,7 +22,6 @@ import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.StringUtils;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,23 +81,27 @@ public class MediaExtension extends Extension {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
                     SOURCE_TAG,
-                    "handleMediaTrackerRequestEvent - Public tracker ID is invalid, unable to create internal tracker.");
+                    "handleMediaTrackerRequestEvent - Public tracker ID is invalid, unable to"
+                            + " create internal tracker.");
             return;
         }
 
-        Map<String, Object> trackerConfig = DataReader.optTypedMap(Object.class,
-                event.getEventData(),
-                MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM,
-                Collections.<String, Object>emptyMap()
-        );
+        Map<String, Object> trackerConfig =
+                DataReader.optTypedMap(
+                        Object.class,
+                        event.getEventData(),
+                        MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM,
+                        Collections.<String, Object>emptyMap());
 
         Log.debug(
                 MediaInternalConstants.LOG_TAG,
                 SOURCE_TAG,
-                "handleMediaTrackerRequestEvent - Creating an internal tracker with tracker ID: %s.", trackerId);
+                "handleMediaTrackerRequestEvent - Creating an internal tracker with tracker ID:"
+                        + " %s.",
+                trackerId);
 
         // TODO create MediaEventTracker
-        //trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
+        // trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
     }
 
     void handleMediaTrackEvent(@NonNull final Event event) {
@@ -111,7 +114,8 @@ public class MediaExtension extends Extension {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
                     SOURCE_TAG,
-                    "handleMediaTrackEvent - Public tracker ID is invalid, unable to get internal tracker.");
+                    "handleMediaTrackEvent - Public tracker ID is invalid, unable to get internal"
+                            + " tracker.");
             return;
         }
 
@@ -121,7 +125,8 @@ public class MediaExtension extends Extension {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
                     SOURCE_TAG,
-                    "handleMediaTrackEvent - Unable to find internal tracker for the given tracker ID: %s",
+                    "handleMediaTrackEvent - Unable to find internal tracker for the given tracker"
+                            + " ID: %s",
                     trackerId);
             return;
         }

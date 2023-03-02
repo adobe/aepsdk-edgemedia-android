@@ -219,10 +219,7 @@ class MediaContext {
     }
 
     void enterState(final MediaPlayBackState state) {
-        Log.trace(
-                MediaInternalConstants.LOG_TAG,
-                LOG_TAG,
-                "enterState - " + state.toString());
+        Log.trace(MediaInternalConstants.LOG_TAG, LOG_TAG, "enterState - " + state.toString());
 
         switch (state) {
             case Play:
@@ -250,10 +247,7 @@ class MediaContext {
     }
 
     void exitState(final MediaPlayBackState state) {
-        Log.trace(
-                MediaInternalConstants.LOG_TAG,
-                LOG_TAG,
-                "exitState - " + state.toString());
+        Log.trace(MediaInternalConstants.LOG_TAG, LOG_TAG, "exitState - " + state.toString());
 
         switch (state) {
             case Buffer:

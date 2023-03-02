@@ -16,7 +16,6 @@ import static org.junit.Assert.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,9 +33,7 @@ public class MediaStateTests {
     }
 
     public void testStringState(
-            final String key,
-            final TestCallback callback,
-            final String defaultVal) {
+            final String key, final TestCallback callback, final String defaultVal) {
         Map<String, Object> states = new HashMap<>();
         assertEquals(defaultVal, callback.call());
 

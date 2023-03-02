@@ -11,15 +11,10 @@
 
 package com.adobe.marketing.mobile.edge.media.internal;
 
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,18 +24,9 @@ import com.adobe.marketing.mobile.EventSource;
 import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.ExtensionEventListener;
-import com.adobe.marketing.mobile.Media;
-import com.adobe.marketing.mobile.MediaConstants;
-import com.adobe.marketing.mobile.MobileCore;
-import com.adobe.marketing.mobile.SharedStateResult;
-import com.adobe.marketing.mobile.SharedStateStatus;
-import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
-import org.mockito.Answers;
-import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;

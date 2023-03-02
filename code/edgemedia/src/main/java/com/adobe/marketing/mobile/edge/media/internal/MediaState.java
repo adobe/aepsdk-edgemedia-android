@@ -12,17 +12,13 @@
 package com.adobe.marketing.mobile.edge.media.internal;
 
 import androidx.annotation.Nullable;
-
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.MapUtils;
 import com.adobe.marketing.mobile.util.StringUtils;
-
 import java.util.Map;
 
-/**
- * Holds the Media configuration state variables.
- */
+/** Holds the Media configuration state variables. */
 class MediaState {
     private static final String SOURCE_TAG = "MediaState";
     private final Object mutex = new Object();
@@ -32,22 +28,19 @@ class MediaState {
     private String mediaPlayerName;
     private String mediaAppVersion;
 
-    @Nullable
-    public String getMediaChannel() {
+    @Nullable public String getMediaChannel() {
         synchronized (mutex) {
             return mediaChannel;
         }
     }
 
-    @Nullable
-    public String getMediaPlayerName() {
+    @Nullable public String getMediaPlayerName() {
         synchronized (mutex) {
             return mediaPlayerName;
         }
     }
 
-    @Nullable
-    public String getMediaAppVersion() {
+    @Nullable public String getMediaAppVersion() {
         synchronized (mutex) {
             return mediaAppVersion;
         }
@@ -55,6 +48,7 @@ class MediaState {
 
     /**
      * Updates this state's configuration variables.
+     *
      * @param data Map containing the Media configuration variables
      */
     public void updateState(final Map<String, Object> data) {
@@ -67,19 +61,27 @@ class MediaState {
         }
 
         synchronized (mutex) {
-            mediaChannel = DataReader.optString(data, MediaInternalConstants.Configuration.MEDIA_CHANNEL, null);
-            mediaPlayerName = DataReader.optString(data, MediaInternalConstants.Configuration.MEDIA_PLAYER_NAME, null);
-            mediaAppVersion = DataReader.optString(data, MediaInternalConstants.Configuration.MEDIA_APP_VERSION, null);
+            mediaChannel =
+                    DataReader.optString(
+                            data, MediaInternalConstants.Configuration.MEDIA_CHANNEL, null);
+            mediaPlayerName =
+                    DataReader.optString(
+                            data, MediaInternalConstants.Configuration.MEDIA_PLAYER_NAME, null);
+            mediaAppVersion =
+                    DataReader.optString(
+                            data, MediaInternalConstants.Configuration.MEDIA_APP_VERSION, null);
         }
     }
 
     /**
      * Checks the state variables to determine if this state is valid.
+     *
      * @return true if this state has a valid configuration.
      */
     public boolean isValid() {
         synchronized (mutex) {
-            return !(StringUtils.isNullOrEmpty(mediaChannel) || StringUtils.isNullOrEmpty(mediaPlayerName));
+            return !(StringUtils.isNullOrEmpty(mediaChannel)
+                    || StringUtils.isNullOrEmpty(mediaPlayerName));
         }
     }
 }
