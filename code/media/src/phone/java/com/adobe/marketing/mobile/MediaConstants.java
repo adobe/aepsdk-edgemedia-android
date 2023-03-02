@@ -83,7 +83,7 @@ public class MediaConstants {
     }
     /** These constant strings define standard player states. */
     public static final class PlayerState {
-        public static final String CLOSED_CAPTION = "closedCaptioning";
+        public static final String CLOSED_CAPTION = "closeCaption";
         public static final String FULLSCREEN = "fullScreen";
         public static final String IN_FOCUS = "inFocus";
         public static final String MUTE = "mute";
