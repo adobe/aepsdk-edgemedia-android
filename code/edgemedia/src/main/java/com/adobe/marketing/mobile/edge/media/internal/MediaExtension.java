@@ -91,6 +91,10 @@ public class MediaExtension extends Extension {
                         this::handleConfigurationResponseEvent);
     }
 
+    /**
+     * Handler for the session ID returned by the media backend response dispatched by the Edge extension.
+     * @param event the Edge new media analytics session event containing the backend session ID
+     */
     void handleMediaEdgeSessionDetails(@NonNull final Event event) {
         String requestEventId =
                 DataReader.optString(
@@ -100,7 +104,7 @@ public class MediaExtension extends Extension {
         }
 
         String backendSessionId =
-                null; // session id is null if either 'payload' or 'sessionid' is null
+                null; // session id is null if either 'payload' or 'sessionId' is null
         List<Map<String, Object>> payload =
                 DataReader.optTypedListOfMap(
                         Object.class,
@@ -116,6 +120,10 @@ public class MediaExtension extends Extension {
         mediaEventProcessor.notifyBackendSessionId(requestEventId, backendSessionId);
     }
 
+    /**
+     * Handler for error responses dispatched by the Edge extension.
+     * @param event the Edge error response content event
+     */
     void handleEdgeErrorResponse(@NonNull final Event event) {
         String requestEventId =
                 DataReader.optString(
@@ -128,7 +136,7 @@ public class MediaExtension extends Extension {
     }
 
     /**
-     * Handles configuration response events by notifying current sessions of the configuration change.
+     * Handler for configuration response events by notifying current sessions of the configuration change.
      * @param event the configuration response event.
      */
     void handleConfigurationResponseEvent(@NonNull final Event event) {
@@ -138,6 +146,10 @@ public class MediaExtension extends Extension {
         }
     }
 
+    /**
+     * Handler for media tracker creation requests.
+     * @param event the Edge Media request tracker event
+     */
     void handleMediaTrackerRequestEvent(@NonNull final Event event) {
         String trackerId =
                 DataReader.optString(
@@ -171,6 +183,10 @@ public class MediaExtension extends Extension {
         // trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
     }
 
+    /**
+     * Handler for media track requests.
+     * @param event the Edge Media track media event
+     */
     void handleMediaTrackEvent(@NonNull final Event event) {
         String trackerId =
                 DataReader.optString(
@@ -201,6 +217,10 @@ public class MediaExtension extends Extension {
         tracker.track(event);
     }
 
+    /**
+     * Handler for reset identities requests. Clears all media trackers and sessions.
+     * @param event the identity request reset event
+     */
     void handleResetIdentities(@NonNull final Event event) {
         Log.debug(
                 MediaInternalConstants.LOG_TAG,
