@@ -24,6 +24,9 @@ final class MediaInternalConstants {
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
         static final String EVENT_NAME_SESSION_CREATED =
                 "com.adobe.eventsource.media.sessioncreated";
+        static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
+        static final String EVENT_SOURCE_EDGE_ERROR_RESOURCE =
+                "com.adobe.eventSource.errorResponseContent";
 
         private Media() {}
     }
@@ -34,6 +37,14 @@ final class MediaInternalConstants {
         static final String MEDIA_APP_VERSION = "media.appVersion";
 
         private Configuration() {}
+    }
+
+    static final class Edge {
+        static final String REQUEST_EVENT_ID = "requestEventId";
+        static final String PAYLOAD = "payload";
+        static final String SESSION_ID = "sessionId";
+
+        private Edge() {}
     }
 
     static final class EventDataKeys {
