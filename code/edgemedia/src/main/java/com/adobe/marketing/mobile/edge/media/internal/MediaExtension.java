@@ -227,6 +227,7 @@ public class MediaExtension extends Extension {
                 SOURCE_TAG,
                 "handleResetIdentities - Clearing all tracking sessions.");
 
+        mediaEventProcessor.abortAllSessions();
         trackers.clear();
     }
 }

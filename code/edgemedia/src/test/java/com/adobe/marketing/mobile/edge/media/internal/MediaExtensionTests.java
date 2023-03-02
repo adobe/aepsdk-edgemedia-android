@@ -138,7 +138,7 @@ public class MediaExtensionTests {
     }
 
     @Test
-    public void testRequestReset() {
+    public void testRequestReset_deletesTrackers_abortsSessions() {
         MediaTrackerInterface tracker = mock(MediaTrackerInterface.class);
         mediaExtension.trackers.put("key", tracker);
         Event event =
@@ -150,6 +150,7 @@ public class MediaExtensionTests {
         resetListener.hear(event);
 
         assertTrue(mediaExtension.trackers.isEmpty());
+        verify(mockMediaEventProcessor, times(1)).abortAllSessions();
     }
 
     @Test
