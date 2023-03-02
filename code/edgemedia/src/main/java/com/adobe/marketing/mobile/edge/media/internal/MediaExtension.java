@@ -35,14 +35,13 @@ public class MediaExtension extends Extension {
 
     private static final String SOURCE_TAG = "MediaExtension";
 
-    final Map<String, MediaTrackerInterface> trackers;
-    MediaState mediaState;
+    @VisibleForTesting
+    protected final Map<String, MediaTrackerInterface> trackers;
 
     @VisibleForTesting protected MediaEventProcessor mediaEventProcessor;
 
     MediaExtension(final ExtensionApi extensionApi) {
         super(extensionApi);
-        mediaState = new MediaState();
         trackers = new HashMap<>();
         mediaEventProcessor = new MediaEventProcessor();
     }

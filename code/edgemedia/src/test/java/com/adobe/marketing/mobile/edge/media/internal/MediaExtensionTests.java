@@ -50,7 +50,6 @@ public class MediaExtensionTests {
 
     MediaExtension mediaExtension;
     ExtensionApi mockExtensionAPI;
-    MediaState mockMediaState;
     private MediaEventProcessor mockMediaEventProcessor;
 
     Map<String, ExtensionEventListener> eventListerMap;
@@ -63,7 +62,6 @@ public class MediaExtensionTests {
         mockExtensionAPI = mock(ExtensionApi.class);
         mediaExtension = new MediaExtension(mockExtensionAPI);
 
-        mockMediaState = mock(MediaState.class);
         mockMediaEventProcessor = mock(MediaEventProcessor.class);
 
         eventListerMap = new HashMap<>();
@@ -84,7 +82,6 @@ public class MediaExtensionTests {
 
         mediaExtension.onRegistered();
 
-        mediaExtension.mediaState = mockMediaState;
         mediaExtension.mediaEventProcessor = mockMediaEventProcessor;
     }
 
