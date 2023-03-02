@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile;
 
-import com.adobe.marketing.mobile.edgemedia.internal.MediaObject;
+import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
 import com.adobe.marketing.mobile.services.Log;
 import java.util.Calendar;
 import java.util.HashMap;

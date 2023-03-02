@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile.edgemedia.internal;
+package com.adobe.marketing.mobile.edge.media.internal;
 
 import static org.junit.Assert.*;
 
