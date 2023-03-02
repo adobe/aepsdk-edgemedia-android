@@ -13,12 +13,12 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 final class MediaInternalConstants {
     static final String LOG_TAG = "Media";
+    static final String EXTENSION_NAME = "com.adobe.edge.media";
     static final String FRIENDLY_NAME = "Media";
 
     private MediaInternalConstants() {}
 
     static final class Media {
-        static final String SHARED_STATE_NAME = "com.adobe.module.media";
         static final String EVENT_SOURCE_TRACKER_REQUEST =
                 "com.adobe.eventsource.media.requesttracker";
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";

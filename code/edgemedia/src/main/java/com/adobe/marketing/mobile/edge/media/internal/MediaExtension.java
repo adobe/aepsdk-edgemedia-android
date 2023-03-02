@@ -22,7 +22,6 @@ import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.SharedStateResolution;
 import com.adobe.marketing.mobile.SharedStateResult;
-import com.adobe.marketing.mobile.SharedStateStatus;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.MapUtils;
@@ -50,7 +49,7 @@ public class MediaExtension extends Extension {
 
     @NonNull @Override
     protected String getName() {
-        return MediaInternalConstants.Media.SHARED_STATE_NAME;
+        return MediaInternalConstants.EXTENSION_NAME;
     }
 
     @Nullable @Override
