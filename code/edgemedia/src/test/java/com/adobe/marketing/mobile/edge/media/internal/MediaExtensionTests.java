@@ -14,7 +14,9 @@ package com.adobe.marketing.mobile.edge.media.internal;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,6 +26,11 @@ import com.adobe.marketing.mobile.EventSource;
 import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.ExtensionEventListener;
+import com.adobe.marketing.mobile.SharedStateResolution;
+import com.adobe.marketing.mobile.SharedStateResult;
+import com.adobe.marketing.mobile.SharedStateStatus;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -35,7 +42,7 @@ public class MediaExtensionTests {
 
     MediaExtension mediaExtension;
     ExtensionApi mockExtensionAPI;
-    MediaState mockMediaState;
+    private MediaEventProcessor mockMediaEventProcessor;
 
     Map<String, ExtensionEventListener> eventListerMap;
 
@@ -43,19 +50,11 @@ public class MediaExtensionTests {
         return eventListerMap.get(type + source);
     }
 
-    Event getSharedStateEvent(String owner) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(MediaTestConstants.STATE_OWNER, owner);
-        return new Event.Builder("Shared state", EventType.HUB, EventSource.SHARED_STATE)
-                .setEventData(data)
-                .build();
-    }
-
     public MediaExtensionTests() {
         mockExtensionAPI = mock(ExtensionApi.class);
         mediaExtension = new MediaExtension(mockExtensionAPI);
 
-        mockMediaState = mock(MediaState.class);
+        mockMediaEventProcessor = mock(MediaEventProcessor.class);
 
         eventListerMap = new HashMap<>();
         Mockito.doAnswer(
@@ -75,7 +74,7 @@ public class MediaExtensionTests {
 
         mediaExtension.onRegistered();
 
-        mediaExtension.mediaState = mockMediaState;
+        mediaExtension.mediaEventProcessor = mockMediaEventProcessor;
     }
 
     @Test
@@ -128,7 +127,7 @@ public class MediaExtensionTests {
     }
 
     @Test
-    public void testRequestReset() {
+    public void testRequestReset_deletesTrackers_abortsSessions() {
         MediaTrackerInterface tracker = mock(MediaTrackerInterface.class);
         mediaExtension.trackers.put("key", tracker);
         Event event =
@@ -140,5 +139,546 @@ public class MediaExtensionTests {
         resetListener.hear(event);
 
         assertTrue(mediaExtension.trackers.isEmpty());
+        verify(mockMediaEventProcessor, times(1)).abortAllSessions();
+    }
+
+    @Test
+    public void
+            testHandleEdgeMediaSessionDetails_validRequestId_validSessionId_callsEventProcessor() {
+        final String expectedRequestEventId = "event123";
+        final String expectedBackendSessionId =
+                "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("sessionId", expectedBackendSessionId);
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1))
+                .notifyBackendSessionId(expectedRequestEventId, expectedBackendSessionId);
+    }
+
+    @Test
+    public void testHandleEdgeMediaSessionDetails_validRequestId_noSessionId_callsEventProcessor() {
+        final String expectedRequestEventId = "event123";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("invalid", "no session id");
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1))
+                .notifyBackendSessionId(expectedRequestEventId, null);
+    }
+
+    @Test
+    public void
+            testHandleEdgeMediaSessionDetails_validRequestId_emptySessionId_callsEventProcessor() {
+        final String expectedRequestEventId = "event123";
+        final String expectedBackendSessionId = "";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("sessionId", expectedBackendSessionId);
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1))
+                .notifyBackendSessionId(expectedRequestEventId, expectedBackendSessionId);
+    }
+
+    @Test
+    public void testHandleEdgeMediaSessionDetails_validRequestId_noPayload_callsEventProcessor() {
+        final String expectedRequestEventId = "event123";
+
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1))
+                .notifyBackendSessionId(expectedRequestEventId, null);
+    }
+
+    @Test
+    public void testHandleEdgeMediaSessionDetails_noRequestId_doesNotCallEventProcessor() {
+        final String expectedBackendSessionId =
+                "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("sessionId", expectedBackendSessionId);
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
+    }
+
+    @Test
+    public void testHandleEdgeMediaSessionDetails_nullRequestId_doesNotCallEventProcessor() {
+        final String expectedRequestEventId = null;
+        final String expectedBackendSessionId =
+                "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("sessionId", expectedBackendSessionId);
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
+    }
+
+    @Test
+    public void testHandleEdgeMediaSessionDetails_emptyRequestId_doesNotCallEventProcessor() {
+        final String expectedRequestEventId = "";
+        final String expectedBackendSessionId =
+                "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "payload",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put("sessionId", expectedBackendSessionId);
+                                    }
+                                });
+                    }
+                });
+        Event event =
+                new Event.Builder(
+                                "Edge Media Session",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
+    }
+
+    @Test
+    public void testHandleEdgeErrorResponse_validRequestId_validEventData_callsEventProcessor() {
+        final String expectedRequestEventId = "event123";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "errors",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put(
+                                                "type",
+                                                "https://ns.adobe.com/aep/errors/va-edge-0404-404");
+                                        put("status", 404);
+                                        put("title", "Not Found");
+                                    }
+                                });
+                    }
+                });
+
+        Event event =
+                new Event.Builder(
+                                "Edge Error Response",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1))
+                .notifyErrorResponse(expectedRequestEventId, event.getEventData());
+    }
+
+    @Test
+    public void testHandleEdgeErrorResponse_noRequestId_validEventData_doesNotCallEventProcessor() {
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put(
+                "errors",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put(
+                                                "type",
+                                                "https://ns.adobe.com/aep/errors/va-edge-0404-404");
+                                        put("status", 404);
+                                        put("title", "Not Found");
+                                    }
+                                });
+                    }
+                });
+
+        Event event =
+                new Event.Builder(
+                                "Edge Error Response",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
+    }
+
+    @Test
+    public void
+            testHandleEdgeErrorResponse_nullRequestId_validEventData_doesNotCallEventProcessor() {
+        final String expectedRequestEventId = null;
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "errors",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put(
+                                                "type",
+                                                "https://ns.adobe.com/aep/errors/va-edge-0404-404");
+                                        put("status", 404);
+                                        put("title", "Not Found");
+                                    }
+                                });
+                    }
+                });
+
+        Event event =
+                new Event.Builder(
+                                "Edge Error Response",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
+    }
+
+    @Test
+    public void
+            testHandleEdgeErrorResponse_emptyRequestId_validEventData_doesNotCallEventProcessor() {
+        final String expectedRequestEventId = "";
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("requestEventId", expectedRequestEventId);
+        eventData.put(
+                "errors",
+                new ArrayList<Map<String, Object>>() {
+                    {
+                        add(
+                                new HashMap<String, Object>() {
+                                    {
+                                        put(
+                                                "type",
+                                                "https://ns.adobe.com/aep/errors/va-edge-0404-404");
+                                        put("status", 404);
+                                        put("title", "Not Found");
+                                    }
+                                });
+                    }
+                });
+
+        Event event =
+                new Event.Builder(
+                                "Edge Error Response",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                        .setEventData(eventData)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
+    }
+
+    @Test
+    public void testHandleEdgeErrorResponse_noEventData_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                                "Edge Error Response",
+                                EventType.EDGE,
+                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                        .build();
+
+        ExtensionEventListener listener =
+                getListener(
+                        EventType.EDGE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
+    }
+
+    @Test
+    public void testHandleConfigurationResponseEvent_setSharedState_callsEventProcessor() {
+        Event event =
+                new Event.Builder(
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
+                        .build();
+        Map<String, Object> configState = new HashMap<>();
+        configState.put("media.channel", "testing");
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(SharedStateStatus.SET, configState);
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(1)).updateMediaState(eq(configState));
+    }
+
+    @Test
+    public void testHandleConfigurationResponseEvent_nullSharedState_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(SharedStateStatus.PENDING, null);
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
+    }
+
+    @Test
+    public void testHandleConfigurationResponseEvent_emptySharedState_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return new SharedStateResult(
+                                        SharedStateStatus.PENDING,
+                                        Collections.<String, Object>emptyMap());
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
+    }
+
+    @Test
+    public void testHandleConfigurationResponseEvent_nullResult_doesNotCallEventProcessor() {
+        Event event =
+                new Event.Builder(
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
+                        .build();
+
+        Mockito.doAnswer(
+                        new Answer<SharedStateResult>() {
+                            @Override
+                            public SharedStateResult answer(final InvocationOnMock invocation) {
+                                return null;
+                            }
+                        })
+                .when(mockExtensionAPI)
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
+
+        ExtensionEventListener listener =
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
+        listener.hear(event);
+
+        verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
     }
 }

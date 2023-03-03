@@ -13,27 +13,39 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 final class MediaInternalConstants {
     static final String LOG_TAG = "Media";
+    static final String EXTENSION_NAME = "com.adobe.edge.media";
     static final String FRIENDLY_NAME = "Media";
 
     private MediaInternalConstants() {}
 
     static final class Media {
-        static final String SHARED_STATE_NAME = "com.adobe.module.media";
         static final String EVENT_SOURCE_TRACKER_REQUEST =
                 "com.adobe.eventsource.media.requesttracker";
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
         static final String EVENT_NAME_SESSION_CREATED =
                 "com.adobe.eventsource.media.sessioncreated";
+        static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
+        static final String EVENT_SOURCE_EDGE_ERROR_RESPONSE =
+                "com.adobe.eventSource.errorResponseContent";
 
         private Media() {}
     }
 
     static final class Configuration {
+        static final String SHARED_STATE_NAME = "com.adobe.module.configuration";
         static final String MEDIA_CHANNEL = "media.channel";
         static final String MEDIA_PLAYER_NAME = "media.playerName";
         static final String MEDIA_APP_VERSION = "media.appVersion";
 
         private Configuration() {}
+    }
+
+    static final class Edge {
+        static final String REQUEST_EVENT_ID = "requestEventId";
+        static final String PAYLOAD = "payload";
+        static final String SESSION_ID = "sessionId";
+
+        private Edge() {}
     }
 
     static final class EventDataKeys {
