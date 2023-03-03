@@ -81,7 +81,7 @@ public class MediaExtension extends Extension {
                         this::handleMediaEdgeSessionDetails);
         getApi().registerEventListener(
                         EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESOURCE,
+                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE,
                         this::handleEdgeErrorResponse);
         getApi().registerEventListener(
                         EventType.CONFIGURATION,
