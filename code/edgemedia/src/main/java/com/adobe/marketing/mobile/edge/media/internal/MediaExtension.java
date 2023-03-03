@@ -35,8 +35,7 @@ public class MediaExtension extends Extension {
 
     private static final String SOURCE_TAG = "MediaExtension";
 
-    @VisibleForTesting
-    protected final Map<String, MediaTrackerInterface> trackers;
+    @VisibleForTesting protected final Map<String, MediaTrackerInterface> trackers;
 
     @VisibleForTesting protected MediaEventProcessor mediaEventProcessor;
 
@@ -91,7 +90,9 @@ public class MediaExtension extends Extension {
     }
 
     /**
-     * Handler for the session ID returned by the media backend response dispatched by the Edge extension.
+     * Handler for the session ID returned by the media backend response dispatched by the Edge
+     * extension.
+     *
      * @param event the Edge new media analytics session event containing the backend session ID
      */
     void handleMediaEdgeSessionDetails(@NonNull final Event event) {
@@ -121,6 +122,7 @@ public class MediaExtension extends Extension {
 
     /**
      * Handler for error responses dispatched by the Edge extension.
+     *
      * @param event the Edge error response content event
      */
     void handleEdgeErrorResponse(@NonNull final Event event) {
@@ -135,11 +137,18 @@ public class MediaExtension extends Extension {
     }
 
     /**
-     * Handler for configuration response events by notifying current sessions of the configuration change.
+     * Handler for configuration response events by notifying current sessions of the configuration
+     * change.
+     *
      * @param event the configuration response event.
      */
     void handleConfigurationResponseEvent(@NonNull final Event event) {
-        SharedStateResult configStateResult = getApi().getSharedState(MediaInternalConstants.Configuration.SHARED_STATE_NAME, event,false, SharedStateResolution.ANY);
+        SharedStateResult configStateResult =
+                getApi().getSharedState(
+                                MediaInternalConstants.Configuration.SHARED_STATE_NAME,
+                                event,
+                                false,
+                                SharedStateResolution.ANY);
         if (configStateResult != null && !MapUtils.isNullOrEmpty(configStateResult.getValue())) {
             mediaEventProcessor.updateMediaState(configStateResult.getValue());
         }
@@ -147,6 +156,7 @@ public class MediaExtension extends Extension {
 
     /**
      * Handler for media tracker creation requests.
+     *
      * @param event the Edge Media request tracker event
      */
     void handleMediaTrackerRequestEvent(@NonNull final Event event) {
@@ -184,6 +194,7 @@ public class MediaExtension extends Extension {
 
     /**
      * Handler for media track requests.
+     *
      * @param event the Edge Media track media event
      */
     void handleMediaTrackEvent(@NonNull final Event event) {
@@ -218,6 +229,7 @@ public class MediaExtension extends Extension {
 
     /**
      * Handler for reset identities requests. Clears all media trackers and sessions.
+     *
      * @param event the identity request reset event
      */
     void handleResetIdentities(@NonNull final Event event) {

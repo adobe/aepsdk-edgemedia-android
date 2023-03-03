@@ -29,16 +29,14 @@ import com.adobe.marketing.mobile.ExtensionEventListener;
 import com.adobe.marketing.mobile.SharedStateResolution;
 import com.adobe.marketing.mobile.SharedStateResult;
 import com.adobe.marketing.mobile.SharedStateStatus;
-
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class MediaExtensionTests {
 
@@ -561,13 +559,12 @@ public class MediaExtensionTests {
     }
 
     @Test
-    public void
-    testHandleConfigurationResponseEvent_setSharedState_callsEventProcessor() {
+    public void testHandleConfigurationResponseEvent_setSharedState_callsEventProcessor() {
         Event event =
                 new Event.Builder(
-                        "Configuration",
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT)
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
                         .build();
         Map<String, Object> configState = new HashMap<>();
         configState.put("media.channel", "testing");
@@ -580,25 +577,26 @@ public class MediaExtensionTests {
                             }
                         })
                 .when(mockExtensionAPI)
-                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT);
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1)).updateMediaState(eq(configState));
     }
 
     @Test
-    public void
-    testHandleConfigurationResponseEvent_nullSharedState_doesNotCallEventProcessor() {
+    public void testHandleConfigurationResponseEvent_nullSharedState_doesNotCallEventProcessor() {
         Event event =
                 new Event.Builder(
-                        "Configuration",
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT)
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
                         .build();
 
         Mockito.doAnswer(
@@ -609,54 +607,58 @@ public class MediaExtensionTests {
                             }
                         })
                 .when(mockExtensionAPI)
-                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT);
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
     }
 
     @Test
-    public void
-    testHandleConfigurationResponseEvent_emptySharedState_doesNotCallEventProcessor() {
+    public void testHandleConfigurationResponseEvent_emptySharedState_doesNotCallEventProcessor() {
         Event event =
                 new Event.Builder(
-                        "Configuration",
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT)
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
                         .build();
 
         Mockito.doAnswer(
                         new Answer<SharedStateResult>() {
                             @Override
                             public SharedStateResult answer(final InvocationOnMock invocation) {
-                                return new SharedStateResult(SharedStateStatus.PENDING, Collections.<String, Object>emptyMap());
+                                return new SharedStateResult(
+                                        SharedStateStatus.PENDING,
+                                        Collections.<String, Object>emptyMap());
                             }
                         })
                 .when(mockExtensionAPI)
-                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT);
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
     }
 
     @Test
-    public void
-    testHandleConfigurationResponseEvent_nullResult_doesNotCallEventProcessor() {
+    public void testHandleConfigurationResponseEvent_nullResult_doesNotCallEventProcessor() {
         Event event =
                 new Event.Builder(
-                        "Configuration",
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT)
+                                "Configuration",
+                                EventType.CONFIGURATION,
+                                EventSource.RESPONSE_CONTENT)
                         .build();
 
         Mockito.doAnswer(
@@ -667,12 +669,14 @@ public class MediaExtensionTests {
                             }
                         })
                 .when(mockExtensionAPI)
-                .getSharedState(eq("com.adobe.module.configuration"), eq(event), anyBoolean(), any(SharedStateResolution.class));
+                .getSharedState(
+                        eq("com.adobe.module.configuration"),
+                        eq(event),
+                        anyBoolean(),
+                        any(SharedStateResolution.class));
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.CONFIGURATION,
-                        EventSource.RESPONSE_CONTENT);
+                getListener(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).updateMediaState(any());
