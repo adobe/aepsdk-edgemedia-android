@@ -26,25 +26,19 @@ import com.adobe.marketing.mobile.EventSource;
 import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.ExtensionApi;
 import com.adobe.marketing.mobile.ExtensionEventListener;
-<<<<<<< HEAD:code/edgemedia/src/test/java/com/adobe/marketing/mobile/edge/media/internal/MediaExtensionTests.java
-<<<<<<< HEAD:code/edgemedia/src/test/java/com/adobe/marketing/mobile/edge/media/internal/MediaExtensionTests.java
-=======
-import java.util.ArrayList;
->>>>>>> 259e920 (Add listeners for Edge events):code/media/src/test/java/com/adobe/marketing/mobile/media/internal/MediaExtensionTests.java
-=======
 import com.adobe.marketing.mobile.SharedStateResolution;
 import com.adobe.marketing.mobile.SharedStateResult;
 import com.adobe.marketing.mobile.SharedStateStatus;
 
-import java.util.ArrayList;
-import java.util.Collections;
->>>>>>> 4e2bfc9 (Register listener for Configuration Response Content events):code/media/src/test/java/com/adobe/marketing/mobile/media/internal/MediaExtensionTests.java
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MediaExtensionTests {
 

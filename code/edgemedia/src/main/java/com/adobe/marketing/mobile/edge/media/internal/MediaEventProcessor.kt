@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile.media.internal
+package com.adobe.marketing.mobile.edge.media.internal
 
 internal class MediaEventProcessor {
     private val SOURCE_TAG = "MediaEventProcessor"
