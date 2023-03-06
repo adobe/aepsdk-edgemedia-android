@@ -11,6 +11,9 @@ LIB_VERSION = $(shell cat $(ROOT_DIR)/code/gradle.properties | grep "moduleVersi
 SOURCE_FILE_DIR =  $(ROOT_DIR)/code/$(PROJECT_NAME)
 AAR_FILE_DIR =  $(ROOT_DIR)/code/$(PROJECT_NAME)/build/outputs/aar
 
+init:
+	git config core.hooksPath .githooks
+
 clean:
 	(rm -rf $(AAR_FILE_DIR))
 	(./code/gradlew -p code clean)
@@ -20,9 +23,11 @@ checkstyle:
 
 checkformat:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessCheck)
+	(./code/gradlew -p code/$(TEST-APP-FOLDER-NAME) spotlessCheck)
 
 format:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessApply)
+	(./code/gradlew -p code/$(TEST-APP-FOLDER-NAME) spotlessApply)
 
 unit-test:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) testPhoneDebugUnitTest)
@@ -41,10 +46,10 @@ javadoc:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) javadocPublish)
 
 assemble-phone:
-		(./code/gradlew -p code/${EXTENSION-LIBRARY-FOLDER-NAME}  assemblePhone)
+	(./code/gradlew -p code/${EXTENSION-LIBRARY-FOLDER-NAME}  assemblePhone)
 
 assemble-phone-release:		
-		(./code/gradlew -p code/${EXTENSION-LIBRARY-FOLDER-NAME}  assemblePhoneRelease)
+	(./code/gradlew -p code/${EXTENSION-LIBRARY-FOLDER-NAME}  assemblePhoneRelease)
 
 build-release:
 	(./code/gradlew -p code/${EXTENSION-LIBRARY-FOLDER-NAME} clean lint assemblePhoneRelease)
