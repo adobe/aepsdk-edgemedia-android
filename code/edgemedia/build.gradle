@@ -48,6 +48,11 @@ android {
         targetCompatibility rootProject.ext.targetCompatibility
     }
 
+    kotlinOptions {
+        jvmTarget = rootProject.ext.sourceCompatibility
+        languageVersion = rootProject.kotlinLanguageVersion
+        apiVersion = rootProject.kotlinLanguageVersion
+    }
 }
 
 dependencies {
