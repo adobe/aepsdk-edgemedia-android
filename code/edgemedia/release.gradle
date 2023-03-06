@@ -60,9 +60,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:github.com//adobe/aepsdk-media-android.git'
-                    developerConnection = 'scm:git:ssh://github.com//adobe/aepsdk-media-android.git'
-                    url = 'https://github.com/adobe/aepsdk-media-android'
+                    connection = 'scm:git:github.com//adobe/aepsdk-edgemedia-android.git'
+                    developerConnection = 'scm:git:ssh://github.com//adobe/aepsdk-edgemedia-android.git'
+                    url = 'https://github.com/adobe/aepsdk-edgemedia-android'
                 }
                 withXml {
                     def dependenciesNode = asNode().appendNode('dependencies')
