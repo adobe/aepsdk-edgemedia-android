@@ -76,7 +76,7 @@ public class MediaConstants {
         public static final String SEASON = "season";
         public static final String SHOW = "show";
         public static final String SHOW_TYPE = "showType";
-        public static final String STREAM_FORMAT = "format";
+        public static final String STREAM_FORMAT = "streamFormat";
         public static final String RATING = "rating";
 
         private VideoMetadataKeys() {}
