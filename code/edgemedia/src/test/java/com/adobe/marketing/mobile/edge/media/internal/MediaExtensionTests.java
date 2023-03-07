@@ -85,7 +85,7 @@ public class MediaExtensionTests {
         Event event =
                 new Event.Builder(
                                 "",
-                                EventType.MEDIA,
+                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                                 MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(
                                 new HashMap<String, Object>() {
@@ -96,7 +96,9 @@ public class MediaExtensionTests {
                         .build();
 
         ExtensionEventListener trackListener =
-                getListener(EventType.MEDIA, MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
+                getListener(
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                        MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
         trackListener.hear(event);
 
         verify(tracker, times(1)).track(event);
@@ -107,7 +109,7 @@ public class MediaExtensionTests {
         Event event =
                 new Event.Builder(
                                 "",
-                                EventType.MEDIA,
+                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                                 MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(
                                 new HashMap<String, Object>() {
@@ -118,7 +120,9 @@ public class MediaExtensionTests {
                         .build();
 
         ExtensionEventListener trackListener =
-                getListener(EventType.MEDIA, MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
+                getListener(
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                        MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
         try {
             trackListener.hear(event);
         } catch (Exception ex) {

@@ -68,11 +68,11 @@ public class MediaExtension extends Extension {
                         EventSource.REQUEST_RESET,
                         this::handleResetIdentities);
         getApi().registerEventListener(
-                        EventType.MEDIA,
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                         MediaInternalConstants.Media.EVENT_SOURCE_TRACKER_REQUEST,
                         this::handleMediaTrackerRequestEvent);
         getApi().registerEventListener(
-                        EventType.MEDIA,
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                         MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA,
                         this::handleMediaTrackEvent);
         getApi().registerEventListener(

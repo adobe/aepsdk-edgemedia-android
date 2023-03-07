@@ -19,10 +19,12 @@ final class MediaInternalConstants {
     private MediaInternalConstants() {}
 
     static final class Media {
+        // TODO - use EventType.EDGE_MEDIA when released
+        static final String EVENT_TYPE_EDGE_MEDIA = "com.adobe.eventType.edgeMedia";
         static final String EVENT_SOURCE_TRACKER_REQUEST =
                 "com.adobe.eventsource.media.requesttracker";
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
-        static final String EVENT_NAME_SESSION_CREATED =
+        static final String EVENT_SOURCE_SESSION_CREATED =
                 "com.adobe.eventsource.media.sessioncreated";
         static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
 
