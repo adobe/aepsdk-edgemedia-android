@@ -25,8 +25,6 @@ final class MediaInternalConstants {
         static final String EVENT_NAME_SESSION_CREATED =
                 "com.adobe.eventsource.media.sessioncreated";
         static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
-        static final String EVENT_SOURCE_EDGE_ERROR_RESPONSE =
-                "com.adobe.eventSource.errorResponseContent";
 
         private Media() {}
     }

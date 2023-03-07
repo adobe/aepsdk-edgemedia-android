@@ -409,14 +409,12 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Error Response",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                                EventSource.ERROR_RESPONSE_CONTENT)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+                getListener(EventType.EDGE, EventSource.ERROR_RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1))
@@ -447,14 +445,12 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Error Response",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                                EventSource.ERROR_RESPONSE_CONTENT)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+                getListener(EventType.EDGE, EventSource.ERROR_RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
@@ -487,14 +483,12 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Error Response",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                                EventSource.ERROR_RESPONSE_CONTENT)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+                getListener(EventType.EDGE, EventSource.ERROR_RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
@@ -527,14 +521,12 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Error Response",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                                EventSource.ERROR_RESPONSE_CONTENT)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+                getListener(EventType.EDGE, EventSource.ERROR_RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
@@ -546,13 +538,11 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Error Response",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE)
+                                EventSource.ERROR_RESPONSE_CONTENT)
                         .build();
 
         ExtensionEventListener listener =
-                getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE);
+                getListener(EventType.EDGE, EventSource.ERROR_RESPONSE_CONTENT);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyErrorResponse(any(), any());
