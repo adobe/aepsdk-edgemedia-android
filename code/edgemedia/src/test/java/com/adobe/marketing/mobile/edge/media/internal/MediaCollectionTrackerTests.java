@@ -21,8 +21,8 @@ import static org.junit.Assert.fail;
 
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
-import com.adobe.marketing.mobile.Media;
-import com.adobe.marketing.mobile.TestMediaTrackerEventGenerator;
+import com.adobe.marketing.mobile.edge.media.Media;
+import com.adobe.marketing.mobile.edge.media.TestMediaTrackerEventGenerator;
 import com.adobe.marketing.mobile.util.CloneFailedException;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.EventDataUtils;

@@ -9,11 +9,14 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile;
+package com.adobe.marketing.mobile.edge.media;
 
 import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertEquals;
 
+import com.adobe.marketing.mobile.Event;
+import com.adobe.marketing.mobile.EventType;
+import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
 import java.util.Map;

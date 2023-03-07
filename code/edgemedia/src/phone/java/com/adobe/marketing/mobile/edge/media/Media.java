@@ -9,8 +9,11 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile;
+package com.adobe.marketing.mobile.edge.media;
 
+import com.adobe.marketing.mobile.AdobeCallback;
+import com.adobe.marketing.mobile.Extension;
+import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.media.internal.MediaExtension;
 import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
 import java.util.HashMap;

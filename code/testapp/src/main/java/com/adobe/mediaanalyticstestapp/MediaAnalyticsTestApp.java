@@ -17,8 +17,8 @@ import com.adobe.marketing.mobile.Analytics;
 import com.adobe.marketing.mobile.Assurance;
 import com.adobe.marketing.mobile.Identity;
 import com.adobe.marketing.mobile.LoggingMode;
-import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.MobileCore;
+import com.adobe.marketing.mobile.edge.media.Media;
 import java.util.Arrays;
 
 public class MediaAnalyticsTestApp extends Application {

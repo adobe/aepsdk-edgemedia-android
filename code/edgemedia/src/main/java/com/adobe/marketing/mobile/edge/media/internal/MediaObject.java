@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal;
 
-import com.adobe.marketing.mobile.Media;
+import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
