@@ -34,7 +34,7 @@ public class Media {
      * Registers the extension with the Mobile SDK. This method should be called only once in your
      * application class.
      *
-     * @deprecated as of 3.0.0, use {@link MobileCore#registerExtensions(List, AdobeCallback)} with
+     * @deprecated as of 2.0.0, use {@link MobileCore#registerExtensions(List, AdobeCallback)} with
      *     {@link Media#EXTENSION} instead.
      */
     @Deprecated

@@ -19,20 +19,20 @@ public interface MediaTracker {
     /**
      * Tracking method to track the start of a viewing session.
      *
-     * @param mediaInfo A Map instance created using createMediaObjectWithName method
+     * @param mediaInfo A Map instance created using {@link Media#createMediaObject} method
      * @param contextData a map containing the context data to be tracked.
      */
     void trackSessionStart(
             @NonNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
 
-    /** Video playback tracking method to track Video Play triggers VIDEO_PLAY event */
+    /** Video playback tracking method to track Video Play triggers {@code play} event */
     void trackPlay();
 
-    /** Video playback tracking method to track Video Pause triggers VIDEO_PAUSE event */
+    /** Video playback tracking method to track Video Pause triggers {@code pause} event */
     void trackPause();
 
     /**
-     * Video playback tracking method to track Video Complete triggers VIDEO_COMPLETE event and
+     * Video playback tracking method to track Video Complete triggers {@coce complete} event and
      * calls back the callback method.
      */
     void trackComplete();
