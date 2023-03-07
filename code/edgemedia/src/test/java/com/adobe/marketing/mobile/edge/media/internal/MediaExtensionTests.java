@@ -85,7 +85,7 @@ public class MediaExtensionTests {
         Event event =
                 new Event.Builder(
                                 "",
-                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                                MediaTestConstants.Media.EVENT_TYPE,
                                 MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(
                                 new HashMap<String, Object>() {
@@ -97,7 +97,7 @@ public class MediaExtensionTests {
 
         ExtensionEventListener trackListener =
                 getListener(
-                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                        MediaTestConstants.Media.EVENT_TYPE,
                         MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
         trackListener.hear(event);
 
@@ -109,7 +109,7 @@ public class MediaExtensionTests {
         Event event =
                 new Event.Builder(
                                 "",
-                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                                MediaTestConstants.Media.EVENT_TYPE,
                                 MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(
                                 new HashMap<String, Object>() {
@@ -121,7 +121,7 @@ public class MediaExtensionTests {
 
         ExtensionEventListener trackListener =
                 getListener(
-                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                        MediaTestConstants.Media.EVENT_TYPE,
                         MediaTestConstants.Media.EVENT_SOURCE_TRACK_MEDIA);
         try {
             trackListener.hear(event);
@@ -170,14 +170,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1))
@@ -205,14 +204,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1))
@@ -242,14 +240,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1))
@@ -267,14 +264,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(1))
@@ -302,14 +298,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
@@ -338,14 +333,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
@@ -374,14 +368,13 @@ public class MediaExtensionTests {
                 new Event.Builder(
                                 "Edge Media Session",
                                 EventType.EDGE,
-                                MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
+                                MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION)
                         .setEventData(eventData)
                         .build();
 
         ExtensionEventListener listener =
                 getListener(
-                        EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
+                        EventType.EDGE, MediaTestConstants.Media.EVENT_SOURCE_MEDIA_EDGE_SESSION);
         listener.hear(event);
 
         verify(mockMediaEventProcessor, times(0)).notifyBackendSessionId(any(), any());
