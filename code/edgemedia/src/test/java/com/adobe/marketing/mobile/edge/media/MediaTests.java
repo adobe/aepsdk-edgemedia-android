@@ -15,7 +15,6 @@ import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertEquals;
 
 import com.adobe.marketing.mobile.Event;
-import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.util.DataReader;
 import java.util.HashMap;
@@ -28,7 +27,8 @@ import org.mockito.Mockito;
 
 public class MediaTests {
 
-    static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventsource.media.requesttracker";
+    static final String EVENT_TYPE_MEDIA = "com.adobe.eventType.edgeMedia";
+    static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
     static final String TRACKER_ID = "trackerid";
     static final String TRACKER_EVENT_PARAM = "event.param";
 
@@ -53,7 +53,7 @@ public class MediaTests {
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
-            assertEquals(EventType.MEDIA, event.getType());
+            assertEquals(EVENT_TYPE_MEDIA, event.getType());
 
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);
@@ -83,7 +83,7 @@ public class MediaTests {
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
-            assertEquals(EventType.MEDIA, event.getType());
+            assertEquals(EVENT_TYPE_MEDIA, event.getType());
 
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);
@@ -121,7 +121,7 @@ public class MediaTests {
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
-            assertEquals(EventType.MEDIA, event.getType());
+            assertEquals(EVENT_TYPE_MEDIA, event.getType());
 
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);
@@ -153,7 +153,7 @@ public class MediaTests {
 
             Event event = eventCaptor.getValue();
             assertEquals(EVENT_SOURCE_TRACKER_REQUEST, event.getSource());
-            assertEquals(EventType.MEDIA, event.getType());
+            assertEquals(EVENT_TYPE_MEDIA, event.getType());
 
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);

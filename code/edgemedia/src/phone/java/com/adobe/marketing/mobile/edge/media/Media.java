@@ -16,6 +16,7 @@ import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.media.internal.MediaExtension;
 import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
+import com.adobe.marketing.mobile.edge.media.internal.MediaTrackerEventGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;

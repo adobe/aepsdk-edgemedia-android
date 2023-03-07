@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile.edge.media;
+package com.adobe.marketing.mobile.edge.media.internal;
 
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
@@ -39,18 +39,14 @@ public class TestMediaTrackerEventGenerator extends MediaTrackerEventGenerator {
     EventCollector eventCollector;
 
     public static TestMediaTrackerEventGenerator create(
-            final Map<String, Object> config, final String trackerID, final boolean doUseUserTS) {
+            final String trackerID, final boolean doUseUserTS) {
 
-        return new TestMediaTrackerEventGenerator(
-                config, trackerID, doUseUserTS, new EventCollector());
+        return new TestMediaTrackerEventGenerator(trackerID, doUseUserTS, new EventCollector());
     }
 
     TestMediaTrackerEventGenerator(
-            Map<String, Object> config,
-            String trackerId,
-            final boolean useUserTS,
-            EventCollector eventCollector) {
-        super(config, trackerId, eventCollector);
+            String trackerId, final boolean useUserTS, EventCollector eventCollector) {
+        super(trackerId, eventCollector);
         this.eventCollector = eventCollector;
         this.useUserTS = useUserTS;
     }

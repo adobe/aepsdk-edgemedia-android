@@ -9,12 +9,16 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile.edge.media;
+package com.adobe.marketing.mobile.edge.media.internal;
 
+import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.EventDataKeys;
+import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG;
+
+import androidx.annotation.VisibleForTesting;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
-import com.adobe.marketing.mobile.EventType;
-import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
+import com.adobe.marketing.mobile.edge.media.Media;
+import com.adobe.marketing.mobile.edge.media.MediaTracker;
 import com.adobe.marketing.mobile.services.Log;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -23,71 +27,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-class MediaTrackerEventGenerator implements MediaTracker {
-
-    private static final String EXTENSION_LOG_TAG = "Edge Media Analytics";
-    private static final String LOG_TAG = "MediaTracker";
-    private static final String EVENT_SOURCE_TRACKER_REQUEST =
-            "com.adobe.eventsource.media.requesttracker";
-    private static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
-
-    private static class EventDataKeys {
-        private EventDataKeys() {}
-
-        // Event Data Key Constants - Tracker
-        static final class Tracker {
-            private Tracker() {}
-
-            static final String ID = "trackerid";
-            static final String SESSION_ID = "sessionid";
-            static final String EVENT_NAME = "event.name";
-            static final String EVENT_PARAM = "event.param";
-            static final String EVENT_METADATA = "event.metadata";
-            static final String EVENT_TIMESTAMP = "event.timestamp";
-            static final String EVENT_INTERNAL = "event.internal";
-            static final String PLAYHEAD = "time.playhead";
-        }
-
-        // Event Data Key Constants - EventName
-        static final class MediaEventName {
-            private MediaEventName() {}
-
-            static final String SESSION_START = "sessionstart";
-            static final String SESSION_END = "sessionend";
-            static final String PLAY = "play";
-            static final String PAUSE = "pause";
-            static final String COMPLETE = "complete";
-            static final String BUFFER_START = "bufferstart";
-            static final String BUFFER_COMPLETE = "buffercomplete";
-            static final String SEEK_START = "seekstart";
-            static final String SEEK_COMPLETE = "seekcomplete";
-            static final String AD_START = "adstart";
-            static final String AD_COMPLETE = "adcomplete";
-            static final String AD_SKIP = "adskip";
-            static final String ADBREAK_START = "adbreakstart";
-            static final String ADBREAK_COMPLETE = "adbreakcomplete";
-            static final String CHAPTER_START = "chapterstart";
-            static final String CHAPTER_COMPLETE = "chaptercomplete";
-            static final String CHAPTER_SKIP = "chapterskip";
-            static final String BITRATE_CHANGE = "bitratechange";
-            static final String ERROR = "error";
-            static final String QOE_UPDATE = "qoeupdate";
-            static final String PLAYHEAD_UPDATE = "playheadupdate";
-            static final String STATE_START = "statestart";
-            static final String STATE_END = "stateend";
-        }
-
-        static final class ErrorInfo {
-            private ErrorInfo() {}
-
-            static final String ID = "error.id";
-        }
-    }
+public class MediaTrackerEventGenerator implements MediaTracker {
+    private static final String SOURCE_TAG = "MediaTrackerEventGenerator";
 
     private static final int TICK_INTERVAL_MS = 750;
     private static final int EVENT_TIMEOUT_MS = 500;
     private final AdobeCallback<Event> eventConsumer;
-    private final Map<String, Object> config;
     private final String trackerId;
     private String sessionId;
     private boolean inSession;
@@ -95,11 +40,8 @@ class MediaTrackerEventGenerator implements MediaTracker {
     private long lastEventTS;
     private Map<String, Object> lastPlayheadParams;
 
-    MediaTrackerEventGenerator(
-            final Map<String, Object> config,
-            final String trackerId,
-            final AdobeCallback<Event> eventConsumer) {
-        this.config = config;
+    @VisibleForTesting
+    MediaTrackerEventGenerator(final String trackerId, final AdobeCallback<Event> eventConsumer) {
         this.eventConsumer = eventConsumer;
         this.trackerId = trackerId;
         this.sessionId = getUniqueId();
@@ -120,8 +62,8 @@ class MediaTrackerEventGenerator implements MediaTracker {
                 } else {
                     // we just expect String and boolean config params
                     Log.debug(
-                            EXTENSION_LOG_TAG,
                             LOG_TAG,
+                            SOURCE_TAG,
                             "create - Unsupported config key:%s valueType:%s",
                             entry.getKey(),
                             entry.getValue().getClass().toString());
@@ -134,21 +76,18 @@ class MediaTrackerEventGenerator implements MediaTracker {
         eventData.put(EventDataKeys.Tracker.EVENT_PARAM, cleanedConfig);
         Event event =
                 new Event.Builder(
-                                "Media::CreateTrackerRequest",
-                                EventType.MEDIA,
-                                EVENT_SOURCE_TRACKER_REQUEST)
+                                "Edge Media CreateTrackerRequest",
+                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                                MediaInternalConstants.Media.EVENT_SOURCE_TRACKER_REQUEST)
                         .setEventData(eventData)
                         .build();
 
         eventConsumer.call(event);
-        Log.debug(
-                EXTENSION_LOG_TAG,
-                LOG_TAG,
-                "create - Tracker request event was sent to event hub.");
+        Log.debug(LOG_TAG, SOURCE_TAG, "create - Tracker request event was sent to event hub.");
 
         // We have sent a request to media extension to create a tracker.
-        // We can now return MediaTrackeCore which sends all the tracker events to the event hub.
-        return new MediaTrackerEventGenerator(cleanedConfig, trackerId, eventConsumer);
+        // We can now return MediaTrackerCore which sends all the tracker events to the event hub.
+        return new MediaTrackerEventGenerator(trackerId, eventConsumer);
     }
 
     private static synchronized String getUniqueId() {
@@ -254,7 +193,10 @@ class MediaTrackerEventGenerator implements MediaTracker {
         eventData.put(EventDataKeys.Tracker.EVENT_TIMESTAMP, ts);
 
         Event event =
-                new Event.Builder("Media::TrackMedia", EventType.MEDIA, EVENT_SOURCE_TRACK_MEDIA)
+                new Event.Builder(
+                                "Edge Media TrackMedia",
+                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
+                                MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(eventData)
                         .build();
         eventConsumer.call(event);
