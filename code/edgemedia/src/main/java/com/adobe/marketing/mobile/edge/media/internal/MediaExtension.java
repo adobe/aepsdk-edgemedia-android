@@ -35,7 +35,7 @@ public class MediaExtension extends Extension {
 
     private static final String SOURCE_TAG = "MediaExtension";
 
-    @VisibleForTesting protected final Map<String, MediaTrackerInterface> trackers;
+    @VisibleForTesting protected final Map<String, MediaEventTracking> trackers;
 
     @VisibleForTesting protected MediaEventProcessor mediaEventProcessor;
 
@@ -212,7 +212,7 @@ public class MediaExtension extends Extension {
             return;
         }
 
-        MediaTrackerInterface tracker = trackers.get(trackerId);
+        MediaEventTracking tracker = trackers.get(trackerId);
 
         if (tracker == null) {
             Log.debug(

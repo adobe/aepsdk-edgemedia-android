@@ -79,7 +79,7 @@ public class MediaExtensionTests {
 
     @Test
     public void testMediaTrackWithTrackerPresent() {
-        MediaTrackerInterface tracker = mock(MediaTrackerInterface.class);
+        MediaEventTracking tracker = mock(MediaEventTracking.class);
         mediaExtension.trackers.put("key", tracker);
 
         Event event =
@@ -132,7 +132,7 @@ public class MediaExtensionTests {
 
     @Test
     public void testRequestReset_deletesTrackers_abortsSessions() {
-        MediaTrackerInterface tracker = mock(MediaTrackerInterface.class);
+        MediaEventTracking tracker = mock(MediaEventTracking.class);
         mediaExtension.trackers.put("key", tracker);
         Event event =
                 new Event.Builder("", EventType.GENERIC_IDENTITY, EventSource.REQUEST_RESET)
