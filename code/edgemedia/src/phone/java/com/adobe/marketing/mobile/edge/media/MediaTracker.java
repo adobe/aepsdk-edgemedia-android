@@ -11,9 +11,9 @@
 
 package com.adobe.marketing.mobile.edge.media;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface MediaTracker {
     /**
@@ -23,7 +23,7 @@ public interface MediaTracker {
      * @param contextData a map containing the context data to be tracked.
      */
     void trackSessionStart(
-            @NotNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
+            @NonNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
 
     /** Video playback tracking method to track Video Play triggers VIDEO_PLAY event */
     void trackPlay();
@@ -48,7 +48,7 @@ public interface MediaTracker {
      *
      * @param errorId Error Id
      */
-    void trackError(@NotNull String errorId);
+    void trackError(@NonNull String errorId);
 
     /**
      * Video playback tracking method to track an event
@@ -58,7 +58,7 @@ public interface MediaTracker {
      * @param contextData a Map containing the context data to be tracked.
      */
     void trackEvent(
-            @NotNull Media.Event event,
+            @NonNull Media.Event event,
             @Nullable Map<String, Object> info,
             @Nullable Map<String, String> contextData);
 
@@ -69,7 +69,7 @@ public interface MediaTracker {
      *     multiple times during a playback session. Player implementation must always return the
      *     most recently available QoS data.
      */
-    void updateQoEObject(@NotNull Map<String, Object> qoeData);
+    void updateQoEObject(@NonNull Map<String, Object> qoeData);
 
     /**
      * Method to update current playhead.

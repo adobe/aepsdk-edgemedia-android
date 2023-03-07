@@ -14,6 +14,8 @@ package com.adobe.marketing.mobile.edge.media.internal;
 import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.EventDataKeys;
 import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
@@ -95,7 +97,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
     }
 
     public void trackSessionStart(
-            final Map<String, Object> info, final Map<String, String> metadata) {
+            @NonNull final Map<String, Object> info, @Nullable final Map<String, String> metadata) {
         trackInternal(EventDataKeys.MediaEventName.SESSION_START, info, metadata);
     }
 
@@ -115,16 +117,16 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         trackInternal(EventDataKeys.MediaEventName.SESSION_END);
     }
 
-    public void trackError(final String errorId) {
+    public void trackError(@NonNull final String errorId) {
         Map<String, Object> params = new HashMap<>();
         params.put(EventDataKeys.ErrorInfo.ID, errorId);
         trackInternal(EventDataKeys.MediaEventName.ERROR, params, null);
     }
 
     public void trackEvent(
-            final Media.Event event,
-            final Map<String, Object> info,
-            final Map<String, String> metadata) {
+            @NonNull final Media.Event event,
+            @Nullable final Map<String, Object> info,
+            @Nullable final Map<String, String> metadata) {
         trackInternal(eventToString(event), info, metadata);
     }
 
@@ -134,7 +136,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         trackInternal(EventDataKeys.MediaEventName.PLAYHEAD_UPDATE, params, null);
     }
 
-    public void updateQoEObject(final Map<String, Object> qoeInfo) {
+    public void updateQoEObject(@NonNull final Map<String, Object> qoeInfo) {
         trackInternal(EventDataKeys.MediaEventName.QOE_UPDATE, qoeInfo, null);
     }
 
