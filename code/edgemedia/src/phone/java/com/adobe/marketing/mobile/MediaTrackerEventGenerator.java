@@ -22,7 +22,7 @@ import java.util.UUID;
 
 class MediaTrackerEventGenerator implements MediaTracker {
 
-    private static final String EXTENSION_LOG_TAG = "Media";
+    private static final String EXTENSION_LOG_TAG = "Edge Media Analytics";
     private static final String LOG_TAG = "MediaTracker";
     private static final String EVENT_SOURCE_TRACKER_REQUEST =
             "com.adobe.eventsource.media.requesttracker";
