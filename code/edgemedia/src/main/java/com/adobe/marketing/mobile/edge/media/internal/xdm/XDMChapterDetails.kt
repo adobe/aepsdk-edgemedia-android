@@ -11,11 +11,12 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMChapterDetails : XDMProperty {
-    var friendlyName: String? = null
-    var index: Long? = null
-    var length: Long? = null
+data class XDMChapterDetails(
+    var friendlyName: String? = null,
+    var index: Long? = null,
+    var length: Long? = null,
     var offset: Long? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

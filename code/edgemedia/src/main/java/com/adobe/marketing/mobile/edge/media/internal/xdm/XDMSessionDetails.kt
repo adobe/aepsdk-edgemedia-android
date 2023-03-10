@@ -11,50 +11,51 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMSessionDetails : XDMProperty {
+data class XDMSessionDetails(
     // Required fields sourced from APIs
-    var contentType: String? = null
-    var name: String? = null
-    var friendlyName: String? = null
-    var hasResume: Boolean? = null
-    var length: Long? = null
-    var streamType: XDMStreamType? = null
+    var contentType: String? = null,
+    var name: String? = null,
+    var friendlyName: String? = null,
+    var hasResume: Boolean? = null,
+    var length: Long? = null,
+    var streamType: XDMStreamType? = null,
 
     // Required fields sourced from media configuration
-    var channel: String? = null
-    var playerName: String? = null
+    var channel: String? = null,
+    var playerName: String? = null,
 
     // Optional field sourced from media configuration
-    var appVersion: String? = null
+    var appVersion: String? = null,
 
     // Optional metadata fields
     // Audio Standard Metadata
-    var album: String? = null
-    var artist: String? = null
-    var author: String? = null
-    var label: String? = null
-    var publisher: String? = null
-    var station: String? = null
+    var album: String? = null,
+    var artist: String? = null,
+    var author: String? = null,
+    var label: String? = null,
+    var publisher: String? = null,
+    var station: String? = null,
 
     // Video Standard Metadata
-    var adLoad: String? = null
-    var authorized: String? = null
-    var assetID: String? = null
-    var dayPart: String? = null
-    var episode: String? = null
-    var feed: String? = null
-    var firstAirDate: String? = null
-    var firstDigitalDate: String? = null
-    var genre: String? = null
-    var mvpd: String? = null
-    var network: String? = null
-    var originator: String? = null
-    var rating: String? = null
-    var season: String? = null
-    var segment: String? = null
-    var show: String? = null
-    var showType: String? = null
+    var adLoad: String? = null,
+    var authorized: String? = null,
+    var assetID: String? = null,
+    var dayPart: String? = null,
+    var episode: String? = null,
+    var feed: String? = null,
+    var firstAirDate: String? = null,
+    var firstDigitalDate: String? = null,
+    var genre: String? = null,
+    var mvpd: String? = null,
+    var network: String? = null,
+    var originator: String? = null,
+    var rating: String? = null,
+    var season: String? = null,
+    var segment: String? = null,
+    var show: String? = null,
+    var showType: String? = null,
     var streamFormat: String? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

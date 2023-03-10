@@ -11,9 +11,10 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMErrorDetails : XDMProperty {
-    var name: String? = null
+data class XDMErrorDetails(
+    var name: String? = null,
     var source: String? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

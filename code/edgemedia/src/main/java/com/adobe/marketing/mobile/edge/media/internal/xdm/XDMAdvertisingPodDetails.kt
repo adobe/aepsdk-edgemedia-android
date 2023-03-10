@@ -11,10 +11,11 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMAdvertisingPodDetails : XDMProperty {
-    var friendlyName: String? = null
-    var index: Long? = null
+data class XDMAdvertisingPodDetails(
+    var friendlyName: String? = null,
+    var index: Long? = null,
     var offset: Long? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

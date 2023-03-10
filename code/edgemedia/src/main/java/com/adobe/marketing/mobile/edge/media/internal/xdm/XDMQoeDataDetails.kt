@@ -11,11 +11,12 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMQoeDataDetails : XDMProperty {
-    var bitrate: Long? = null
-    var droppedFrames: Long? = null
-    var framesPerSecond: Long? = null
+data class XDMQoeDataDetails(
+    var bitrate: Long? = null,
+    var droppedFrames: Long? = null,
+    var framesPerSecond: Long? = null,
     var timeToStart: Long? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

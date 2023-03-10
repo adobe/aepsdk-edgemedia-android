@@ -11,18 +11,19 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMAdvertisingDetails : XDMProperty {
-    var friendlyName: String? = null
-    var length: Long? = null
-    var name: String? = null
-    var podPosition: Long? = null
-    var playerName: String? = null
-    var advertiser: String? = null
-    var campaignID: String? = null
-    var creativeID: String? = null
-    var creativeURL: String? = null
-    var placementID: String? = null
+data class XDMAdvertisingDetails(
+    var friendlyName: String? = null,
+    var length: Long? = null,
+    var name: String? = null,
+    var podPosition: Long? = null,
+    var playerName: String? = null,
+    var advertiser: String? = null,
+    var campaignID: String? = null,
+    var creativeID: String? = null,
+    var creativeURL: String? = null,
+    var placementID: String? = null,
     var siteID: String? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

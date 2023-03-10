@@ -11,9 +11,10 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMCustomMetadata : XDMProperty {
-    var name: String? = null
+data class XDMCustomMetadata(
+    var name: String? = null,
     var value: String? = null
+) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()

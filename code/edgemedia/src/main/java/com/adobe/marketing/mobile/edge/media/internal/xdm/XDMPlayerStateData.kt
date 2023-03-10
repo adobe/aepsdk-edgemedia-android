@@ -11,8 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-class XDMPlayerStateData : XDMProperty {
-    var name: String? = null
+data class XDMPlayerStateData(var name: String? = null) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
