@@ -11,9 +11,6 @@
 
 package com.adobe.marketing.mobile.edge.media.internal;
 
-import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.EventDataKeys;
-import static com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -64,7 +61,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
                 } else {
                     // we just expect String and boolean config params
                     Log.debug(
-                            LOG_TAG,
+                            MediaInternalConstants.LOG_TAG,
                             SOURCE_TAG,
                             "create - Unsupported config key:%s valueType:%s",
                             entry.getKey(),
@@ -74,8 +71,8 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         }
 
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put(EventDataKeys.Tracker.ID, trackerId);
-        eventData.put(EventDataKeys.Tracker.EVENT_PARAM, cleanedConfig);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.ID, trackerId);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM, cleanedConfig);
         Event event =
                 new Event.Builder(
                                 "Edge Media CreateTrackerRequest",
@@ -85,7 +82,10 @@ public class MediaTrackerEventGenerator implements MediaTracker {
                         .build();
 
         eventConsumer.call(event);
-        Log.debug(LOG_TAG, SOURCE_TAG, "create - Tracker request event was sent to event hub.");
+        Log.debug(
+                MediaInternalConstants.LOG_TAG,
+                SOURCE_TAG,
+                "create - Tracker request event was sent to event hub.");
 
         // We have sent a request to media extension to create a tracker.
         // We can now return MediaTrackerCore which sends all the tracker events to the event hub.
@@ -98,29 +98,30 @@ public class MediaTrackerEventGenerator implements MediaTracker {
 
     public void trackSessionStart(
             @NonNull final Map<String, Object> info, @Nullable final Map<String, String> metadata) {
-        trackInternal(EventDataKeys.MediaEventName.SESSION_START, info, metadata);
+        trackInternal(
+                MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_START, info, metadata);
     }
 
     public void trackPlay() {
-        trackInternal(EventDataKeys.MediaEventName.PLAY);
+        trackInternal(MediaInternalConstants.EventDataKeys.MediaEventName.PLAY);
     }
 
     public void trackPause() {
-        trackInternal(EventDataKeys.MediaEventName.PAUSE);
+        trackInternal(MediaInternalConstants.EventDataKeys.MediaEventName.PAUSE);
     }
 
     public void trackComplete() {
-        trackInternal(EventDataKeys.MediaEventName.COMPLETE);
+        trackInternal(MediaInternalConstants.EventDataKeys.MediaEventName.COMPLETE);
     }
 
     public void trackSessionEnd() {
-        trackInternal(EventDataKeys.MediaEventName.SESSION_END);
+        trackInternal(MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_END);
     }
 
     public void trackError(@NonNull final String errorId) {
         Map<String, Object> params = new HashMap<>();
-        params.put(EventDataKeys.ErrorInfo.ID, errorId);
-        trackInternal(EventDataKeys.MediaEventName.ERROR, params, null);
+        params.put(MediaInternalConstants.EventDataKeys.ErrorInfo.ID, errorId);
+        trackInternal(MediaInternalConstants.EventDataKeys.MediaEventName.ERROR, params, null);
     }
 
     public void trackEvent(
@@ -132,12 +133,14 @@ public class MediaTrackerEventGenerator implements MediaTracker {
 
     public void updateCurrentPlayhead(final double playheadValue) {
         Map<String, Object> params = new HashMap<>();
-        params.put(EventDataKeys.Tracker.PLAYHEAD, playheadValue);
-        trackInternal(EventDataKeys.MediaEventName.PLAYHEAD_UPDATE, params, null);
+        params.put(MediaInternalConstants.EventDataKeys.Tracker.PLAYHEAD, playheadValue);
+        trackInternal(
+                MediaInternalConstants.EventDataKeys.MediaEventName.PLAYHEAD_UPDATE, params, null);
     }
 
     public void updateQoEObject(@NonNull final Map<String, Object> qoeInfo) {
-        trackInternal(EventDataKeys.MediaEventName.QOE_UPDATE, qoeInfo, null);
+        trackInternal(
+                MediaInternalConstants.EventDataKeys.MediaEventName.QOE_UPDATE, qoeInfo, null);
     }
 
     void trackInternal(final String eventName) {
@@ -163,7 +166,8 @@ public class MediaTrackerEventGenerator implements MediaTracker {
 
         // Internal Tracker starts a new session only when we are not in an active session and we
         // follow the same.
-        if (eventName.equals(EventDataKeys.MediaEventName.SESSION_START) && params != null) {
+        if (eventName.equals(MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_START)
+                && params != null) {
             boolean isValidSessionStart = MediaObject.isValidMediaInfo(params);
 
             if (!inSession && isValidSessionStart) {
@@ -171,28 +175,28 @@ public class MediaTrackerEventGenerator implements MediaTracker {
                 inSession = true;
                 startTimer();
             }
-        } else if (eventName.equals(EventDataKeys.MediaEventName.SESSION_END)
-                || eventName.equals(EventDataKeys.MediaEventName.COMPLETE)) {
+        } else if (eventName.equals(MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_END)
+                || eventName.equals(MediaInternalConstants.EventDataKeys.MediaEventName.COMPLETE)) {
             inSession = false;
             stopTimer();
         }
 
         Map<String, Object> eventData = new HashMap<>();
-        eventData.put(EventDataKeys.Tracker.ID, trackerId);
-        eventData.put(EventDataKeys.Tracker.SESSION_ID, sessionId);
-        eventData.put(EventDataKeys.Tracker.EVENT_NAME, eventName);
-        eventData.put(EventDataKeys.Tracker.EVENT_INTERNAL, internalEvent);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.ID, trackerId);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.SESSION_ID, sessionId);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_NAME, eventName);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_INTERNAL, internalEvent);
 
         if (params != null) {
-            eventData.put(EventDataKeys.Tracker.EVENT_PARAM, params);
+            eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM, params);
         }
 
         if (metadata != null) {
-            eventData.put(EventDataKeys.Tracker.EVENT_METADATA, metadata);
+            eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_METADATA, metadata);
         }
 
         long ts = getCurrentTimestamp();
-        eventData.put(EventDataKeys.Tracker.EVENT_TIMESTAMP, ts);
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_TIMESTAMP, ts);
 
         Event event =
                 new Event.Builder(
@@ -205,7 +209,8 @@ public class MediaTrackerEventGenerator implements MediaTracker {
 
         lastEventTS = ts;
 
-        if (eventName.equals(EventDataKeys.MediaEventName.PLAYHEAD_UPDATE) && params != null) {
+        if (eventName.equals(MediaInternalConstants.EventDataKeys.MediaEventName.PLAYHEAD_UPDATE)
+                && params != null) {
             lastPlayheadParams = new HashMap<>(params);
         }
     }
@@ -222,7 +227,10 @@ public class MediaTrackerEventGenerator implements MediaTracker {
             // We manually send an event to keep our internal processing alive (idle tracking / ping
             // processing).
             trackInternal(
-                    EventDataKeys.MediaEventName.PLAYHEAD_UPDATE, lastPlayheadParams, null, true);
+                    MediaInternalConstants.EventDataKeys.MediaEventName.PLAYHEAD_UPDATE,
+                    lastPlayheadParams,
+                    null,
+                    true);
         }
     }
 
@@ -253,49 +261,49 @@ public class MediaTrackerEventGenerator implements MediaTracker {
     private String eventToString(final Media.Event event) {
         switch (event) {
             case AdBreakStart:
-                return EventDataKeys.MediaEventName.ADBREAK_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.ADBREAK_START;
 
             case AdBreakComplete:
-                return EventDataKeys.MediaEventName.ADBREAK_COMPLETE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.ADBREAK_COMPLETE;
 
             case AdStart:
-                return EventDataKeys.MediaEventName.AD_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.AD_START;
 
             case AdComplete:
-                return EventDataKeys.MediaEventName.AD_COMPLETE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.AD_COMPLETE;
 
             case AdSkip:
-                return EventDataKeys.MediaEventName.AD_SKIP;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.AD_SKIP;
 
             case ChapterStart:
-                return EventDataKeys.MediaEventName.CHAPTER_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_START;
 
             case ChapterComplete:
-                return EventDataKeys.MediaEventName.CHAPTER_COMPLETE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_COMPLETE;
 
             case ChapterSkip:
-                return EventDataKeys.MediaEventName.CHAPTER_SKIP;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_SKIP;
 
             case SeekStart:
-                return EventDataKeys.MediaEventName.SEEK_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.SEEK_START;
 
             case SeekComplete:
-                return EventDataKeys.MediaEventName.SEEK_COMPLETE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.SEEK_COMPLETE;
 
             case BufferStart:
-                return EventDataKeys.MediaEventName.BUFFER_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.BUFFER_START;
 
             case BufferComplete:
-                return EventDataKeys.MediaEventName.BUFFER_COMPLETE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.BUFFER_COMPLETE;
 
             case BitrateChange:
-                return EventDataKeys.MediaEventName.BITRATE_CHANGE;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.BITRATE_CHANGE;
 
             case StateStart:
-                return EventDataKeys.MediaEventName.STATE_START;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.STATE_START;
 
             case StateEnd:
-                return EventDataKeys.MediaEventName.STATE_END;
+                return MediaInternalConstants.EventDataKeys.MediaEventName.STATE_END;
 
             default:
                 return "";
