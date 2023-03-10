@@ -449,7 +449,7 @@ class XDMPropertyTests {
         mediaCollection.chapterDetails = chapterDetails
         mediaCollection.customMetadata = customMetadata
         mediaCollection.errorDetails = errorDetails
-        mediaCollection.playHead = 123
+        mediaCollection.playhead = 123
         mediaCollection.qoeDataDetails = qoeDataDetails
         mediaCollection.sessionDetails = sessionDetails
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -463,7 +463,7 @@ class XDMPropertyTests {
             "chapterDetails" to expectedChapterDetails,
             "customMetadata" to expectedCustomMetadata,
             "errorDetails" to expectedErrorDetails,
-            "playHead" to 123L,
+            "playhead" to 123L,
             "qoeDataDetails" to expectedQoeDataDetails,
             "sessionDetails" to expectedSessionDetails,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
@@ -481,13 +481,13 @@ class XDMPropertyTests {
         val (sessionDetails, expectedSessionDetails) = getSampleSessionDetails()
 
         val mediaCollection = XDMMediaCollection()
-        mediaCollection.playHead = 0
+        mediaCollection.playhead = 0
         mediaCollection.sessionDetails = sessionDetails
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
-            "playHead" to 0L,
+            "playhead" to 0L,
             "sessionDetails" to expectedSessionDetails,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
@@ -501,13 +501,13 @@ class XDMPropertyTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.advertisingPodDetails = advertisingPodDetails
-        mediaCollection.playHead = 0
+        mediaCollection.playhead = 0
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
             "advertisingPodDetails" to expectedAdvertisingPodDetails,
-            "playHead" to 0L,
+            "playhead" to 0L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -520,13 +520,13 @@ class XDMPropertyTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.advertisingDetails = advertisingDetails
-        mediaCollection.playHead = 123
+        mediaCollection.playhead = 123
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
             "advertisingDetails" to expectedAdvertisingDetails,
-            "playHead" to 123L,
+            "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -539,13 +539,13 @@ class XDMPropertyTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.chapterDetails = chapterDetails
-        mediaCollection.playHead = 123
+        mediaCollection.playhead = 123
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
             "chapterDetails" to expectedChapterDetails,
-            "playHead" to 123L,
+            "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -557,13 +557,13 @@ class XDMPropertyTests {
         val (playerStateData, expectedPlayerStateData) = getSamplePlayerStateData()
 
         val mediaCollection = XDMMediaCollection()
-        mediaCollection.playHead = 123
+        mediaCollection.playhead = 123
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         mediaCollection.statesStart = playerStateData
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
-            "playHead" to 123L,
+            "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesStart" to expectedPlayerStateData
         )
@@ -576,13 +576,13 @@ class XDMPropertyTests {
         val (playerStateData, expectedPlayerStateData) = getSamplePlayerStateData()
 
         val mediaCollection = XDMMediaCollection()
-        mediaCollection.playHead = 123
+        mediaCollection.playhead = 123
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         mediaCollection.statesEnd = playerStateData
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf<String, Any>(
-            "playHead" to 123L,
+            "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesEnd" to expectedPlayerStateData
         )
