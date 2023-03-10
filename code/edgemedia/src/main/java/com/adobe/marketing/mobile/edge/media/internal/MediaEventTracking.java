@@ -13,6 +13,6 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 import com.adobe.marketing.mobile.Event;
 
-interface MediaTrackerInterface {
+interface MediaEventTracking {
     boolean track(Event event);
 }

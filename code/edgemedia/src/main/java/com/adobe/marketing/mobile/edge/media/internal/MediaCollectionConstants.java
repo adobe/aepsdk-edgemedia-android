@@ -16,7 +16,7 @@ class MediaCollectionConstants {
     private MediaCollectionConstants() {}
 
     static final String MEDIA_LIBRARY_VERSION =
-            "android-media-" + com.adobe.marketing.mobile.Media.extensionVersion();
+            "android-media-" + com.adobe.marketing.mobile.edge.media.Media.extensionVersion();
 
     static final class EventType {
         private EventType() {}

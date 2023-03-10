@@ -19,9 +19,9 @@ import com.adobe.marketing.mobile.EventSource;
 import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.ExtensionApi;
-import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.SharedStateResolution;
 import com.adobe.marketing.mobile.SharedStateResult;
+import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.MapUtils;
@@ -35,7 +35,7 @@ public class MediaExtension extends Extension {
 
     private static final String SOURCE_TAG = "MediaExtension";
 
-    @VisibleForTesting protected final Map<String, MediaTrackerInterface> trackers;
+    @VisibleForTesting protected final Map<String, MediaEventTracking> trackers;
 
     @VisibleForTesting protected MediaEventProcessor mediaEventProcessor;
 
@@ -68,11 +68,11 @@ public class MediaExtension extends Extension {
                         EventSource.REQUEST_RESET,
                         this::handleResetIdentities);
         getApi().registerEventListener(
-                        EventType.MEDIA,
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                         MediaInternalConstants.Media.EVENT_SOURCE_TRACKER_REQUEST,
                         this::handleMediaTrackerRequestEvent);
         getApi().registerEventListener(
-                        EventType.MEDIA,
+                        MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
                         MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA,
                         this::handleMediaTrackEvent);
         getApi().registerEventListener(
@@ -81,7 +81,7 @@ public class MediaExtension extends Extension {
                         this::handleMediaEdgeSessionDetails);
         getApi().registerEventListener(
                         EventType.EDGE,
-                        MediaInternalConstants.Media.EVENT_SOURCE_EDGE_ERROR_RESPONSE,
+                        EventSource.ERROR_RESPONSE_CONTENT,
                         this::handleEdgeErrorResponse);
         getApi().registerEventListener(
                         EventType.CONFIGURATION,
@@ -212,7 +212,7 @@ public class MediaExtension extends Extension {
             return;
         }
 
-        MediaTrackerInterface tracker = trackers.get(trackerId);
+        MediaEventTracking tracker = trackers.get(trackerId);
 
         if (tracker == null) {
             Log.debug(

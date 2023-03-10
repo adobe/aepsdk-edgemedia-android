@@ -9,8 +9,10 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile;
+package com.adobe.marketing.mobile.edge.media.internal;
 
+import com.adobe.marketing.mobile.AdobeCallback;
+import com.adobe.marketing.mobile.Event;
 import java.util.Calendar;
 import java.util.Map;
 
@@ -31,24 +33,19 @@ class EventCollector implements AdobeCallback<Event> {
     }
 }
 
-public class TestMediaTrackerEventGenerator extends MediaTrackerEventGenerator {
+public class TestMediaPublicTracker extends MediaPublicTracker {
     private long userTS = 0;
     private boolean useUserTS;
     EventCollector eventCollector;
 
-    public static TestMediaTrackerEventGenerator create(
-            final Map<String, Object> config, final String trackerID, final boolean doUseUserTS) {
+    public static TestMediaPublicTracker create(final String trackerID, final boolean doUseUserTS) {
 
-        return new TestMediaTrackerEventGenerator(
-                config, trackerID, doUseUserTS, new EventCollector());
+        return new TestMediaPublicTracker(trackerID, doUseUserTS, new EventCollector());
     }
 
-    TestMediaTrackerEventGenerator(
-            Map<String, Object> config,
-            String trackerId,
-            final boolean useUserTS,
-            EventCollector eventCollector) {
-        super(config, trackerId, eventCollector);
+    TestMediaPublicTracker(
+            String trackerId, final boolean useUserTS, EventCollector eventCollector) {
+        super(trackerId, eventCollector);
         this.eventCollector = eventCollector;
         this.useUserTS = useUserTS;
     }

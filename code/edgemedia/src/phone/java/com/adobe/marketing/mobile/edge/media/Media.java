@@ -9,14 +9,19 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile;
+package com.adobe.marketing.mobile.edge.media;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.adobe.marketing.mobile.AdobeCallback;
+import com.adobe.marketing.mobile.Extension;
+import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.media.internal.MediaExtension;
 import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
+import com.adobe.marketing.mobile.edge.media.internal.MediaPublicTracker;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Media {
     private static final String EXTENSION_VERSION = "2.0.0";
@@ -29,7 +34,7 @@ public class Media {
      * Registers the extension with the Mobile SDK. This method should be called only once in your
      * application class.
      *
-     * @deprecated as of 3.0.0, use {@link MobileCore#registerExtensions(List, AdobeCallback)} with
+     * @deprecated as of 2.0.0, use {@link MobileCore#registerExtensions(List, AdobeCallback)} with
      *     {@link Media#EXTENSION} instead.
      */
     @Deprecated
@@ -42,7 +47,7 @@ public class Media {
      *
      * @return a media tracker instance
      */
-    public static @NotNull MediaTracker createTracker() {
+    public static @NonNull MediaTracker createTracker() {
         return createTracker((Map<String, Object>) null);
     }
 
@@ -53,8 +58,8 @@ public class Media {
      * @param config optional configuration
      * @return A media tracker instance based on configuration
      */
-    public static @NotNull MediaTracker createTracker(@Nullable final Map<String, Object> config) {
-        return MediaTrackerEventGenerator.create(config, MobileCore::dispatchEvent);
+    public static @NonNull MediaTracker createTracker(@Nullable final Map<String, Object> config) {
+        return MediaPublicTracker.create(config, MobileCore::dispatchEvent);
     }
 
     /**
@@ -64,7 +69,7 @@ public class Media {
      *     deprecated
      */
     @Deprecated
-    public static void createTracker(@NotNull final AdobeCallback<MediaTracker> callback) {
+    public static void createTracker(@NonNull final AdobeCallback<MediaTracker> callback) {
         MediaTracker tracker = createTracker((Map<String, Object>) null);
         callback.call(tracker);
     }
@@ -78,7 +83,7 @@ public class Media {
     @Deprecated
     public static void createTracker(
             @Nullable final Map<String, Object> config,
-            @NotNull final AdobeCallback<MediaTracker> callback) {
+            @NonNull final AdobeCallback<MediaTracker> callback) {
         MediaTracker tracker = createTracker(config);
         callback.call(tracker);
     }
@@ -88,7 +93,7 @@ public class Media {
      *
      * @return The version string
      */
-    public static @NotNull String extensionVersion() {
+    public static @NonNull String extensionVersion() {
         return EXTENSION_VERSION;
     }
 
@@ -103,12 +108,12 @@ public class Media {
      * @param mediaType Mediatype
      * @return A MediaObject instance representing the media.
      */
-    @NotNull public static HashMap<String, Object> createMediaObject(
-            @NotNull final String name,
-            @NotNull final String mediaId,
+    @NonNull public static HashMap<String, Object> createMediaObject(
+            @NonNull final String name,
+            @NonNull final String mediaId,
             final double length,
-            @NotNull final String streamType,
-            @NotNull final MediaType mediaType) {
+            @NonNull final String streamType,
+            @NonNull final MediaType mediaType) {
         return MediaObject.createMediaInfo(mediaId, name, streamType, mediaType, length);
     }
 
@@ -120,8 +125,8 @@ public class Media {
      * @param startTime The start time of the ad break relative to the main media
      * @return A MediaObject instance representing the AdBreak.
      */
-    @NotNull public static HashMap<String, Object> createAdBreakObject(
-            @NotNull final String name, final long position, final double startTime) {
+    @NonNull public static HashMap<String, Object> createAdBreakObject(
+            @NonNull final String name, final long position, final double startTime) {
         return MediaObject.createAdBreakInfo(name, position, startTime);
     }
 
@@ -134,9 +139,9 @@ public class Media {
      * @param length The length of the ad in seconds
      * @return A MediaObject instance representing the Ad.
      */
-    @NotNull public static HashMap<String, Object> createAdObject(
-            @NotNull final String name,
-            @NotNull final String adId,
+    @NonNull public static HashMap<String, Object> createAdObject(
+            @NonNull final String name,
+            @NonNull final String adId,
             final long position,
             final double length) {
         return MediaObject.createAdInfo(name, adId, position, length);
@@ -151,8 +156,8 @@ public class Media {
      * @param startTime The start of the chapter relative to the main media
      * @return A MediaObject instance representing the Chapter.
      */
-    @NotNull public static HashMap<String, Object> createChapterObject(
-            @NotNull final String name,
+    @NonNull public static HashMap<String, Object> createChapterObject(
+            @NonNull final String name,
             final long position,
             final double length,
             final double startTime) {
@@ -168,7 +173,7 @@ public class Media {
      * @param droppedFrames The number of dropped frames so far
      * @return A MediaObject instance representing the QoSObject.
      */
-    @NotNull public static HashMap<String, Object> createQoEObject(
+    @NonNull public static HashMap<String, Object> createQoEObject(
             final long bitrate,
             final double startupTime,
             final double fps,
@@ -182,7 +187,7 @@ public class Media {
      * @param stateName The bitrate of media in bits per second
      * @return A MediaObject instance representing the state.
      */
-    @NotNull public static HashMap<String, Object> createStateObject(@NotNull final String stateName) {
+    @NonNull public static HashMap<String, Object> createStateObject(@NonNull final String stateName) {
         return MediaObject.createStateInfo(stateName);
     }
 

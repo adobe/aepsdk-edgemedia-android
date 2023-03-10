@@ -12,9 +12,9 @@
 package com.adobe.mediaanalyticstestapp.analytics;
 
 import android.util.Log;
-import com.adobe.marketing.mobile.Media;
-import com.adobe.marketing.mobile.MediaConstants;
-import com.adobe.marketing.mobile.MediaTracker;
+import com.adobe.marketing.mobile.edge.media.Media;
+import com.adobe.marketing.mobile.edge.media.MediaConstants;
+import com.adobe.marketing.mobile.edge.media.MediaTracker;
 import com.adobe.mediaanalyticstestapp.Configuration;
 import com.adobe.mediaanalyticstestapp.player.*;
 import java.util.*;

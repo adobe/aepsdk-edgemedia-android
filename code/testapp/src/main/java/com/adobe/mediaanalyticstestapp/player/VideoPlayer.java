@@ -21,7 +21,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.MediaController;
-import com.adobe.marketing.mobile.MediaConstants;
+import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import com.adobe.mediaanalyticstestapp.Configuration;
 import com.adobe.mediaanalyticstestapp.R;
 import java.util.HashMap;

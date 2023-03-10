@@ -9,30 +9,30 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile;
+package com.adobe.marketing.mobile.edge.media;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface MediaTracker {
     /**
      * Tracking method to track the start of a viewing session.
      *
-     * @param mediaInfo A Map instance created using createMediaObjectWithName method
+     * @param mediaInfo A Map instance created using {@link Media#createMediaObject} method
      * @param contextData a map containing the context data to be tracked.
      */
     void trackSessionStart(
-            @NotNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
+            @NonNull Map<String, Object> mediaInfo, @Nullable Map<String, String> contextData);
 
-    /** Video playback tracking method to track Video Play triggers VIDEO_PLAY event */
+    /** Video playback tracking method to track Video Play triggers {@code play} event */
     void trackPlay();
 
-    /** Video playback tracking method to track Video Pause triggers VIDEO_PAUSE event */
+    /** Video playback tracking method to track Video Pause triggers {@code pause} event */
     void trackPause();
 
     /**
-     * Video playback tracking method to track Video Complete triggers VIDEO_COMPLETE event and
+     * Video playback tracking method to track Video Complete triggers {@coce complete} event and
      * calls back the callback method.
      */
     void trackComplete();
@@ -48,7 +48,7 @@ public interface MediaTracker {
      *
      * @param errorId Error Id
      */
-    void trackError(@NotNull String errorId);
+    void trackError(@NonNull String errorId);
 
     /**
      * Video playback tracking method to track an event
@@ -58,7 +58,7 @@ public interface MediaTracker {
      * @param contextData a Map containing the context data to be tracked.
      */
     void trackEvent(
-            @NotNull Media.Event event,
+            @NonNull Media.Event event,
             @Nullable Map<String, Object> info,
             @Nullable Map<String, String> contextData);
 
@@ -69,7 +69,7 @@ public interface MediaTracker {
      *     multiple times during a playback session. Player implementation must always return the
      *     most recently available QoS data.
      */
-    void updateQoEObject(@NotNull Map<String, Object> qoeData);
+    void updateQoEObject(@NonNull Map<String, Object> qoeData);
 
     /**
      * Method to update current playhead.

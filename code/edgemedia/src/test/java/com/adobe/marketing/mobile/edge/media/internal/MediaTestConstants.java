@@ -13,20 +13,14 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 public final class MediaTestConstants {
 
-    static final String STATE_OWNER = "stateowner";
-
     private MediaTestConstants() {}
 
     static final class Media {
-        static final String SHARED_STATE_NAME = "com.adobe.module.media";
-        static final String VERSION = "0.1";
-
-        static final String EVENT_TYPE = "com.adobe.eventtype.media";
-        static final String EVENT_SOURCE_TRACKER_REQUEST =
-                "com.adobe.eventsource.media.requesttracker";
-        static final String EVENT_SOURCE_TRACKER_RESPONSE =
-                "com.adobe.eventsource.media.responsetracker";
-        static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
+        static final String EVENT_TYPE = "com.adobe.eventType.edgeMedia";
+        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
+        static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventSource.trackMedia";
+        static final String EVENT_SOURCE_SESSION_CREATED = "com.adobe.eventSource.sessionCreated";
+        static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
 
         static final String MEDIA_TYPE_VIDEO = "video";
         static final String MEDIA_TYPE_AUDIO = "audio";
@@ -40,6 +34,14 @@ public final class MediaTestConstants {
         static final String MEDIA_APP_VERSION = "media.appVersion";
 
         private Configuration() {}
+    }
+
+    static final class Edge {
+        static final String REQUEST_EVENT_ID = "requestEventId";
+        static final String PAYLOAD = "payload";
+        static final String SESSION_ID = "sessionId";
+
+        private Edge() {}
     }
 
     static final class EventDataKeys {

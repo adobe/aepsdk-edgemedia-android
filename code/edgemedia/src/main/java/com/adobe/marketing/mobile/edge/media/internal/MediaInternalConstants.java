@@ -12,21 +12,19 @@
 package com.adobe.marketing.mobile.edge.media.internal;
 
 final class MediaInternalConstants {
-    static final String LOG_TAG = "Media";
     static final String EXTENSION_NAME = "com.adobe.edge.media";
-    static final String FRIENDLY_NAME = "Media";
+    static final String FRIENDLY_NAME = "Edge Media Analytics";
+    static final String LOG_TAG = FRIENDLY_NAME;
 
     private MediaInternalConstants() {}
 
     static final class Media {
-        static final String EVENT_SOURCE_TRACKER_REQUEST =
-                "com.adobe.eventsource.media.requesttracker";
-        static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventsource.media.trackmedia";
-        static final String EVENT_NAME_SESSION_CREATED =
-                "com.adobe.eventsource.media.sessioncreated";
+        // TODO - use EventType.EDGE_MEDIA when released
+        static final String EVENT_TYPE_EDGE_MEDIA = "com.adobe.eventType.edgeMedia";
+        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
+        static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventSource.trackMedia";
+        static final String EVENT_SOURCE_SESSION_CREATED = "com.adobe.eventSource.sessionCreated";
         static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
-        static final String EVENT_SOURCE_EDGE_ERROR_RESPONSE =
-                "com.adobe.eventSource.errorResponseContent";
 
         private Media() {}
     }

@@ -21,8 +21,7 @@ import static org.junit.Assert.fail;
 
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
-import com.adobe.marketing.mobile.Media;
-import com.adobe.marketing.mobile.TestMediaTrackerEventGenerator;
+import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.util.CloneFailedException;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.EventDataUtils;
@@ -43,7 +42,7 @@ public class MediaCollectionTrackerTests {
     QoEInfo qoeInfo;
     StateInfo state1;
     Map<String, String> metadata;
-    TestMediaTrackerEventGenerator mediaTrackerAPIEventGenertor;
+    TestMediaPublicTracker mediaTrackerAPIEventGenertor;
     MediaCollectionTracker tracker;
     Map<String, String> denylistMetadata;
     Map<String, String> cleanedMetadata;
@@ -114,8 +113,7 @@ public class MediaCollectionTrackerTests {
 
         Map<String, Object> config = new HashMap<>();
 
-        mediaTrackerAPIEventGenertor =
-                TestMediaTrackerEventGenerator.create(config, "tracker0", true);
+        mediaTrackerAPIEventGenertor = TestMediaPublicTracker.create("tracker0", true);
 
         hitProcessor = new FakeMediaHitProcessor();
         tracker = new MediaCollectionTracker(hitProcessor, config);

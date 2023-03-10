@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class MediaCollectionTracker implements MediaTrackerInterface {
+class MediaCollectionTracker implements MediaEventTracking {
     private static final String LOG_TAG = "MediaCollectionTracker";
     private static final String KEY_INFO = "key_info";
     private static final String KEY_METADATA = "key_metadata";
