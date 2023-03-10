@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMSessionDetails(
+internal data class XDMSessionDetails(
     // Required fields sourced from APIs
     var contentType: String? = null,
     var name: String? = null,

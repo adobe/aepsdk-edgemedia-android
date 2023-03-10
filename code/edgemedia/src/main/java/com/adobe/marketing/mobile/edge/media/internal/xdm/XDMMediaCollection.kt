@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMMediaCollection(
+internal data class XDMMediaCollection(
     var advertisingDetails: XDMAdvertisingDetails? = null,
     var advertisingPodDetails: XDMAdvertisingPodDetails? = null,
     var chapterDetails: XDMChapterDetails? = null,

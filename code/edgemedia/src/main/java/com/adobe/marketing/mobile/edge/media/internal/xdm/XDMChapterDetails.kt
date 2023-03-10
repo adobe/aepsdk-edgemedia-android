@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMChapterDetails(
+internal data class XDMChapterDetails(
     var friendlyName: String? = null,
     var index: Long? = null,
     var length: Long? = null,

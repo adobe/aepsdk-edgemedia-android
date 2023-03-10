@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMCustomMetadata(
+internal data class XDMCustomMetadata(
     var name: String? = null,
     var value: String? = null
 ) : XDMProperty {

@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMErrorDetails(
+internal data class XDMErrorDetails(
     var name: String? = null,
     var source: String? = null
 ) : XDMProperty {

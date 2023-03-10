@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-interface XDMProperty {
+internal interface XDMProperty {
 
     /**
      * Serializes this [XDMProperty] object to a map equivalent of its XDM schema.

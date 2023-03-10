@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMQoeDataDetails(
+internal data class XDMQoeDataDetails(
     var bitrate: Long? = null,
     var droppedFrames: Long? = null,
     var framesPerSecond: Long? = null,

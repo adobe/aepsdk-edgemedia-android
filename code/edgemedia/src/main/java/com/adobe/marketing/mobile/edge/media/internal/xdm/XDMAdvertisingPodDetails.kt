@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-data class XDMAdvertisingPodDetails(
+internal data class XDMAdvertisingPodDetails(
     var friendlyName: String? = null,
     var index: Long? = null,
     var offset: Long? = null

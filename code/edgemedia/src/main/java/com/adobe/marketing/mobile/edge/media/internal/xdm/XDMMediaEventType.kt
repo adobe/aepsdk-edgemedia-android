@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-enum class XDMMediaEventType(val value: String) {
+internal enum class XDMMediaEventType(val value: String) {
     SESSION_START("media.sessionStart"),
     SESSION_COMPLETE("media.sessionComplete"),
     SESSION_END("media.sessionEnd"),

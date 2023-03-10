@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
-enum class XDMStreamType(val value: String) {
+internal enum class XDMStreamType(val value: String) {
     AUDIO("audio"),
     VIDEO("video")
 }
