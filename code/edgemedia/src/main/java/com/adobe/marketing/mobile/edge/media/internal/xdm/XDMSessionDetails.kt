@@ -14,10 +14,10 @@ package com.adobe.marketing.mobile.edge.media.internal.xdm
 internal data class XDMSessionDetails(
     // Required fields sourced from APIs
     var contentType: String? = null,
-    var name: String? = null,
     var friendlyName: String? = null,
     var hasResume: Boolean? = null,
     var length: Long? = null,
+    var name: String? = null,
     var streamType: XDMStreamType? = null,
 
     // Required fields sourced from media configuration
@@ -64,10 +64,6 @@ internal data class XDMSessionDetails(
             map.put("contentType", it)
         }
 
-        name?.let {
-            map.put("name", it)
-        }
-
         friendlyName?.let {
             map.put("friendlyName", it)
         }
@@ -78,6 +74,10 @@ internal data class XDMSessionDetails(
 
         length?.let {
             map.put("length", it)
+        }
+
+        name?.let {
+            map.put("name", it)
         }
 
         streamType?.let {
