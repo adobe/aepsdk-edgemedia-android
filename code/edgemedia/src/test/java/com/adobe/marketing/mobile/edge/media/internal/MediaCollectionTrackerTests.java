@@ -42,7 +42,7 @@ public class MediaCollectionTrackerTests {
     QoEInfo qoeInfo;
     StateInfo state1;
     Map<String, String> metadata;
-    TestMediaTrackerEventGenerator mediaTrackerAPIEventGenertor;
+    TestMediaPublicTracker mediaTrackerAPIEventGenertor;
     MediaCollectionTracker tracker;
     Map<String, String> denylistMetadata;
     Map<String, String> cleanedMetadata;
@@ -113,7 +113,7 @@ public class MediaCollectionTrackerTests {
 
         Map<String, Object> config = new HashMap<>();
 
-        mediaTrackerAPIEventGenertor = TestMediaTrackerEventGenerator.create("tracker0", true);
+        mediaTrackerAPIEventGenertor = TestMediaPublicTracker.create("tracker0", true);
 
         hitProcessor = new FakeMediaHitProcessor();
         tracker = new MediaCollectionTracker(hitProcessor, config);

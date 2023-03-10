@@ -26,7 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
-public class MediaTrackerEventGenerator implements MediaTracker {
+public class MediaPublicTracker implements MediaTracker {
     private static final String SOURCE_TAG = "MediaTrackerEventGenerator";
 
     private static final int TICK_INTERVAL_MS = 750;
@@ -40,14 +40,14 @@ public class MediaTrackerEventGenerator implements MediaTracker {
     private Map<String, Object> lastPlayheadParams;
 
     @VisibleForTesting
-    MediaTrackerEventGenerator(final String trackerId, final AdobeCallback<Event> eventConsumer) {
+    MediaPublicTracker(final String trackerId, final AdobeCallback<Event> eventConsumer) {
         this.eventConsumer = eventConsumer;
         this.trackerId = trackerId;
         this.sessionId = getUniqueId();
         this.inSession = false;
     }
 
-    public static MediaTrackerEventGenerator create(
+    public static MediaPublicTracker create(
             final Map<String, Object> config, final AdobeCallback<Event> eventConsumer) {
         final String trackerId = getUniqueId();
 
@@ -89,7 +89,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
 
         // We have sent a request to media extension to create a tracker.
         // We can now return MediaTrackerCore which sends all the tracker events to the event hub.
-        return new MediaTrackerEventGenerator(trackerId, eventConsumer);
+        return new MediaPublicTracker(trackerId, eventConsumer);
     }
 
     private static synchronized String getUniqueId() {
