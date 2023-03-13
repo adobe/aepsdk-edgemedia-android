@@ -1,22 +1,56 @@
-# Getting Started with Media SDK
+## Getting started
 
-## Before starting
+The Adobe Experience Platform Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
+- [MobileCore](https://github.com/adobe/aepsdk-core-android)
+- [Edge](https://github.com/adobe/aepsdk-edge-android)
+- [EdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
 
-Media extension depends on the following extensions:
-* [Mobile Core and Identity](https://github.com/adobe/aepsdk-core-android)
-* [Analytics](https://github.com/adobe/aepsdk-analytics-android) (peer dependency)
+## Configuration
+
+### Configure Dependencies
+Configure the Edge, EdgeIdentity extensions in the mobile property using the Data Collection UI.
+
+> **Note** 
+> If this is your first time setting up Edge extensions and using Data Collection UI, please follow this [tutorial](https://github.com/adobe/aepsdk-edge-android/tree/main/Documentation/Tutorials) to learn about Adobe Experience Platform and how to setup required schemas, datasets, datastreams and creating mobile property etc.
+
+### Configure EdgeMedia extension
+Currently EdgeMedia doesn't have a Data Collection extension and needs to be configured programmatically.
+
+#### Configuration Keys
+| Name | Key | Value | Required |
+| --- | --- | --- | --- |
+| Channel | "edgemedia.channel" | String | **Yes** |
+| Player Name | "edgemedia.playerName" | String | **Yes** |
+| Application Version | "edgemedia.appVersion" | String | **No** |
+
+##### Java 
+    ```java
+    Map<String, Object> mediaConfiguration = new HashMap<>();
+    mediaConfiguration.put("edgemedia.channel", "<YOUR_CHANNEL_NAME>");
+    mediaConfiguration.put("edgemedia.playerName", "<YOUR_PLAYER_NAME>");
+    mediaConfiguration.put("edgemedia.appVersion", "<YOUR_APP_VERSION>");
+
+    MobileCore.updateConfiguration(mediaConfiguration);
+    ```
+
+##### Kotlin
+    ```koltin
+    val mediaConfiguration = mapOf("edgemedia.channel" to "<YOUR_CHANNEL_NAME>", "edgemedia.playerName" to "<YOUR_PLAYER_NAME>", "edgemedia.appVersion" to "<YOUR_APP_VERSION>") as Map<String, Any>
+
+    MobileCore.updateConfiguration(mediaConfiguration)
+    ```
 
 ## Add Media extension to your app
 
-1. Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app. Add the Mobile Core, Identity, Analytics, and Media extensions to your project using the app's Gradle file:
+1. Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app. Add the Mobile Core, Edge, EdgeIdentity, and EdgeMedia extensions to your project using the app's Gradle file:
 
 
-   ```
-   implementation 'com.adobe.marketing.mobile:core:2.+'
-   implementation 'com.adobe.marketing.mobile:identity:2.+'
-   implementation 'com.adobe.marketing.mobile:analytics:2.+'
-   implementation 'com.adobe.marketing.mobile:media:3.+'
-   ```
+    ```gradle
+    implementation 'com.adobe.marketing.mobile:core:2.+'
+    implementation 'com.adobe.marketing.mobile:edge:2.+'
+    implementation 'com.adobe.marketing.mobile:edgeidentity:2.+'
+    implementation 'com.adobe.marketing.mobile:edgemedia:2.+'
+    ```
 
 > **Warning**  
 > Using dynamic dependency versions is not recommended for production apps. Refer to this [page](https://github.com/adobe/aepsdk-core-android/blob/main/Documentation/MobileCore/gradle-dependencies.md) for managing Gradle dependencies.
@@ -27,18 +61,18 @@ Media extension depends on the following extensions:
 
    ```java
    import com.adobe.marketing.mobile.MobileCore;
-   import com.adobe.marketing.mobile.Identity;
-   import com.adobe.marketing.mobile.Analytics;
-   import com.adobe.marketing.mobile.Media;
+   import com.adobe.marketing.mobile.Edge;
+   import com.adobe.marketing.mobile.edge.identity.Identity;
+   import com.adobe.marketing.mobile.edge.identity.Media;
    ```
 
    ### Kotlin
 
    ```kotlin
    import com.adobe.marketing.mobile.MobileCore
-   import com.adobe.marketing.mobile.Identity
-   import com.adobe.marketing.mobile.Analytics
-   import com.adobe.marketing.mobile.Media
+   import com.adobe.marketing.mobile.Edge
+   import com.adobe.marketing.mobile.edge.identity.Identity
+   import com.adobe.marketing.mobile.edge.identity.Media
    ```
 
 3. Import the Media library into your project and register it with `MobileCore`
@@ -57,7 +91,7 @@ Media extension depends on the following extensions:
             MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID);
 
             List<Class<? extends Extension>> extensions = Arrays.asList(
-                    Media.EXTENSION, Analytics.EXTENSION, Identity.EXTENSION);
+                    Media.EXTENSION, Edge.EXTENSION, Identity.EXTENSION);
             MobileCore.registerExtensions(extensions, o -> {
                 Log.d(LOG_TAG, "AEP Mobile SDK is initialized");
             });
@@ -76,7 +110,7 @@ Media extension depends on the following extensions:
            MobileCore.setApplication(this)
            MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID)
 
-           val extensions = listOf(Media.EXTENSION, Analytics.EXTENSION, Identity.EXTENSION)
+           val extensions = listOf(Media.EXTENSION, Edge.EXTENSION, Identity.EXTENSION)
            MobileCore.registerExtensions(extensions) {
                Log.d(LOG_TAG, "AEP Mobile SDK is initialized")
            }
