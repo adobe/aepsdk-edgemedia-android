@@ -23,10 +23,10 @@ import com.adobe.marketing.mobile.services.Log
  * @property dispatchHandler closure for dispatching [Event]s
  */
 internal abstract class MediaSession(
-    val id: String,
-    val trackerSessionId: String?,
-    val state: MediaState,
-    val dispatchHandler: (event: Event) -> Unit
+    protected val id: String,
+    protected var trackerSessionId: String?,
+    protected val state: MediaState,
+    protected val dispatchHandler: (event: Event) -> Unit
 ) {
 
     companion object {
@@ -34,8 +34,8 @@ internal abstract class MediaSession(
         private val SOURCE_TAG = "MediaSession"
     }
 
-    var isSessionActive: Boolean = true
-    var sessionEndHandler: () -> Unit = {}
+    protected var isSessionActive: Boolean = true
+    protected var sessionEndHandler: () -> Unit = {}
 
     /**
      * Queues the [XDMMediaEvent].

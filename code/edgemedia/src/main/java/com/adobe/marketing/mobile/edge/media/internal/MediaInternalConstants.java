@@ -42,6 +42,9 @@ final class MediaInternalConstants {
         static final String REQUEST_EVENT_ID = "requestEventId";
         static final String PAYLOAD = "payload";
         static final String SESSION_ID = "sessionId";
+        static final long ERROR_CODE_400 = 400L;
+        static final String ERROR_TYPE_VA_EDGE_400 =
+                "https://ns.adobe.com/aep/errors/va-edge-0400-400";
 
         private Edge() {}
     }
