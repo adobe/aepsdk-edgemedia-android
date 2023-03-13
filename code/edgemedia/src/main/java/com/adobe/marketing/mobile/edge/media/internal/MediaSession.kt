@@ -24,14 +24,13 @@ import com.adobe.marketing.mobile.services.Log
  */
 internal abstract class MediaSession(
     protected val id: String,
-    protected var trackerSessionId: String?,
     protected val state: MediaState,
     protected val dispatchHandler: (event: Event) -> Unit
 ) {
 
     companion object {
-        private val LOG_TAG = MediaInternalConstants.LOG_TAG
-        private val SOURCE_TAG = "MediaSession"
+        private const val LOG_TAG = MediaInternalConstants.LOG_TAG
+        private const val SOURCE_TAG = "MediaSession"
     }
 
     protected var isSessionActive: Boolean = true

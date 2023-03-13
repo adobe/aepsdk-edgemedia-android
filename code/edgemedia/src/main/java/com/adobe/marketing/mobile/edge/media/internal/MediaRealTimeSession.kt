@@ -21,10 +21,9 @@ import com.adobe.marketing.mobile.util.StringUtils
 
 internal class MediaRealTimeSession(
     id: String,
-    trackerSessionId: String?,
     state: MediaState,
     dispatchHandler: (Event) -> Unit
-) : MediaSession(id, trackerSessionId, state, dispatchHandler) {
+) : MediaSession(id, state, dispatchHandler) {
 
     companion object {
         private const val LOG_TAG = MediaInternalConstants.LOG_TAG
