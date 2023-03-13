@@ -17,9 +17,8 @@ public final class MediaTestConstants {
 
     static final class Media {
         static final String EVENT_TYPE = "com.adobe.eventType.edgeMedia";
-        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
+        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.createTracker";
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventSource.trackMedia";
-        static final String EVENT_SOURCE_SESSION_CREATED = "com.adobe.eventSource.sessionCreated";
         static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
 
         static final String MEDIA_TYPE_VIDEO = "video";
