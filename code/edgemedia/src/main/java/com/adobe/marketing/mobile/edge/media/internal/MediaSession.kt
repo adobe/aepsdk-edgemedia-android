@@ -11,6 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal
 
+import androidx.annotation.VisibleForTesting
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.services.Log
@@ -18,7 +19,6 @@ import com.adobe.marketing.mobile.services.Log
 /**
  * A Media Session
  * @property id unique identifier for this Media Session
- * @property trackerSessionId unique identifier for the tracker session used for debugging
  * @property state [MediaState] holding state data
  * @property dispatchHandler closure for dispatching [Event]s
  */
@@ -33,8 +33,11 @@ internal abstract class MediaSession(
         private const val SOURCE_TAG = "MediaSession"
     }
 
-    protected var isSessionActive: Boolean = true
-    protected var sessionEndHandler: () -> Unit = {}
+    @VisibleForTesting
+    internal var isSessionActive: Boolean = true
+
+    @VisibleForTesting
+    internal var sessionEndHandler: () -> Unit = {}
 
     /**
      * Queues the [XDMMediaEvent].

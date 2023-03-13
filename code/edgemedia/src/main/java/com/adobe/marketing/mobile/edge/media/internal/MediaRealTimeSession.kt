@@ -103,7 +103,7 @@ internal class MediaRealTimeSession(
             val event = events.first()
 
             if (event.xdmData?.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
-                Log.trace(LOG_TAG, SOURCE_TAG, "processMediaEvents - Session $id: Existing as the media session id is unavailable, will retry later.")
+                Log.trace(LOG_TAG, SOURCE_TAG, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
                 return
             }
 
