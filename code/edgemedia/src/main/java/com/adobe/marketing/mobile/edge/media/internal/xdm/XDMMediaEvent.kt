@@ -18,7 +18,7 @@ internal data class XDMMediaEvent(
         val map = mutableMapOf<String, Any>()
 
         xdmData?.let {
-            map["xdm"] = it
+            map["xdm"] = it.serializeToXDM()
 
             // Set Media overwrite path based on XDM eventType
             it.eventType?.let { eventType ->

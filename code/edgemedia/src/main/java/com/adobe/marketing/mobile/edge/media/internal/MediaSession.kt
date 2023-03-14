@@ -91,18 +91,18 @@ internal abstract class MediaSession(
     /**
      * Ends the current session.
      */
-    abstract fun handleSessionEnd()
+    protected abstract fun handleSessionEnd()
 
     /**
      * Aborts the current session.
      */
-    abstract fun handleSessionAbort()
+    protected abstract fun handleSessionAbort()
 
     /**
      * Queues the [XDMMediaEvent] for processing.
      * @param event [XDMMediaEvent] to be queued
      */
-    abstract fun handleQueueEvent(event: XDMMediaEvent)
+    protected abstract fun handleQueueEvent(event: XDMMediaEvent)
 
     /**
      * Handles response from server containing the session ID.

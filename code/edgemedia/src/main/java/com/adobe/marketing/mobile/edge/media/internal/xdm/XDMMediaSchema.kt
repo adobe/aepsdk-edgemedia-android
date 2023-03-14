@@ -32,7 +32,7 @@ internal data class XDMMediaSchema(
         }
 
         mediaCollection?.let {
-            map.put("mediaCollection", it)
+            map.put("mediaCollection", it.serializeToXDM())
         }
 
         return map.toMap()

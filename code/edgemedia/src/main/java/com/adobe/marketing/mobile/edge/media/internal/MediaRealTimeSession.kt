@@ -11,6 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal
 
+import androidx.annotation.VisibleForTesting
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.EventSource
 import com.adobe.marketing.mobile.EventType
@@ -30,12 +31,17 @@ internal class MediaRealTimeSession(
         private const val SOURCE_TAG = "MediaRealTimeSession"
     }
 
-    private var mediaBackendSessionId: String? = null
+    @VisibleForTesting
+    internal var mediaBackendSessionId: String? = null
         set(value) {
             field = if (!StringUtils.isNullOrEmpty(value)) value else null
         }
-    private var sessionStartEdgeRequestId: String? = null
-    private val events: MutableList<XDMMediaEvent> = mutableListOf()
+
+    @VisibleForTesting
+    internal var sessionStartEdgeRequestId: String? = null
+
+    @VisibleForTesting
+    internal val events: MutableList<XDMMediaEvent> = mutableListOf()
 
     override fun handleMediaStateUpdate() {
         processMediaEvents()
@@ -54,10 +60,6 @@ internal class MediaRealTimeSession(
     }
 
     override fun handleQueueEvent(event: XDMMediaEvent) {
-        if (!isSessionActive) {
-            return
-        }
-
         events.add(event)
         processMediaEvents()
     }
@@ -87,7 +89,7 @@ internal class MediaRealTimeSession(
             return
         }
 
-        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && statusCode == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
+        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
             Log.warning(LOG_TAG, SOURCE_TAG, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
             abort(sessionEndHandler)
         }
