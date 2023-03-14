@@ -133,8 +133,10 @@ internal class MediaRealTimeSession(
     }
 
     private fun dispatchExperienceEvent(mediaEvent: XDMMediaEvent, dispatcher: (event: Event) -> Unit) {
+        val eventType = mediaEvent.xdmData?.eventType
+        val eventName = if (eventType != null) XDMMediaEventType.getTypeString(eventType) else ""
         val edgeEvent = Event.Builder(
-            "Edge Media ${mediaEvent.xdmData?.eventType?.value}",
+            "Edge Media - $eventName",
             EventType.EDGE,
             EventSource.REQUEST_CONTENT
         )

@@ -24,7 +24,7 @@ internal data class XDMMediaSchema(
         val map = mutableMapOf<String, Any>()
 
         eventType?.let {
-            map.put("eventType", it.value)
+            map.put("eventType", XDMMediaEventType.getTypeString(it))
         }
 
         timestamp?.let {

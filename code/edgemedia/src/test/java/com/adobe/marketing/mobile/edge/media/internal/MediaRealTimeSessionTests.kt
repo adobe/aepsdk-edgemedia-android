@@ -354,7 +354,7 @@ class MediaRealTimeSessionTests {
         assertNotNull(dispatchedEvent)
 
         dispatchedEvent?.let { dispatched ->
-            assertEquals("Edge Media media.sessionStart", dispatched.name)
+            assertEquals("Edge Media - media.sessionStart", dispatched.name)
             assertEquals(EventType.EDGE, dispatched.type)
             assertEquals(EventSource.REQUEST_CONTENT, dispatched.source)
             assertNotNull(dispatched.eventData)
@@ -410,6 +410,7 @@ class MediaRealTimeSessionTests {
 
         dispatchedEvent?.let { dispatched ->
             val flatMap = flatten(dispatched.eventData)
+            assertEquals("media.sessionStart", flatMap["xdm.eventType"])
             assertEquals("testPlayer", flatMap["xdm.mediaCollection.sessionDetails.playerName"])
             assertEquals("testChannel", flatMap["xdm.mediaCollection.sessionDetails.channel"])
             assertEquals("testVersion", flatMap["xdm.mediaCollection.sessionDetails.appVersion"])
@@ -473,6 +474,7 @@ class MediaRealTimeSessionTests {
 
         dispatchedEvent?.let { dispatched ->
             val flatMap = flatten(dispatched.eventData)
+            assertEquals("media.adStart", flatMap["xdm.eventType"])
             assertEquals("testPlayer", flatMap["xdm.mediaCollection.advertisingDetails.playerName"])
             assertEquals("sessionId", flatMap["xdm.mediaCollection.sessionID"])
         }
@@ -480,85 +482,85 @@ class MediaRealTimeSessionTests {
 
     @Test
     fun `queue() processes session complete event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.SESSION_COMPLETE, "/va/1/sessionComplete")
+        assertQueueAddsSessionId(XDMMediaEventType.SESSION_COMPLETE)
     }
 
     @Test
     fun `queue() processes session end event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.SESSION_END, "/va/1/sessionEnd")
+        assertQueueAddsSessionId(XDMMediaEventType.SESSION_END)
     }
 
     @Test
     fun `queue() processes play event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.PLAY, "/va/1/play")
+        assertQueueAddsSessionId(XDMMediaEventType.PLAY)
     }
 
     @Test
     fun `queue() processes pause start event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.PAUSE_START, "/va/1/pauseStart")
+        assertQueueAddsSessionId(XDMMediaEventType.PAUSE_START)
     }
 
     @Test
     fun `queue() processes ping event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.PING, "/va/1/ping")
+        assertQueueAddsSessionId(XDMMediaEventType.PING)
     }
 
     @Test
     fun `queue() processes error event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.ERROR, "/va/1/error")
+        assertQueueAddsSessionId(XDMMediaEventType.ERROR)
     }
 
     @Test
     fun `queue() processes buffer start event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.BUFFER_START, "/va/1/bufferStart")
+        assertQueueAddsSessionId(XDMMediaEventType.BUFFER_START)
     }
 
     @Test
     fun `queue() processes bitrate change event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.BITRATE_CHANGE, "/va/1/bitrateChange")
+        assertQueueAddsSessionId(XDMMediaEventType.BITRATE_CHANGE)
     }
 
     @Test
     fun `queue() processes ad break start event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.AD_BREAK_START, "/va/1/adBreakSkip")
+        assertQueueAddsSessionId(XDMMediaEventType.AD_BREAK_START)
     }
 
     @Test
     fun `queue() processes ad break complete event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.AD_BREAK_COMPLETE, "/va/1/adBreakComplete")
+        assertQueueAddsSessionId(XDMMediaEventType.AD_BREAK_COMPLETE)
     }
 
     @Test
     fun `queue() processes ad skip event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.AD_SKIP, "/va/1/adSkip")
+        assertQueueAddsSessionId(XDMMediaEventType.AD_SKIP)
     }
 
     @Test
     fun `queue() processes ad complete event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.AD_COMPLETE, "/va/1/adComplete")
+        assertQueueAddsSessionId(XDMMediaEventType.AD_COMPLETE)
     }
 
     @Test
     fun `queue() processes chapter skip event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_SKIP, "/va/1/chapterSkip")
+        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_SKIP)
     }
 
     @Test
     fun `queue() processes chapter start event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_START, "/va/1/chapterStart")
+        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_START)
     }
 
     @Test
     fun `queue() processes chapter complete event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_COMPLETE, "/va/1/chapterComplete")
+        assertQueueAddsSessionId(XDMMediaEventType.CHAPTER_COMPLETE)
     }
 
     @Test
     fun `queue() processes states update event and attaches session id`() {
-        assertQueueAddsSessionId(XDMMediaEventType.STATES_UPDATE, "/va/1/statesUpdate")
+        assertQueueAddsSessionId(XDMMediaEventType.STATES_UPDATE)
     }
 
-    private fun assertQueueAddsSessionId(forType: XDMMediaEventType, overwritePath: String) {
+    private fun assertQueueAddsSessionId(forType: XDMMediaEventType) {
         // MediaState needs to be valid to process event queue
         `when`(mockState.isValid).thenReturn(true)
 
@@ -581,11 +583,25 @@ class MediaRealTimeSessionTests {
         dispatchedEvent?.let { dispatched ->
             val flatMap = flatten(dispatched.eventData)
             assertEquals(
+                "[${forType.value}] event name does not match.",
+                "Edge Media - ${XDMMediaEventType.getTypeString(forType)}",
+                dispatched.name
+            )
+            assertEquals(
+                "[${forType.value}] event type does not match.",
+                XDMMediaEventType.getTypeString(forType),
+                flatMap["xdm.eventType"]
+            )
+            assertEquals(
                 "[${forType.value}] backend session ID does not match.",
                 "sessionId",
                 flatMap["xdm.mediaCollection.sessionID"]
             )
-            // TODO assert path overwrite
+            assertEquals(
+                "[${forType.value}] overwrite path does not match.",
+                "/va/v1/${forType.value}",
+                flatMap["request.path"]
+            )
         }
     }
 
