@@ -31,22 +31,33 @@ internal class MediaRealTimeSession(
         private const val SOURCE_TAG = "MediaRealTimeSession"
     }
 
+    // Session id for this session, set when handling sessionStart response from backend media server
     @VisibleForTesting
     internal var mediaBackendSessionId: String? = null
         set(value) {
             field = if (!StringUtils.isNullOrEmpty(value)) value else null
         }
 
+    // Edge request id for this session, set when the sessionStart event is dispatched
     @VisibleForTesting
     internal var sessionStartEdgeRequestId: String? = null
 
+    // List of events to be processed
     @VisibleForTesting
     internal val events: MutableList<XDMMediaEvent> = mutableListOf()
 
+    /**
+     * Handles media state update notifications by triggering the event processing loop.
+     */
     override fun handleMediaStateUpdate() {
         processMediaEvents()
     }
 
+    /**
+     * Handles session end requests. Attempts to finish processing any queued events and calls the
+     * session end closure if all events were processed.
+     * @see [MediaSession.end]
+     */
     override fun handleSessionEnd() {
         processMediaEvents()
         if (events.isEmpty()) {
@@ -54,16 +65,30 @@ internal class MediaRealTimeSession(
         }
     }
 
+    /**
+     * Handles session abort requests. Removes all queued events and calls the session end closure.
+     * @see [MediaSession.abort]
+     */
     override fun handleSessionAbort() {
         events.clear()
         sessionEndHandler()
     }
 
+    /**
+     * Queues the [XDMMediaEvent] and triggers the event processing loop.
+     * @see [MediaSession.queue]
+     */
     override fun handleQueueEvent(event: XDMMediaEvent) {
         events.add(event)
         processMediaEvents()
     }
 
+    /**
+     * Handles the media backend session id dispatched from the Edge extension.
+     * If the backend session id is valid (not null or empty) then triggers the event processing
+     * loop. Aborts the current session if the backend session id is invalid.
+     * @see [MediaSession.abort]
+     */
     override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
@@ -77,6 +102,11 @@ internal class MediaRealTimeSession(
         }
     }
 
+    /**
+     * Handles media backend error response dispatched from the Edge extension.
+     * Handles errors of type `va-edge-0400-400` and code `400` by aborting the current session.
+     * @see [MediaSession.abort]
+     */
     override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
@@ -95,6 +125,12 @@ internal class MediaRealTimeSession(
         }
     }
 
+    /**
+     * Processes queued [XDMMediaEvent]s.
+     * If no backend session id is set and the event type is not `sessionStart`, then processing
+     * is stopped until a valid backend session id is received.
+     * Dispatches an experience event to the Edge extension for each successfully processed event.
+     */
     private fun processMediaEvents() {
         if (!state.isValid) {
             Log.trace(LOG_TAG, SOURCE_TAG, "processMediaEvents - Session $id: Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
@@ -117,6 +153,9 @@ internal class MediaRealTimeSession(
         }
     }
 
+    /**
+     * Attaches the required [MediaState] information to the given [XDMMediaEvent].
+     */
     private fun attachMediaStateInfo(event: XDMMediaEvent) {
         if (XDMMediaEventType.SESSION_START == event.xdmData?.eventType) {
             event.xdmData?.mediaCollection?.sessionDetails?.playerName = state.mediaPlayerName
@@ -132,6 +171,9 @@ internal class MediaRealTimeSession(
         }
     }
 
+    /**
+     * Dispatches a experience event to the Edge extension to send to the media backend service.
+     */
     private fun dispatchExperienceEvent(mediaEvent: XDMMediaEvent, dispatcher: (event: Event) -> Unit) {
         val eventType = mediaEvent.xdmData?.eventType
         val eventName = if (eventType != null) XDMMediaEventType.getTypeString(eventType) else ""
