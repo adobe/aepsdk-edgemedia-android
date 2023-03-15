@@ -11,10 +11,12 @@
 
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
+import com.adobe.marketing.mobile.util.TimeUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.Date
 import kotlin.reflect.full.memberProperties
 
 class XDMPropertyTests {
@@ -594,6 +596,75 @@ class XDMPropertyTests {
     fun `XDMMediaCollection serializeToXDM no properties returns empty map`() {
         val mediaCollection = XDMMediaCollection()
         val xdm = mediaCollection.serializeToXDM()
+
+        assertNotNull(xdm)
+        assertTrue(xdm.isEmpty())
+    }
+
+    @Test
+    fun `XDMMediaSchema serializeToXDM all properties`() {
+        val dateNow = Date()
+        val schema = XDMMediaSchema()
+        schema.eventType = XDMMediaEventType.PLAY
+        schema.timestamp = dateNow
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
+        schema.mediaCollection = mediaCollection
+
+        val xdm = schema.serializeToXDM()
+        val expected = mapOf(
+            "eventType" to XDMMediaEventType.getTypeString(XDMMediaEventType.PLAY),
+            "timestamp" to TimeUtils.getISO8601UTCDateWithMilliseconds(dateNow),
+            "mediaCollection" to mapOf("sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d")
+        )
+
+        assertEquals(expected, xdm)
+        // Assert testing all class member properties
+        assertEquals(expected.size, XDMMediaSchema::class.memberProperties.size)
+    }
+
+    @Test
+    fun `XDMMediaSchema serializeToXDM no properties returns empty map`() {
+        val schema = XDMMediaSchema()
+        val xdm = schema.serializeToXDM()
+
+        assertNotNull(xdm)
+        assertTrue(xdm.isEmpty())
+    }
+
+    @Test
+    fun `XDMMediaEvent serializeToXDM all properties`() {
+        val dateNow = Date()
+        val schema = XDMMediaSchema()
+        schema.eventType = XDMMediaEventType.PLAY
+        schema.timestamp = dateNow
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
+        schema.mediaCollection = mediaCollection
+
+        val mediaEvent = XDMMediaEvent()
+        mediaEvent.xdmData = schema
+
+        val xdm = mediaEvent.serializeToXDM()
+        val expected = mapOf(
+            "xdm" to mapOf(
+                "eventType" to XDMMediaEventType.getTypeString(XDMMediaEventType.PLAY),
+                "timestamp" to TimeUtils.getISO8601UTCDateWithMilliseconds(dateNow),
+                "mediaCollection" to mapOf("sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d")
+            ),
+            "request" to mapOf("path" to "/va/v1/${XDMMediaEventType.PLAY.value}")
+        )
+
+        assertEquals(expected, xdm)
+        // Assert testing all class member properties
+        // XDMMediaEvent "request.path" is not a class property but is generated during serializeToXDM
+        assertEquals(expected.size - 1, XDMMediaEvent::class.memberProperties.size)
+    }
+
+    @Test
+    fun `XDMMediaEvent serializeToXDM no properties returns empty map`() {
+        val schema = XDMMediaEvent()
+        val xdm = schema.serializeToXDM()
 
         assertNotNull(xdm)
         assertTrue(xdm.isEmpty())
