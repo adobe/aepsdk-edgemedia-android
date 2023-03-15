@@ -2,7 +2,7 @@
 
 ### extensionVersion
 
-The extensionVersion() API returns the version of the Media extension that is registered with the Mobile Core extension.
+The extensionVersion() API returns the version of the Media for Edge Network extension that is used to register with the Mobile Core extension.
 
 #### Syntax
 ```java
@@ -156,8 +156,8 @@ Creates an instance of the AdBreak object.
 
 | Parameter | Description | Required |
 | :--- | :--- | :---: |
-| `name` | The friendly name of ad break such as pre-roll, mid-roll, and post-roll | Yes |
-| `position` | The numeric position of the ad break within the content, starting with 1 | Yes |
+| `name` | The friendly name of the Ad break such as pre-roll, mid-roll, or post-roll | Yes |
+| `position` | The numeric position of the Ad break within the content, starting with 1 | Yes |
 | `startTime` | The playhead value in seconds at the start of the ad break | Yes |
 
 #### Syntax
@@ -289,12 +289,12 @@ public static HashMap<String, Object> createStateObject(String stateName);
 
 ##### Java
 ```java
-HashMap<String, Object> playerStateInfo = Media.createStateObject("fullscreen");
+HashMap<String, Object> playerStateInfo = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN);
 ```
 
 ##### Kotlin
 ```kotlin
-val playerStateInfo = Media.createStateObject("fullscreen")
+val playerStateInfo = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN)
 ```
 
 ## Media tracker API reference

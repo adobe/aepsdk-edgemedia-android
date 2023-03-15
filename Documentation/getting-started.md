@@ -13,8 +13,8 @@ Configure the Edge, EdgeIdentity extensions in the mobile property using the Dat
 > **Note** 
 > If this is your first time setting up Edge extensions and using Data Collection UI, please follow this [tutorial](https://github.com/adobe/aepsdk-edge-android/tree/main/Documentation/Tutorials) to learn about Adobe Experience Platform and how to setup required schemas, datasets, datastreams and creating mobile property etc.
 
-### Configure EdgeMedia extension
-Currently EdgeMedia doesn't have a Data Collection extension and needs to be configured programmatically.
+### Configure Media for Edge Network extension
+Currently Media for Edge Network extension doesn't have a Data Collection extension and needs to be configured programmatically.
 
 #### Configuration Keys
 | Name | Key | Value | Required |
@@ -35,8 +35,11 @@ Currently EdgeMedia doesn't have a Data Collection extension and needs to be con
 
 ##### Kotlin
     ```koltin
-    val mediaConfiguration = mapOf("edgemedia.channel" to "<YOUR_CHANNEL_NAME>", "edgemedia.playerName" to "<YOUR_PLAYER_NAME>", "edgemedia.appVersion" to "<YOUR_APP_VERSION>") as Map<String, Any>
-
+    val mediaConfiguration = mapOf<String, Any>(
+        "edgemedia.channel" to "<YOUR_CHANNEL_NAME>", 
+        "edgemedia.playerName" to "<YOUR_PLAYER_NAME>", 
+        "edgemedia.appVersion" to "<YOUR_APP_VERSION>"
+    )
     MobileCore.updateConfiguration(mediaConfiguration)
     ```
 
@@ -63,7 +66,7 @@ Currently EdgeMedia doesn't have a Data Collection extension and needs to be con
    import com.adobe.marketing.mobile.MobileCore;
    import com.adobe.marketing.mobile.Edge;
    import com.adobe.marketing.mobile.edge.identity.Identity;
-   import com.adobe.marketing.mobile.edge.identity.Media;
+   import com.adobe.marketing.mobile.edge.media.Media;
    ```
 
    ### Kotlin
@@ -72,7 +75,7 @@ Currently EdgeMedia doesn't have a Data Collection extension and needs to be con
    import com.adobe.marketing.mobile.MobileCore
    import com.adobe.marketing.mobile.Edge
    import com.adobe.marketing.mobile.edge.identity.Identity
-   import com.adobe.marketing.mobile.edge.identity.Media
+   import com.adobe.marketing.mobile.edge.media.Media
    ```
 
 3. Import the Media library into your project and register it with `MobileCore`

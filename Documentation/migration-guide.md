@@ -1,6 +1,6 @@
-## Migrating from Media to EdgeMedia
+## Migrating from Media to Media for Edge Network
 
-This is the complete migration guide from Media to EdgeMedia SDK.
+This is the complete migration guide from Media to Media for Edge Network extension.
 
 | Quick Links |
 | --- |
@@ -22,18 +22,18 @@ This is the complete migration guide from Media to EdgeMedia SDK.
 | Player Name | "media.playerName" | String | No |
 | Application Version | "media.appVersion" | String | No |
 
-### EdgeMedia
+### Media for Edge Network
 | Name | Key | Value | Required |
 | --- | --- | --- | --- |
 | Channel | "edgemedia.channel" | String | Yes |
 | Player Name | "edgemedia.playerName" | String | Yes |
 | Application Version | "edgemedia.appVersion" | String | No |
 
-Please refer [EdgeMedia configuration](getting-started.md/#configuration) for more details.
+Please refer [Media for Edge Network configuration](getting-started.md/#configuration) for more details.
 
 ------
 
-## Add the EdgeMedia extension to your app
+## Add the Media for Edge Network extension to your app
 
 ### Dependencies
 
@@ -73,7 +73,7 @@ import com.adobe.marketing.mobile.MobileCore;
 - import com.adobe.marketing.mobile.Media;
 + import com.adobe.marketing.mobile.Edge;
 + import com.adobe.marketing.mobile.edge.identity.Identity;
-+ import com.adobe.marketing.mobile.edge.identity.Media;
++ import com.adobe.marketing.mobile.edge.media.Media;
 ```
 
 ##### Java
@@ -110,7 +110,7 @@ import com.adobe.marketing.mobile.MobileCore
 - import com.adobe.marketing.mobile.Media
 + import com.adobe.marketing.mobile.Edge
 + import com.adobe.marketing.mobile.edge.identity.Identity
-+ import com.adobe.marketing.mobile.edge.identity.Media
++ import com.adobe.marketing.mobile.edge.media.Media
 ```
 
 ##### Kotlin
@@ -134,9 +134,9 @@ class MyApp : Application() {
 ```
 
 <details>
-  <summary>Using both Media and EdgeMedia for a side-by-side comparison?</summary>
+  <summary>Including both Media and Media for Edge Network in the same application?</summary>
   </br>
-  <p>If you wish to use both the extensions together during migration time for a side-by-side comparison, use the Java package name along with the extension class names for registration, as well as for any classes that use APIs from both the modules.</p>
+  <p>Both Media and Media for Edge Network extensions may be used in the same application if needed. Use the Java package name when referring to the extension class or public APIs to differentiate between the two extensions.</p>
 
 **Example**
 
@@ -149,7 +149,7 @@ import com.adobe.marketing.mobile.Analytics;
 import com.adobe.marketing.mobile.Media;
 import com.adobe.marketing.mobile.Edge;
 import com.adobe.marketing.mobile.edge.identity.Identity;
-import com.adobe.marketing.mobile.edge.identity.Media;
+import com.adobe.marketing.mobile.edge.media.Media;
 ```
 
 ##### Java
@@ -166,7 +166,13 @@ public class MainApp extends Application {
         MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID);
 
         List<Class<? extends Extension>> extensions = Arrays.asList(
-                com.adobe.marketing.mobile.Media.EXTENSION, com.adobe.marketing.mobile.edge.media.Media.EXTENSION, Analytics.EXTENSION, Edge.EXTENSION, com.adobe.marketing.mobile.Identity.EXTENSION, com.adobe.marketing.mobile.edge.identity.Identity.EXTENSION);
+            com.adobe.marketing.mobile.Media.EXTENSION, 
+            com.adobe.marketing.mobile.edge.media.Media.EXTENSION, 
+            Analytics.EXTENSION, 
+            Edge.EXTENSION, 
+            com.adobe.marketing.mobile.Identity.EXTENSION, 
+            com.adobe.marketing.mobile.edge.identity.Identity.EXTENSION
+        );
         MobileCore.registerExtensions(extensions, o -> {
             Log.d(LOG_TAG, "AEP Mobile SDK is initialized");
         });
@@ -184,7 +190,7 @@ import com.adobe.marketing.mobile.Analytics
 import com.adobe.marketing.mobile.Media
 import com.adobe.marketing.mobile.Edge
 import com.adobe.marketing.mobile.edge.identity.Identity
-import com.adobe.marketing.mobile.edge.identity.Media
+import com.adobe.marketing.mobile.edge.media.Media
 ```
 
 ##### Kotlin
@@ -198,7 +204,14 @@ class MyApp : Application() {
         MobileCore.setApplication(this)
         MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID)
 
-        val extensions = listOf(com.adobe.marketing.mobile.Media.EXTENSION, com.adobe.marketing.mobile.edge.media.Media.EXTENSION, Analytics.EXTENSION, Edge.EXTENSION, com.adobe.marketing.mobile.Identity.EXTENSION, com.adobe.marketing.mobile.edge.identity.Identity.EXTENSION)
+        val extensions = listOf(
+            com.adobe.marketing.mobile.Media.EXTENSION, 
+            com.adobe.marketing.mobile.edge.media.Media.EXTENSION, 
+            Analytics.EXTENSION, 
+            Edge.EXTENSION, 
+            com.adobe.marketing.mobile.Identity.EXTENSION, 
+            com.adobe.marketing.mobile.edge.identity.Identity.EXTENSION
+        )
         MobileCore.registerExtensions(extensions) {
             Log.d(LOG_TAG, "AEP Mobile SDK is initialized")
         }
@@ -211,7 +224,7 @@ class MyApp : Application() {
 
 ### Granular ad tracking
 
-Media allowed for ad content tracking of `1 second` when setting the `MediaConstants.MediaObjectKey.GRANULAR_AD_TRACKING` key in the media object. EdgeMedia is even more customizable and now the ad content tracking interval can be set using the tracker configuration to a value between `[1-10] seconds`. For more details, refer to the [createTrackerWithConfig API](api-reference.md/#createTrackerWithConfig).
+Media extension allowed for ad content tracking of `1 second` when setting the `MediaConstants.MediaObjectKey.GRANULAR_AD_TRACKING` key in the media object. Media for Edge Network extension is even more customizable and now the ad content tracking interval can be set using the tracker configuration to a value between `[1-10] seconds`. For more details, refer to the [createTrackerWithConfig API](api-reference.md/#createTrackerWithConfig).
 
 ```diff
 - MediaTracker tracker = Media.createTracker()
@@ -232,13 +245,13 @@ tracker.trackSessionStart(mediaObject, videoMetadata)
 
 ### Downloaded content tracking
 
-Media supports offline tracking for downloaded videos by setting the `MediaConstants.Config.DOWNLOADED_CONTENT` key in the tracker configuration and calling `createTrackerWithConfig` API. 
+Media extension supports offline tracking for downloaded videos by setting the `MediaConstants.Config.DOWNLOADED_CONTENT` key in the tracker configuration and calling `createTrackerWithConfig` API. 
 
-EdgeMedia currently does not support this workflow. 
+Media for Edge Network extension currently does not support this workflow. 
 
 ------
 
 ## API reference
-The EdgeMedia SDK has similar APIs with Media. Please refer the [API reference docs](api-reference.md) to check out the APIs and their usage.
+The Media for Edge Network extension has similar APIs like Media extension. Please refer the [API reference docs](api-reference.md) to check out the APIs and their usage.
 
 ------
