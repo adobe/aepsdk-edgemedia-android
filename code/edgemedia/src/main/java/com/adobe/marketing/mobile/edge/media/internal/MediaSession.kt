@@ -13,6 +13,7 @@ package com.adobe.marketing.mobile.edge.media.internal
 
 import androidx.annotation.VisibleForTesting
 import com.adobe.marketing.mobile.Event
+import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.services.Log
 
@@ -28,10 +29,7 @@ internal abstract class MediaSession(
     protected val dispatchHandler: (event: Event) -> Unit
 ) {
 
-    companion object {
-        private const val LOG_TAG = MediaInternalConstants.LOG_TAG
-        private const val SOURCE_TAG = "MediaSession"
-    }
+    private val sourceTag = "MediaSession" // Log source tag
 
     @VisibleForTesting
     internal var isSessionActive: Boolean = true
@@ -47,7 +45,7 @@ internal abstract class MediaSession(
      */
     fun queue(event: XDMMediaEvent) {
         if (!isSessionActive) {
-            Log.debug(LOG_TAG, SOURCE_TAG, "queue - failed to queue event. Media Session ($id) is inactive.")
+            Log.debug(LOG_TAG, sourceTag, "queue - failed to queue event. Media Session ($id) is inactive.")
             return
         }
         handleQueueEvent(event)
@@ -59,7 +57,7 @@ internal abstract class MediaSession(
      */
     fun end(sessionEndHandler: () -> Unit = {}) {
         if (!isSessionActive) {
-            Log.debug(LOG_TAG, SOURCE_TAG, "end - failed to end session. Media Session ($id) is inactive.")
+            Log.debug(LOG_TAG, sourceTag, "end - failed to end session. Media Session ($id) is inactive.")
             return
         }
 
@@ -74,7 +72,7 @@ internal abstract class MediaSession(
      */
     fun abort(sessionEndHandler: () -> Unit = {}) {
         if (!isSessionActive) {
-            Log.debug(LOG_TAG, SOURCE_TAG, "abort - failed to abort session. Media Session ($id) is inactive.")
+            Log.debug(LOG_TAG, sourceTag, "abort - failed to abort session. Media Session ($id) is inactive.")
             return
         }
 

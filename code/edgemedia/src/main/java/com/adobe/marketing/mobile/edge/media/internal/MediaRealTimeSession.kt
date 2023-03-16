@@ -15,6 +15,7 @@ import androidx.annotation.VisibleForTesting
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.EventSource
 import com.adobe.marketing.mobile.EventType
+import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.services.Log
@@ -26,10 +27,7 @@ internal class MediaRealTimeSession(
     dispatchHandler: (Event) -> Unit
 ) : MediaSession(id, state, dispatchHandler) {
 
-    companion object {
-        private const val LOG_TAG = MediaInternalConstants.LOG_TAG
-        private const val SOURCE_TAG = "MediaRealTimeSession"
-    }
+    private val sourceTag = "MediaRealTimeSession" // Log source tag
 
     // Session id for this session, set when handling sessionStart response from backend media server
     @VisibleForTesting
@@ -120,7 +118,7 @@ internal class MediaRealTimeSession(
         }
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
-            Log.warning(LOG_TAG, SOURCE_TAG, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
+            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
             abort(sessionEndHandler)
         }
     }
@@ -133,7 +131,7 @@ internal class MediaRealTimeSession(
      */
     private fun processMediaEvents() {
         if (!state.isValid) {
-            Log.trace(LOG_TAG, SOURCE_TAG, "processMediaEvents - Session $id: Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
+            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
             return
         }
 
@@ -141,7 +139,7 @@ internal class MediaRealTimeSession(
             val event = events.first()
 
             if (event.xdmData?.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
-                Log.trace(LOG_TAG, SOURCE_TAG, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
+                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
                 return
             }
 
