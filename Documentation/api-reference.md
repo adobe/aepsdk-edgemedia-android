@@ -1,8 +1,8 @@
-## Media API Reference
+## Adobe Experience Platform Media for Edge Network Extension Android API Reference
 
 ### extensionVersion
 
-The extensionVersion() API returns the version of the Media extension that is registered with the Mobile Core extension.
+The extensionVersion() API returns the version of the Media for Edge Network extension that is used to register with the Mobile Core extension.
 
 #### Syntax
 ```java
@@ -23,25 +23,25 @@ val mediaExtensionVersion = Media.extensionVersion()
 
 ### EXTENSION
 
-Represents a reference to AssuranceExtension.class that can be used to register with MobileCore via its registerExtensions api.
+Represents a reference to MediaExtension.class that can be used to register with MobileCore via its registerExtensions api.
 
 #### Syntax
 ```java
-public static final Class<? extends Extension> EXTENSION = AssuranceExtension.class;
-````
+public static final Class<? extends Extension> EXTENSION = MediaExtension.class;
+```
 
 #### Example
 
 ##### Java
 ```java
-MobileCore.registerExtensions(Arrays.asList(Assurance.EXTENSION, ...), new AdobeCallback<Object>() {
+MobileCore.registerExtensions(Arrays.asList(Media.EXTENSION, ...), new AdobeCallback<Object>() {
     // implement completion callback
 });
 ```
 
 ##### Kotlin
 ```kotlin
-MobileCore.registerExtensions(listOf(Assurance.EXTENSION, ...)){
+MobileCore.registerExtensions(listOf(Media.EXTENSION, ...)){
     // implement completion callback
 }
 ```
@@ -75,7 +75,8 @@ Creates a media tracker instance based on the configuration to track the playbac
 | Key | Description | Value | Required |
 | :--- | :--- | :--- | :---: |
 | `config.channel` | Channel name for media. Set this to overwrite the channel name configured in the Data Collection UI for media tracked with this tracker instance. | String | No |
-| `config.downloadedcontent` | Creates a tracker instance to track downloaded media. Instead of sending periodic pings, the tracker only sends one ping for the entire content. | Boolean | No |
+| `config.mainpinginterval` | Overwrites the default main content tracking interval `(in seconds)`. The value should be in the allowed range `[10-50] seconds`. The default value is 10 seconds. | Int | No |
+| `config.adpinginterval` | Overwrites the default ad content tracking interval `(in seconds)`. The value should be in the allowed range `[1-10] seconds`. The default value is 10 seconds. | Int | No |
 
 #### Syntax
 
@@ -88,8 +89,10 @@ public static MediaTracker createTracker(Map<String, Object> config)
 ##### Java
 ```java
 HashMap<String, Object> config = new HashMap<String, Object>();
-config.put(MediaConstants.Config.CHANNEL, "custom-channel");  // Override channel configured in the Data Collection UI
-config.put(MediaConstants.Config.DOWNLOADED_CONTENT, true);   // Creates downloaded content tracker
+config.put(MediaConstants.Config.CHANNEL, "custom-channel");  // Overwrites channel configured in the Data Collection UI.
+config.put(MediaConstants.Config.AD_PING_INTERVAL, 1);  // Overwrites ad content ping interval to 1 second.
+config.put(MediaConstants.Config.MAIN_PING_INTERVAL, 30);  // Overwrites main content ping interval to 30 seconds.
+
 MediaTracker mediaTracker = Media.createTracker(config);  // Use the instance for tracking media.
 ```
 
@@ -97,8 +100,10 @@ MediaTracker mediaTracker = Media.createTracker(config);  // Use the instance fo
 ```kotlin
 val config = mapOf(
                 MediaConstants.Config.CHANNEL to "custom-channel",
-                MediaConstants.Config.DOWNLOADED_CONTENT to true
+                MediaConstants.Config.AD_PING_INTERVAL to 1,
+                MediaConstants.Config.MAIN_PING_INTERVAL to 30,
             )
+
 val mediaTracker = Media.createTracker(config) // Use the instance for tracking media.
 ```
 
@@ -106,10 +111,10 @@ val mediaTracker = Media.createTracker(config) // Use the instance for tracking 
 
 Creates an instance of the Media object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
 | `name` | The name of the media | Yes |
-| `mediaId` | The unqiue identifier for the media | Yes |
+| `id` | The unqiue identifier for the media | Yes |
 | `length` | The length of the media in seconds | Yes |
 | `streamType` | Stream type | Yes |
 | `mediaType` | Media type | Yes |
@@ -119,7 +124,7 @@ Creates an instance of the Media object.
 
 ```java
 public static HashMap<String, Object> createMediaObject(String name,
-                                                        String mediaId,
+                                                        String id,
                                                         Double length,
                                                         String streamType,
                                                         MediaType mediaType);
@@ -149,11 +154,11 @@ var mediaInfo = Media.createMediaObject("video-name",
 
 Creates an instance of the AdBreak object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
-| `name` | Ad break name such as pre-roll, mid-roll, and post-roll. | Yes |
-| `position` | The number position of the ad break within the content, starting with 1. | Yes |
-| `startTime` | Playhead value at the start of the ad break. | Yes |
+| `name` | The friendly name of the Ad break such as pre-roll, mid-roll, or post-roll | Yes |
+| `position` | The numeric position of the Ad break within the content, starting with 1 | Yes |
+| `startTime` | The playhead value in seconds at the start of the ad break | Yes |
 
 #### Syntax
 
@@ -177,17 +182,17 @@ val adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D)
 
 Creates an instance of the Ad object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
-| `name` | Friendly name of the ad. | Yes |
-| `adId` | Unique identifier for the ad. | Yes |
-| `position` | The number position of the ad within the ad break, starting with 1. | Yes |
-| `length` | Ad length in seconds| Yes |
+| `name` | The friendly name of the Ad | Yes |
+| `id` | The unique identifier for the Ad | Yes |
+| `position` | The numeric position of the Ad within the ad break, starting with 1 | Yes |
+| `length` | The length of Ad in seconds | Yes |
 
 #### Syntax
 
 ```java
-public static HashMap<String, Object> createAdObject(String name, String adId, Long position, Double length);
+public static HashMap<String, Object> createAdObject(String name, String id, Long position, Double length);
 ```
 
 #### Example
@@ -206,12 +211,12 @@ val adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15D)
 
 Creates an instance of the Chapter object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
-| `name` | Chapter name | Yes |
-| `position` | The number position of the chapter within the content, starting with 1. | Yes |
-| `length` | Chapter length in seconds | Yes |
-| `startTime` | Playhead value at the start of the chapter | Yes |
+| `name` | The friendly name of the Chapter | Yes |
+| `position` | The numeric position of the Chapter within the content, starting with 1 | Yes |
+| `length` | The length of Chapter in seconds | Yes |
+| `startTime` | The playhead value at the start of the chapter | Yes |
 
 #### Syntax
 
@@ -238,7 +243,7 @@ val chapterInfo = Media.createChapterObject("chapter-name", 1L, 60D, 0D)
 
 Creates an instance of the QoE object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
 | `bitrate` | The bitrate of media in bits per second | Yes |
 | `startupTime` | The start up time of media in seconds | Yes |
@@ -270,9 +275,9 @@ val qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D)
 
 Creates an instance of the Player State object.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
-| `name` | State name\(Use Player State constants to track standard player states\) | Yes |
+| `name` | The player state name. Use Player State constants to track standard player states | Yes |
 
 #### Syntax
 
@@ -284,12 +289,12 @@ public static HashMap<String, Object> createStateObject(String stateName);
 
 ##### Java
 ```java
-HashMap<String, Object> playerStateInfo = Media.createStateObject("fullscreen");
+HashMap<String, Object> playerStateInfo = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN);
 ```
 
 ##### Kotlin
 ```kotlin
-val playerStateInfo = Media.createStateObject("fullscreen")
+val playerStateInfo = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN)
 ```
 
 ## Media tracker API reference
@@ -298,7 +303,7 @@ val playerStateInfo = Media.createStateObject("fullscreen")
 
 Tracks the intention to start playback. This starts a tracking session on the media tracker instance. To learn how to resume a previously closed session.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
 | `mediaInfo` | Media information created using the createMediaObject method. | Yes |
 | `contextData` | Optional Media context data. For standard metadata keys, use standard video constants or standard audio constants. | No |
@@ -420,7 +425,7 @@ tracker.trackSessionEnd()
 
 Tracks an error in media playback.
 
-| Variable Name | Description | Required |
+| Parameter | Description | Required |
 | :--- | :--- | :---: |
 | `errorId` | Error Information | Yes |
 
@@ -446,11 +451,14 @@ tracker.trackError("errorId")
 
 Tracks media events.
 
-| Variable Name | Description |
-| :--- | :--- |
-| `event` | Media event |
-| `info` | For an `AdBreakStart` event, the `adBreak` information is created by using the createAdBreakObject method. <br />  For an `AdStart` event, the Ad information is created by using the createAdObject method. <br />  For `ChapterStart` event, the Chapter information is created by using the createChapterObject method. <br />  For `StateStart` and `StateEnd` event, the State information is created by using the createStateObject method. |
-| `data` | Optional context data can be provided for `AdStart` and `ChapterStart` events. This is not required for other events. |
+| Parameter | Description | Required |
+| :--- | :--- |  :---: |
+| `event` | The media event being tracked, use Media event constants | Yes |
+| `info` | For an `AdBreakStart` event, the `adBreak` information is created by using the createAdBreakObject method. <br />  For an `AdStart` event, the Ad information is created by using the createAdObject method. <br />  For `ChapterStart` event, the Chapter information is created by using the createChapterObject method. <br />  For `StateStart` and `StateEnd` event, the State information is created by using the createStateObject method. | Yes/No* |
+| `data` | Optional context data can be provided for `AdStart` and `ChapterStart` events. This is not required for other events. | No |
+
+> **Note**  
+> \* info is a required parameter for `AdBreakStart`, `AdStart`, `ChapterStart`, `StateStart`, `StateEnd` events. Not set for any other event types.
 
 
 #### Syntax
@@ -653,7 +661,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 Provides the current media playhead to the media tracker instance. For accurate tracking, call this method everytime the playhead changes. If the player does not notify playhead changes, call this method once every second with the most recent playhead.
 
-| Variable Name | Description |
+| Parameter | Description |
 | :--- | :--- |
 | `time` | Current playhead in seconds. <br /> <br />For video-on-demand \(VOD\), the value is specified in seconds from the beginning of the media item.<br /> <br />For live streaming, if the player does not provide information about the content duration, the value can be specified as the number of seconds since midnight UTC of that day. <br /> Note: When using progress markers, the content duration is required and the playhead needs to be updated as number of seconds from the beginning of the media item, starting with 0. |
 
@@ -695,7 +703,7 @@ tracker.updateCurrentPlayhead(timeFromMidnightInSecond);
 
 Provides the media tracker with the current QoE information. For accurate tracking, call this method multiple times when the media player provides the updated QoE information.
 
-| Variable Name | Description |
+| Parameter | Description |
 | :--- | :--- |
 | `qoeObject` | Current QoE information that was created by using the createQoEObject method. |
 
