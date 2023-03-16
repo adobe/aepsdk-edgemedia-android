@@ -12,18 +12,16 @@
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
 internal data class XDMMediaEvent(
-    var xdmData: XDMMediaSchema? = null
+    var xdmData: XDMMediaSchema
 ) : XDMProperty {
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
 
-        xdmData?.let {
-            map["xdm"] = it.serializeToXDM()
+        map["xdm"] = xdmData.serializeToXDM()
 
-            // Set Media overwrite path based on XDM eventType
-            it.eventType?.let { eventType ->
-                map.put("request", mapOf("path" to "/va/v1/${eventType.value}"))
-            }
+        // Set Media overwrite path based on XDM eventType
+        xdmData.eventType?.let { eventType ->
+            map.put("request", mapOf("path" to "/va/v1/${eventType.value}"))
         }
 
         return map.toMap()

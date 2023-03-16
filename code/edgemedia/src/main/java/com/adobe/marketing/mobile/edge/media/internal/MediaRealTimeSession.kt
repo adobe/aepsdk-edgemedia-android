@@ -138,7 +138,7 @@ internal class MediaRealTimeSession(
         while (events.isNotEmpty()) {
             val event = events.first()
 
-            if (event.xdmData?.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
+            if (event.xdmData.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
                 Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
                 return
             }
@@ -155,16 +155,16 @@ internal class MediaRealTimeSession(
      * Attaches the required [MediaState] information to the given [XDMMediaEvent].
      */
     private fun attachMediaStateInfo(event: XDMMediaEvent) {
-        if (XDMMediaEventType.SESSION_START == event.xdmData?.eventType) {
-            event.xdmData?.mediaCollection?.sessionDetails?.playerName = state.mediaPlayerName
-            event.xdmData?.mediaCollection?.sessionDetails?.appVersion = state.mediaAppVersion
-            if (event.xdmData?.mediaCollection?.sessionDetails?.channel == null) {
-                event.xdmData?.mediaCollection?.sessionDetails?.channel = state.mediaChannel
+        if (XDMMediaEventType.SESSION_START == event.xdmData.eventType) {
+            event.xdmData.mediaCollection?.sessionDetails?.playerName = state.mediaPlayerName
+            event.xdmData.mediaCollection?.sessionDetails?.appVersion = state.mediaAppVersion
+            if (event.xdmData.mediaCollection?.sessionDetails?.channel == null) {
+                event.xdmData.mediaCollection?.sessionDetails?.channel = state.mediaChannel
             }
         } else {
-            event.xdmData?.mediaCollection?.sessionID = mediaBackendSessionId
-            if (XDMMediaEventType.AD_START == event.xdmData?.eventType) {
-                event.xdmData?.mediaCollection?.advertisingDetails?.playerName = state.mediaPlayerName
+            event.xdmData.mediaCollection?.sessionID = mediaBackendSessionId
+            if (XDMMediaEventType.AD_START == event.xdmData.eventType) {
+                event.xdmData.mediaCollection?.advertisingDetails?.playerName = state.mediaPlayerName
             }
         }
     }
@@ -173,7 +173,7 @@ internal class MediaRealTimeSession(
      * Dispatches a experience event to the Edge extension to send to the media backend service.
      */
     private fun dispatchExperienceEvent(mediaEvent: XDMMediaEvent, dispatcher: (event: Event) -> Unit) {
-        val eventType = mediaEvent.xdmData?.eventType
+        val eventType = mediaEvent.xdmData.eventType
         val eventName = if (eventType != null) XDMMediaEventType.getTypeString(eventType) else ""
         val edgeEvent = Event.Builder(
             "Edge Media - $eventName",
@@ -183,7 +183,7 @@ internal class MediaRealTimeSession(
             .setEventData(mediaEvent.serializeToXDM())
             .build()
 
-        if (XDMMediaEventType.SESSION_START == mediaEvent.xdmData?.eventType) {
+        if (XDMMediaEventType.SESSION_START == mediaEvent.xdmData.eventType) {
             sessionStartEdgeRequestId = edgeEvent.uniqueIdentifier
         }
 

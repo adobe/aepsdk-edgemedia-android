@@ -642,9 +642,7 @@ class XDMPropertyTests {
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         schema.mediaCollection = mediaCollection
 
-        val mediaEvent = XDMMediaEvent()
-        mediaEvent.xdmData = schema
-
+        val mediaEvent = XDMMediaEvent(schema)
         val xdm = mediaEvent.serializeToXDM()
         val expected = mapOf(
             "xdm" to mapOf(
@@ -659,15 +657,6 @@ class XDMPropertyTests {
         // Assert testing all class member properties
         // XDMMediaEvent "request.path" is not a class property but is generated during serializeToXDM
         assertEquals(expected.size - 1, XDMMediaEvent::class.memberProperties.size)
-    }
-
-    @Test
-    fun `XDMMediaEvent serializeToXDM no properties returns empty map`() {
-        val schema = XDMMediaEvent()
-        val xdm = schema.serializeToXDM()
-
-        assertNotNull(xdm)
-        assertTrue(xdm.isEmpty())
     }
 
     private fun getSampleAdvertisingDetails(): Pair<XDMAdvertisingDetails, Map<String, Any>> {

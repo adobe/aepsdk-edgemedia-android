@@ -89,7 +89,7 @@ class MediaRealTimeSessionTests {
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.sessionStartEdgeRequestId = requestEventId // current request ID must match passed ID
-        session.events.add(XDMMediaEvent())
+        session.events.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
         session.mediaBackendSessionId = "sessionId" // set valid backend session ID
 
         session.handleSessionUpdate(requestEventId, "") // pass invalid session ID
@@ -106,7 +106,7 @@ class MediaRealTimeSessionTests {
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.sessionStartEdgeRequestId = "otherEdgeRequestID"
-        session.events.add(XDMMediaEvent())
+        session.events.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
         session.mediaBackendSessionId = sessionId // set valid backend session ID
 
         session.handleSessionUpdate(requestEventId, "otherSessionId")
@@ -627,9 +627,7 @@ class MediaRealTimeSessionTests {
             }
         }
 
-        val event = XDMMediaEvent()
-        event.xdmData = schema
-        return event
+        return XDMMediaEvent(schema)
     }
 
     private fun flatten(map: Map<String, Any>, prefix: String = ""): Map<String, Any> {
