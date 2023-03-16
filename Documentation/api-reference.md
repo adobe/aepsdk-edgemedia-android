@@ -1,4 +1,4 @@
-## Media API Reference
+## Adobe Experience Platform Media for Edge Network Extension Android API Reference
 
 ### extensionVersion
 
