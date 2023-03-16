@@ -427,7 +427,7 @@ class MediaRealTimeSessionTests {
 
         // Set event type to media.sessionStart to allow event processing
         val event = getXDMMediaEvent(XDMMediaEventType.SESSION_START)
-        event.xdmData?.mediaCollection?.sessionDetails?.channel = "myChannel"
+        event.xdmData.mediaCollection.sessionDetails?.channel = "myChannel"
 
         val latch = CountDownLatch(1)
 
@@ -606,20 +606,17 @@ class MediaRealTimeSessionTests {
     }
 
     private fun getXDMMediaEvent(forType: XDMMediaEventType): XDMMediaEvent {
-        val schema = XDMMediaSchema(forType)
-        schema.timestamp = Date()
-        schema.mediaCollection = XDMMediaCollection()
-
+        val schema = XDMMediaSchema(forType, Date(), XDMMediaCollection())
         when (forType) {
             XDMMediaEventType.SESSION_START -> {
                 val sessionDetails = XDMSessionDetails()
                 sessionDetails.playerName = "myPlayer"
                 sessionDetails.name = "mySession"
-                schema.mediaCollection?.sessionDetails = sessionDetails
+                schema.mediaCollection.sessionDetails = sessionDetails
             }
             XDMMediaEventType.AD_START -> {
                 val advertisingDetails = XDMAdvertisingDetails()
-                schema.mediaCollection?.advertisingDetails = advertisingDetails
+                schema.mediaCollection.advertisingDetails = advertisingDetails
             }
             else -> {
                 // nothing more needed

@@ -16,8 +16,8 @@ import java.util.Date
 
 internal data class XDMMediaSchema(
     var eventType: XDMMediaEventType,
-    var timestamp: Date? = null,
-    var mediaCollection: XDMMediaCollection? = null
+    var timestamp: Date,
+    var mediaCollection: XDMMediaCollection
 ) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
@@ -25,13 +25,9 @@ internal data class XDMMediaSchema(
 
         map["eventType"] = XDMMediaEventType.getTypeString(eventType)
 
-        timestamp?.let {
-            map.put("timestamp", TimeUtils.getISO8601UTCDateWithMilliseconds(it))
-        }
+        map["timestamp"] = TimeUtils.getISO8601UTCDateWithMilliseconds(timestamp)
 
-        mediaCollection?.let {
-            map.put("mediaCollection", it.serializeToXDM())
-        }
+        map["mediaCollection"] = mediaCollection.serializeToXDM()
 
         return map.toMap()
     }

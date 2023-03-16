@@ -604,11 +604,9 @@ class XDMPropertyTests {
     @Test
     fun `XDMMediaSchema serializeToXDM all properties`() {
         val dateNow = Date()
-        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
-        schema.timestamp = dateNow
         val mediaCollection = XDMMediaCollection()
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
-        schema.mediaCollection = mediaCollection
+        val schema = XDMMediaSchema(XDMMediaEventType.PLAY, dateNow, mediaCollection)
 
         val xdm = schema.serializeToXDM()
         val expected = mapOf(
@@ -623,24 +621,11 @@ class XDMPropertyTests {
     }
 
     @Test
-    fun `XDMMediaSchema serializeToXDM no properties returns map with event type`() {
-        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
-        val xdm = schema.serializeToXDM()
-        val expected = mapOf(
-            "eventType" to XDMMediaEventType.getTypeString(XDMMediaEventType.PLAY)
-        )
-
-        assertEquals(expected, xdm)
-    }
-
-    @Test
     fun `XDMMediaEvent serializeToXDM all properties`() {
         val dateNow = Date()
-        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
-        schema.timestamp = dateNow
         val mediaCollection = XDMMediaCollection()
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
-        schema.mediaCollection = mediaCollection
+        val schema = XDMMediaSchema(XDMMediaEventType.PLAY, dateNow, mediaCollection)
 
         val mediaEvent = XDMMediaEvent(schema)
         val xdm = mediaEvent.serializeToXDM()

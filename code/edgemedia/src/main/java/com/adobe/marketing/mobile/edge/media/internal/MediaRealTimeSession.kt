@@ -156,15 +156,15 @@ internal class MediaRealTimeSession(
      */
     private fun attachMediaStateInfo(event: XDMMediaEvent) {
         if (XDMMediaEventType.SESSION_START == event.xdmData.eventType) {
-            event.xdmData.mediaCollection?.sessionDetails?.playerName = state.mediaPlayerName
-            event.xdmData.mediaCollection?.sessionDetails?.appVersion = state.mediaAppVersion
-            if (event.xdmData.mediaCollection?.sessionDetails?.channel == null) {
-                event.xdmData.mediaCollection?.sessionDetails?.channel = state.mediaChannel
+            event.xdmData.mediaCollection.sessionDetails?.playerName = state.mediaPlayerName
+            event.xdmData.mediaCollection.sessionDetails?.appVersion = state.mediaAppVersion
+            if (event.xdmData.mediaCollection.sessionDetails?.channel == null) {
+                event.xdmData.mediaCollection.sessionDetails?.channel = state.mediaChannel
             }
         } else {
-            event.xdmData.mediaCollection?.sessionID = mediaBackendSessionId
+            event.xdmData.mediaCollection.sessionID = mediaBackendSessionId
             if (XDMMediaEventType.AD_START == event.xdmData.eventType) {
-                event.xdmData.mediaCollection?.advertisingDetails?.playerName = state.mediaPlayerName
+                event.xdmData.mediaCollection.advertisingDetails?.playerName = state.mediaPlayerName
             }
         }
     }
