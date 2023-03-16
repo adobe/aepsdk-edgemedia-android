@@ -173,10 +173,8 @@ internal class MediaRealTimeSession(
      * Dispatches a experience event to the Edge extension to send to the media backend service.
      */
     private fun dispatchExperienceEvent(mediaEvent: XDMMediaEvent, dispatcher: (event: Event) -> Unit) {
-        val eventType = mediaEvent.xdmData.eventType
-        val eventName = if (eventType != null) XDMMediaEventType.getTypeString(eventType) else ""
         val edgeEvent = Event.Builder(
-            "Edge Media - $eventName",
+            "Edge Media - ${XDMMediaEventType.getTypeString(mediaEvent.xdmData.eventType)}",
             EventType.EDGE,
             EventSource.REQUEST_CONTENT
         )

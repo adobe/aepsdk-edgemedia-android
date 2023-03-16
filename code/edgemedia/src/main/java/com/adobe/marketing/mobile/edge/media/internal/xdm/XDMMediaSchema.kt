@@ -15,17 +15,15 @@ import com.adobe.marketing.mobile.util.TimeUtils
 import java.util.Date
 
 internal data class XDMMediaSchema(
+    var eventType: XDMMediaEventType,
     var timestamp: Date? = null,
-    var eventType: XDMMediaEventType? = null,
     var mediaCollection: XDMMediaCollection? = null
 ) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
         val map = mutableMapOf<String, Any>()
 
-        eventType?.let {
-            map.put("eventType", XDMMediaEventType.getTypeString(it))
-        }
+        map["eventType"] = XDMMediaEventType.getTypeString(eventType)
 
         timestamp?.let {
             map.put("timestamp", TimeUtils.getISO8601UTCDateWithMilliseconds(it))

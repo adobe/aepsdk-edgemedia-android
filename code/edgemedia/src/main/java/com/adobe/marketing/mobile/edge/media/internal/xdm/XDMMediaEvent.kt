@@ -20,9 +20,7 @@ internal data class XDMMediaEvent(
         map["xdm"] = xdmData.serializeToXDM()
 
         // Set Media overwrite path based on XDM eventType
-        xdmData.eventType?.let { eventType ->
-            map.put("request", mapOf("path" to "/va/v1/${eventType.value}"))
-        }
+        map["request"] = mapOf("path" to "/va/v1/${xdmData.eventType.value}")
 
         return map.toMap()
     }

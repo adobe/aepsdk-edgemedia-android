@@ -606,8 +606,7 @@ class MediaRealTimeSessionTests {
     }
 
     private fun getXDMMediaEvent(forType: XDMMediaEventType): XDMMediaEvent {
-        val schema = XDMMediaSchema()
-        schema.eventType = forType
+        val schema = XDMMediaSchema(forType)
         schema.timestamp = Date()
         schema.mediaCollection = XDMMediaCollection()
 

@@ -459,7 +459,7 @@ class XDMPropertyTests {
         mediaCollection.statesEnd = playerStateData
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "advertisingDetails" to expectedAdvertisingDetails,
             "advertisingPodDetails" to expectedAdvertisingPodDetails,
             "chapterDetails" to expectedChapterDetails,
@@ -488,7 +488,7 @@ class XDMPropertyTests {
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "playhead" to 0L,
             "sessionDetails" to expectedSessionDetails,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -507,7 +507,7 @@ class XDMPropertyTests {
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "advertisingPodDetails" to expectedAdvertisingPodDetails,
             "playhead" to 0L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -526,7 +526,7 @@ class XDMPropertyTests {
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "advertisingDetails" to expectedAdvertisingDetails,
             "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -545,7 +545,7 @@ class XDMPropertyTests {
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "chapterDetails" to expectedChapterDetails,
             "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -564,7 +564,7 @@ class XDMPropertyTests {
         mediaCollection.statesStart = playerStateData
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesStart" to expectedPlayerStateData
@@ -583,7 +583,7 @@ class XDMPropertyTests {
         mediaCollection.statesEnd = playerStateData
 
         val xdm = mediaCollection.serializeToXDM()
-        val expected = mapOf<String, Any>(
+        val expected = mapOf(
             "playhead" to 123L,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesEnd" to expectedPlayerStateData
@@ -604,8 +604,7 @@ class XDMPropertyTests {
     @Test
     fun `XDMMediaSchema serializeToXDM all properties`() {
         val dateNow = Date()
-        val schema = XDMMediaSchema()
-        schema.eventType = XDMMediaEventType.PLAY
+        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
         schema.timestamp = dateNow
         val mediaCollection = XDMMediaCollection()
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
@@ -624,19 +623,20 @@ class XDMPropertyTests {
     }
 
     @Test
-    fun `XDMMediaSchema serializeToXDM no properties returns empty map`() {
-        val schema = XDMMediaSchema()
+    fun `XDMMediaSchema serializeToXDM no properties returns map with event type`() {
+        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
         val xdm = schema.serializeToXDM()
+        val expected = mapOf(
+            "eventType" to XDMMediaEventType.getTypeString(XDMMediaEventType.PLAY)
+        )
 
-        assertNotNull(xdm)
-        assertTrue(xdm.isEmpty())
+        assertEquals(expected, xdm)
     }
 
     @Test
     fun `XDMMediaEvent serializeToXDM all properties`() {
         val dateNow = Date()
-        val schema = XDMMediaSchema()
-        schema.eventType = XDMMediaEventType.PLAY
+        val schema = XDMMediaSchema(XDMMediaEventType.PLAY)
         schema.timestamp = dateNow
         val mediaCollection = XDMMediaCollection()
         mediaCollection.sessionID = "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"

@@ -13,6 +13,7 @@ package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -32,7 +33,7 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = true
 
-        val event = XDMMediaEvent(XDMMediaSchema())
+        val event = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY))
         session.queue(event)
 
         assertTrue(session.handleQueueEventCalled)
@@ -44,7 +45,7 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = false
 
-        val event = XDMMediaEvent(XDMMediaSchema())
+        val event = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY))
         session.queue(event)
 
         assertFalse(session.handleQueueEventCalled)
