@@ -13,14 +13,12 @@ package com.adobe.marketing.mobile.edge.media;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.media.internal.MediaExtension;
 import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
 import com.adobe.marketing.mobile.edge.media.internal.MediaPublicTracker;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Media {
@@ -29,18 +27,6 @@ public class Media {
     private Media() {}
 
     public static final Class<? extends Extension> EXTENSION = MediaExtension.class;
-
-    /**
-     * Registers the extension with the Mobile SDK. This method should be called only once in your
-     * application class.
-     *
-     * @deprecated as of 2.0.0, use {@link MobileCore#registerExtensions(List, AdobeCallback)} with
-     *     {@link Media#EXTENSION} instead.
-     */
-    @Deprecated
-    public static void registerExtension() {
-        MobileCore.registerExtension(MediaExtension.class, null);
-    }
 
     /**
      * Creates a media tracker instance that tracks the playback session.
@@ -60,32 +46,6 @@ public class Media {
      */
     public static @NonNull MediaTracker createTracker(@Nullable final Map<String, Object> config) {
         return MediaPublicTracker.create(config, MobileCore::dispatchEvent);
-    }
-
-    /**
-     * Create media tracker with callback
-     *
-     * @deprecated The callback is invoked to return the created tracker instance. This method is
-     *     deprecated
-     */
-    @Deprecated
-    public static void createTracker(@NonNull final AdobeCallback<MediaTracker> callback) {
-        MediaTracker tracker = createTracker((Map<String, Object>) null);
-        callback.call(tracker);
-    }
-
-    /**
-     * Create media tracker with optional config and callback
-     *
-     * @deprecated
-     * @param config optional configuration This method is deprecated
-     */
-    @Deprecated
-    public static void createTracker(
-            @Nullable final Map<String, Object> config,
-            @NonNull final AdobeCallback<MediaTracker> callback) {
-        MediaTracker tracker = createTracker(config);
-        callback.call(tracker);
     }
 
     /**
