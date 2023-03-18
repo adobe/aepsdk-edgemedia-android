@@ -34,9 +34,6 @@ internal abstract class MediaSession(
     @VisibleForTesting
     internal var isSessionActive: Boolean = true
 
-    @VisibleForTesting
-    internal var sessionEndHandler: () -> Unit = {}
-
     /**
      * Queues the [XDMMediaEvent].
      * Operation fails if the current session was ended or aborted.
@@ -55,30 +52,28 @@ internal abstract class MediaSession(
      * Ends the current session.
      * @param sessionEndHandler closure called after session is successfully ended
      */
-    fun end(sessionEndHandler: () -> Unit = {}) {
+    fun end(sessionEndHandler: () -> Unit = { }) {
         if (!isSessionActive) {
             Log.debug(LOG_TAG, sourceTag, "end - failed to end session. Media Session ($id) is inactive.")
             return
         }
 
-        this.sessionEndHandler = sessionEndHandler
         isSessionActive = false
-        handleSessionEnd()
+        handleSessionEnd(sessionEndHandler)
     }
 
     /**
      * Aborts the current session.
-     * @param sessionEndHandler closure called after session is successfully aborted
+     * @param sessionAbortHandler closure called after session is successfully aborted
      */
-    fun abort(sessionEndHandler: () -> Unit = {}) {
+    fun abort(sessionAbortHandler: () -> Unit = { }) {
         if (!isSessionActive) {
             Log.debug(LOG_TAG, sourceTag, "abort - failed to abort session. Media Session ($id) is inactive.")
             return
         }
 
-        this.sessionEndHandler = sessionEndHandler
         isSessionActive = false
-        handleSessionAbort()
+        handleSessionAbort(sessionAbortHandler)
     }
 
     /**
@@ -88,13 +83,15 @@ internal abstract class MediaSession(
 
     /**
      * Ends the current session.
+     * @param sessionEndHandler closure called after session is successfully ended
      */
-    protected abstract fun handleSessionEnd()
+    protected abstract fun handleSessionEnd(sessionEndHandler: () -> Unit)
 
     /**
      * Aborts the current session.
+     * @param sessionAbortHandler closure called after session is successfully aborted
      */
-    protected abstract fun handleSessionAbort()
+    protected abstract fun handleSessionAbort(sessionAbortHandler: () -> Unit)
 
     /**
      * Queues the [XDMMediaEvent] for processing.
@@ -106,13 +103,15 @@ internal abstract class MediaSession(
      * Handles response from server containing the session ID.
      * @param requestEventId the [Edge] request event ID
      * @param backendSessionId the backend session ID for the current [MediaSession]
+     * @param sessionAbortHandler closure called if the session is aborted due to an invalid backendSessionId
      */
-    abstract fun handleSessionUpdate(requestEventId: String, backendSessionId: String?)
+    abstract fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit = { })
 
     /**
      * Handles error responses from the server.
      * @param requestEventId the [Edge] request event ID
      * @param data contains errors returned by the backend server
+     * @param sessionAbortHandler closure called if the session is aborted due to the error response
      */
-    abstract fun handleErrorResponse(requestEventId: String, data: Map<String, Any>)
+    abstract fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit = { })
 }

@@ -18,7 +18,7 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -63,7 +63,19 @@ class MediaSessionTests {
         session.end(sessionEndHandler)
 
         assertTrue(session.handleSessionEndCalled)
-        assertEquals(sessionEndHandler, session.sessionEndHandler)
+        assertEquals(sessionEndHandler, session.handleSessionEndParamEndHandler)
+        assertFalse(session.isSessionActive) // end() sets session active to false
+    }
+
+    @Test
+    fun `end() with active session calls handleSessionEnd with default handler`() {
+        val session = SpyMediaSession(id, mockState, dispatcher)
+        session.isSessionActive = true
+
+        session.end()
+
+        assertTrue(session.handleSessionEndCalled)
+        assertNotNull(session.handleSessionEndParamEndHandler)
         assertFalse(session.isSessionActive) // end() sets session active to false
     }
 
@@ -76,7 +88,7 @@ class MediaSessionTests {
         session.end(sessionEndHandler)
 
         assertFalse(session.handleSessionEndCalled)
-        assertNotEquals(session, session.sessionEndHandler)
+        assertNull(session.handleSessionEndParamEndHandler)
     }
 
     @Test
@@ -88,7 +100,19 @@ class MediaSessionTests {
         session.abort(sessionEndHandler)
 
         assertTrue(session.handleSessionAbortCalled)
-        assertEquals(sessionEndHandler, session.sessionEndHandler)
+        assertEquals(sessionEndHandler, session.handleSessionAbortParamAbortHandler)
+        assertFalse(session.isSessionActive) // abort() sets session active to false
+    }
+
+    @Test
+    fun `abort() with active session calls handleSessionAbort with default handler`() {
+        val session = SpyMediaSession(id, mockState, dispatcher)
+        session.isSessionActive = true
+
+        session.abort()
+
+        assertTrue(session.handleSessionAbortCalled)
+        assertNotNull(session.handleSessionAbortParamAbortHandler)
         assertFalse(session.isSessionActive) // abort() sets session active to false
     }
 
@@ -101,7 +125,7 @@ class MediaSessionTests {
         session.end(sessionEndHandler)
 
         assertFalse(session.handleSessionAbortCalled)
-        assertNotEquals(session, session.sessionEndHandler)
+        assertNull(session.handleSessionAbortParamAbortHandler)
     }
 
     private class SpyMediaSession(
@@ -120,13 +144,17 @@ class MediaSessionTests {
         }
 
         var handleSessionEndCalled: Boolean = false
-        override fun handleSessionEnd() {
+        var handleSessionEndParamEndHandler: (() -> Unit)? = null
+        override fun handleSessionEnd(sessionEndHandler: () -> Unit) {
             handleSessionEndCalled = true
+            handleSessionEndParamEndHandler = sessionEndHandler
         }
 
         var handleSessionAbortCalled: Boolean = false
-        override fun handleSessionAbort() {
+        var handleSessionAbortParamAbortHandler: (() -> Unit)? = null
+        override fun handleSessionAbort(sessionAbortHandler: () -> Unit) {
             handleSessionAbortCalled = true
+            handleSessionAbortParamAbortHandler = sessionAbortHandler
         }
 
         var handleQueueEventCalled: Boolean = false
@@ -139,19 +167,23 @@ class MediaSessionTests {
         var handleSessionUpdateCalled: Boolean = false
         var handleSessionUpdateParamRequestEventId: String? = null
         var handleSessionUpdateParamBackendSessionId: String? = null
-        override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
+        var handleSessionUpdateParamAbortHandler: (() -> Unit)? = null
+        override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit) {
             handleSessionUpdateCalled = true
             handleSessionUpdateParamRequestEventId = requestEventId
             handleSessionUpdateParamBackendSessionId = backendSessionId
+            handleSessionUpdateParamAbortHandler = sessionAbortHandler
         }
 
         var handleErrorResponseCalled: Boolean = false
         var handleErrorResponseParamRequestEventId: String? = null
         var handleErrorResponseParamData: Map<String, Any>? = null
-        override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
+        var handleErrorResponseParamAbortHandler: (() -> Unit)? = null
+        override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit) {
             handleErrorResponseCalled = true
             handleErrorResponseParamRequestEventId = requestEventId
             handleErrorResponseParamData = data
+            handleErrorResponseParamAbortHandler = sessionAbortHandler
         }
     }
 }

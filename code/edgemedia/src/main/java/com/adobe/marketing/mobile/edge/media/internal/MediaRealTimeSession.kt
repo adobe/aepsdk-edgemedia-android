@@ -54,9 +54,10 @@ internal class MediaRealTimeSession(
     /**
      * Handles session end requests. Attempts to finish processing any queued events and calls the
      * session end closure if all events were processed.
+     * @param sessionEndHandler closure called after session is successfully ended
      * @see [MediaSession.end]
      */
-    override fun handleSessionEnd() {
+    override fun handleSessionEnd(sessionEndHandler: () -> Unit) {
         processMediaEvents()
         if (events.isEmpty()) {
             sessionEndHandler()
@@ -65,11 +66,12 @@ internal class MediaRealTimeSession(
 
     /**
      * Handles session abort requests. Removes all queued events and calls the session end closure.
+     * @param sessionAbortHandler closure called after session is successfully aborted
      * @see [MediaSession.abort]
      */
-    override fun handleSessionAbort() {
+    override fun handleSessionAbort(sessionAbortHandler: () -> Unit) {
         events.clear()
-        sessionEndHandler()
+        sessionAbortHandler()
     }
 
     /**
@@ -85,9 +87,14 @@ internal class MediaRealTimeSession(
      * Handles the media backend session id dispatched from the Edge extension.
      * If the backend session id is valid (not null or empty) then triggers the event processing
      * loop. Aborts the current session if the backend session id is invalid.
+     *
+     * @param requestEventId the [Edge] request event ID
+     * @param backendSessionId the backend session ID for the current [MediaSession]
+     * @param sessionAbortHandler closure passed to [abort] if backendSessionId is invalid
+     *
      * @see [MediaSession.abort]
      */
-    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
+    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
@@ -96,16 +103,21 @@ internal class MediaRealTimeSession(
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {
-            abort(sessionEndHandler)
+            abort(sessionAbortHandler)
         }
     }
 
     /**
      * Handles media backend error response dispatched from the Edge extension.
      * Handles errors of type `va-edge-0400-400` and code `400` by aborting the current session.
+     *
+     * @param requestEventId the [Edge] request event ID
+     * @param data contains errors returned by the backend server
+     * @param sessionAbortHandler closure passed to [abort] if error is 400
+     *
      * @see [MediaSession.abort]
      */
-    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
+    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
@@ -119,7 +131,7 @@ internal class MediaRealTimeSession(
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
             Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
-            abort(sessionEndHandler)
+            abort(sessionAbortHandler)
         }
     }
 
