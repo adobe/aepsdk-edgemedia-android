@@ -172,10 +172,10 @@ class MediaRealTimeSessionTests {
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data) {
-            fail("Session end handler should not be called!")
+            fail("Session abort handler should not be called!")
         }
 
-        // Add delay to ensure session end handler is not called
+        // Add delay to ensure session abort handler is not called
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
@@ -194,10 +194,10 @@ class MediaRealTimeSessionTests {
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data) {
-            fail("Session end handler should not be called!")
+            fail("Session abort handler should not be called!")
         }
 
-        // Add delay to ensure session end handler is not called
+        // Add delay to ensure session abort handler is not called
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
@@ -217,10 +217,10 @@ class MediaRealTimeSessionTests {
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data) {
-            fail("Session end handler should not be called!")
+            fail("Session abort handler should not be called!")
         }
 
-        // Add delay to ensure session end handler is not called
+        // Add delay to ensure session abort handler is not called
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
@@ -239,10 +239,10 @@ class MediaRealTimeSessionTests {
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse("otherRequestId", data) {
-            fail("Session end handler should not be called!")
+            fail("Session abort handler should not be called!")
         }
 
-        // Add delay to ensure session end handler is not called
+        // Add delay to ensure session abort handler is not called
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
@@ -303,7 +303,7 @@ class MediaRealTimeSessionTests {
     }
 
     @Test
-    fun `abort() clears queue and calls session end handler`() {
+    fun `abort() clears queue and calls session abort handler`() {
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
 
@@ -372,7 +372,7 @@ class MediaRealTimeSessionTests {
         val event = getXDMMediaEvent(XDMMediaEventType.PLAY)
 
         val session = MediaRealTimeSession(id, mockState) {
-            fail("Session end handler should not be called!")
+            fail("Dispatch handler should not be called!")
         }
 
         session.mediaBackendSessionId = null
