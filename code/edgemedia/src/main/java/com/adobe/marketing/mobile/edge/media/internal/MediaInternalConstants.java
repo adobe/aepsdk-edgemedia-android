@@ -21,9 +21,8 @@ final class MediaInternalConstants {
     static final class Media {
         // TODO - use EventType.EDGE_MEDIA when released
         static final String EVENT_TYPE_EDGE_MEDIA = "com.adobe.eventType.edgeMedia";
-        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
+        static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.createTracker";
         static final String EVENT_SOURCE_TRACK_MEDIA = "com.adobe.eventSource.trackMedia";
-        static final String EVENT_SOURCE_SESSION_CREATED = "com.adobe.eventSource.sessionCreated";
         static final String EVENT_SOURCE_MEDIA_EDGE_SESSION = "media-analytics:new-session";
 
         private Media() {}
@@ -42,6 +41,9 @@ final class MediaInternalConstants {
         static final String REQUEST_EVENT_ID = "requestEventId";
         static final String PAYLOAD = "payload";
         static final String SESSION_ID = "sessionId";
+        static final long ERROR_CODE_400 = 400L;
+        static final String ERROR_TYPE_VA_EDGE_400 =
+                "https://ns.adobe.com/aep/errors/va-edge-0400-400";
 
         private Edge() {}
     }

@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 public class MediaTests {
 
     static final String EVENT_TYPE_MEDIA = "com.adobe.eventType.edgeMedia";
-    static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.requestTracker";
+    static final String EVENT_SOURCE_TRACKER_REQUEST = "com.adobe.eventSource.createTracker";
     static final String TRACKER_ID = "trackerid";
     static final String TRACKER_EVENT_PARAM = "event.param";
 

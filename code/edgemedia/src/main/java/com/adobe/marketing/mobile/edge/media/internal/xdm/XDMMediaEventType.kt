@@ -12,22 +12,28 @@
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
 internal enum class XDMMediaEventType(val value: String) {
-    SESSION_START("media.sessionStart"),
-    SESSION_COMPLETE("media.sessionComplete"),
-    SESSION_END("media.sessionEnd"),
-    PLAY("media.play"),
-    PAUSE_START("media.pauseStart"),
-    PING("media.ping"),
-    ERROR("media.error"),
-    BUFFER_START("media.bufferStart"),
-    BITRATE_CHANGE("media.bitrateChange"),
-    AD_BREAK_START("media.adBreakStart"),
-    AD_BREAK_COMPLETE("media.adBreakComplete"),
-    AD_START("media.adStart"),
-    AD_SKIP("media.adSkip"),
-    AD_COMPLETE("media.adComplete"),
-    CHAPTER_SKIP("media.chapterSkip"),
-    CHAPTER_START("media.chapterStart"),
-    CHAPTER_COMPLETE("media.chapterComplete"),
-    STATES_UPDATE("media.statesUpdate")
+    SESSION_START("sessionStart"),
+    SESSION_COMPLETE("sessionComplete"),
+    SESSION_END("sessionEnd"),
+    PLAY("play"),
+    PAUSE_START("pauseStart"),
+    PING("ping"),
+    ERROR("error"),
+    BUFFER_START("bufferStart"),
+    BITRATE_CHANGE("bitrateChange"),
+    AD_BREAK_START("adBreakStart"),
+    AD_BREAK_COMPLETE("adBreakComplete"),
+    AD_START("adStart"),
+    AD_SKIP("adSkip"),
+    AD_COMPLETE("adComplete"),
+    CHAPTER_SKIP("chapterSkip"),
+    CHAPTER_START("chapterStart"),
+    CHAPTER_COMPLETE("chapterComplete"),
+    STATES_UPDATE("statesUpdate");
+
+    companion object {
+        fun getTypeString(type: XDMMediaEventType): String {
+            return "media.${type.value}"
+        }
+    }
 }
