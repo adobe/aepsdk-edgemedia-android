@@ -204,4 +204,10 @@ final class MediaInternalConstants {
             private StandardAdMetadata() {}
         }
     }
+
+    static final class ErrorSource {
+        static final String PLAYER = "player";
+
+        private ErrorSource() {}
+    }
 }
