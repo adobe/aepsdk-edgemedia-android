@@ -31,8 +31,8 @@ internal abstract class MediaSession(
 
     private val sourceTag = "MediaSession" // Log source tag
 
-    @VisibleForTesting
     internal var isSessionActive: Boolean = true
+        @VisibleForTesting internal set
 
     /**
      * Queues the [XDMMediaEvent].
