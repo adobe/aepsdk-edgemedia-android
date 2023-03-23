@@ -29,7 +29,7 @@ internal class MediaEventProcessor(
         }
 
         // Session may be aborted if backend session ID is invalid
-        mediaSessions.values.removeAll { it.isSessionActive }
+        mediaSessions.values.removeAll { !it.isSessionActive }
     }
 
     fun notifyErrorResponse(requestEventId: String, data: Map<String, Any>) {
@@ -38,7 +38,7 @@ internal class MediaEventProcessor(
         }
 
         // Session may be aborted on error response
-        mediaSessions.values.removeAll { it.isSessionActive }
+        mediaSessions.values.removeAll { !it.isSessionActive }
     }
 
     fun updateMediaState(stateData: Map<String, Any>) {
