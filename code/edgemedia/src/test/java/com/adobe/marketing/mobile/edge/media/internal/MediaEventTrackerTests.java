@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
-public class MediaCollectionTrackerTests {
+public class MediaEventTrackerTests {
     Map<String, String> emptyMetadata;
     Map<String, Object> emptyParams;
     MediaInfo mediaInfo, mediaInfoDefaultPreroll, mediaInfoCustomPreroll;
@@ -43,7 +43,7 @@ public class MediaCollectionTrackerTests {
     StateInfo state1;
     Map<String, String> metadata;
     TestMediaPublicTracker mediaTrackerAPIEventGenertor;
-    MediaCollectionTracker tracker;
+    MediaEventTracker tracker;
     Map<String, String> denylistMetadata;
     Map<String, String> cleanedMetadata;
 
@@ -53,7 +53,7 @@ public class MediaCollectionTrackerTests {
     private static final String KEY_SESSIONID = "key_sessionid";
     private final FakeMediaHitProcessor hitProcessor;
 
-    public MediaCollectionTrackerTests() {
+    public MediaEventTrackerTests() {
 
         emptyMetadata = new HashMap<>();
         emptyParams = new HashMap<>();
@@ -116,7 +116,7 @@ public class MediaCollectionTrackerTests {
         mediaTrackerAPIEventGenertor = TestMediaPublicTracker.create("tracker0", true);
 
         hitProcessor = new FakeMediaHitProcessor();
-        tracker = new MediaCollectionTracker(hitProcessor, config);
+        tracker = new MediaEventTracker(hitProcessor, config);
     }
 
     boolean trackerHandleAPI() {
@@ -155,7 +155,7 @@ public class MediaCollectionTrackerTests {
             return null;
         }
 
-        MediaRuleName rule = MediaRuleName.eventNameToRule(eventName);
+        MediaRuleName rule = MediaRuleName.getRuleName(eventName);
         if (rule == MediaRuleName.Invalid) {
             return null;
         }

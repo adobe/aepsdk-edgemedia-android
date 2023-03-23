@@ -23,17 +23,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class MediaCollectionTracker implements MediaEventTracking {
-    private static final String LOG_TAG = "MediaCollectionTracker";
+class MediaEventTracker implements MediaEventTracking {
+    private static final String SOURCE_TAG = "MediaCollectionTracker";
     private static final String KEY_INFO = "key_info";
     private static final String KEY_METADATA = "key_metadata";
     private static final String KEY_EVENT_TS = "key_eventts";
     private static final String KEY_SESSIONID = "key_sessionid";
     private static final int INVALID_NUMERIC_VALUE = -1;
-    private MediaCollectionHitGenerator mediaHitGenerator;
     private MediaContext mediaContext;
     private final MediaRuleEngine ruleEngine;
     private MediaHitProcessor hitProcessor;
+    private MediaCollectionHitGenerator hitGenerator;
     private Map<String, Object> trackerConfig;
 
     // Idle Detection
@@ -55,7 +55,7 @@ class MediaCollectionTracker implements MediaEventTracking {
     private boolean contentStarted;
     private long contentStartRefTs;
 
-    MediaCollectionTracker(final MediaHitProcessor hitProcessor, final Map<String, Object> config) {
+    MediaEventTracker(final MediaHitProcessor hitProcessor, final Map<String, Object> config) {
         reset();
 
         this.hitProcessor = hitProcessor;
@@ -68,7 +68,7 @@ class MediaCollectionTracker implements MediaEventTracking {
     }
 
     void reset() {
-        mediaHitGenerator = null;
+        hitGenerator = null;
         mediaContext = null;
 
         isTrackerIdle = false;
@@ -98,16 +98,16 @@ class MediaCollectionTracker implements MediaEventTracking {
         if (eventName == null) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
-                    LOG_TAG,
+                    SOURCE_TAG,
                     "track - Event name is missing in track event data");
             return false;
         }
 
-        MediaRuleName rule = MediaRuleName.eventNameToRule(eventName);
+        MediaRuleName rule = MediaRuleName.getRuleName(eventName);
         if (rule == MediaRuleName.Invalid) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
-                    LOG_TAG,
+                    SOURCE_TAG,
                     "track - Invalid event name passed in track event data");
             return false;
         }
@@ -121,7 +121,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         } else {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
-                    LOG_TAG,
+                    SOURCE_TAG,
                     "track - Event timestamp is missing in track event data");
             return false;
         }
@@ -152,7 +152,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         if (rule != MediaRuleName.PlayheadUpdate) {
             Log.trace(
                     MediaInternalConstants.LOG_TAG,
-                    LOG_TAG,
+                    SOURCE_TAG,
                     "track - Processing event - %s",
                     eventName);
         }
@@ -168,7 +168,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRuleResponse response = this.ruleEngine.processRule(rule, context);
 
         if (!response.isValid) {
-            Log.warning(MediaInternalConstants.LOG_TAG, LOG_TAG, response.message);
+            Log.warning(MediaInternalConstants.LOG_TAG, SOURCE_TAG, response.message);
         }
 
         return response.isValid;
@@ -354,7 +354,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                     if (isMediaIdle
                             && (!isTrackerIdle && (refTS - mediaIdleStartTS) >= IDLE_TIMEOUT)) {
                         // We stop tracking if media has been idle for 30 mins.
-                        mediaHitGenerator.processSessionAbort();
+                        hitGenerator.processSessionAbort();
                         isTrackerIdle = true;
                     } else if (!isMediaIdle) {
                         // Set the media in Idle state and store the TS
@@ -365,7 +365,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                     // Media is not currently idle
                     if (isTrackerIdle) {
                         // We resume tracking if we have stopped tracking.
-                        mediaHitGenerator.processSessionRestart();
+                        hitGenerator.processSessionRestart();
                         isTrackerIdle = false;
 
                         sessionRefTs = getRefTS(context);
@@ -400,7 +400,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                 long refTS = getRefTS(context);
 
                 if ((refTS - contentStartRefTs) >= CONTENT_START_DURATION) {
-                    mediaHitGenerator.processPlayback(true);
+                    hitGenerator.processPlayback(true);
                     contentStarted = true;
                 }
 
@@ -419,8 +419,8 @@ class MediaCollectionTracker implements MediaEventTracking {
                         && refTs - sessionRefTs
                                 >= SESSION_TIMEOUT_IN_MILLIS) { // Session is playing for more than
                     // 24hrs. Restart session.
-                    mediaHitGenerator.processSessionAbort();
-                    mediaHitGenerator.processSessionRestart();
+                    hitGenerator.processSessionAbort();
+                    hitGenerator.processSessionRestart();
                     sessionRefTs = refTs;
                     contentStarted = false;
                     contentStartRefTs = INVALID_TIMESTAMP;
@@ -432,8 +432,8 @@ class MediaCollectionTracker implements MediaEventTracking {
             (rule, context) -> {
                 long refTS = getRefTS(context);
 
-                if (mediaHitGenerator != null && getRefTS(context) != -1) {
-                    mediaHitGenerator.setRefTS(refTS);
+                if (hitGenerator != null && getRefTS(context) != -1) {
+                    hitGenerator.setRefTS(refTS);
                 }
 
                 return true;
@@ -478,7 +478,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                 boolean flushState =
                         (rule.getName() == MediaRuleName.AdStart.ordinal())
                                 || (rule.getName() == MediaRuleName.AdBreakComplete.ordinal());
-                mediaHitGenerator.processPlayback(flushState);
+                hitGenerator.processPlayback(flushState);
 
                 return true;
             };
@@ -496,11 +496,11 @@ class MediaCollectionTracker implements MediaEventTracking {
 
                 mediaContext = new MediaContext(mediaInfo, metadata);
 
-                mediaHitGenerator =
+                hitGenerator =
                         new MediaCollectionHitGenerator(
                                 mediaContext, hitProcessor, trackerConfig, refTS, refSessionId);
 
-                mediaHitGenerator.processMediaStart();
+                hitGenerator.processMediaStart();
                 sessionRefTs = refTS;
 
                 inPrerollInterval = mediaInfo.getPrerollWaitTime() > 0;
@@ -511,9 +511,9 @@ class MediaCollectionTracker implements MediaEventTracking {
 
     IMediaRuleCallback cmdMediaComplete =
             (rule, context) -> {
-                mediaHitGenerator.processMediaComplete();
+                hitGenerator.processMediaComplete();
 
-                mediaHitGenerator = null;
+                hitGenerator = null;
                 mediaContext = null;
 
                 return true;
@@ -521,9 +521,9 @@ class MediaCollectionTracker implements MediaEventTracking {
 
     IMediaRuleCallback cmdMediaSkip =
             (rule, context) -> {
-                mediaHitGenerator.processMediaSkip();
+                hitGenerator.processMediaSkip();
 
-                mediaHitGenerator = null;
+                hitGenerator = null;
                 mediaContext = null;
 
                 return true;
@@ -535,14 +535,14 @@ class MediaCollectionTracker implements MediaEventTracking {
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(info);
                 mediaContext.setAdBreakInfo(adBreakInfo);
-                mediaHitGenerator.processAdBreakStart();
+                hitGenerator.processAdBreakStart();
 
                 return true;
             };
 
     IMediaRuleCallback cmdAdBreakComplete =
             (rule, context) -> {
-                mediaHitGenerator.processAdBreakComplete();
+                hitGenerator.processAdBreakComplete();
                 mediaContext.clearAdBreakInfo();
 
                 return true;
@@ -551,7 +551,7 @@ class MediaCollectionTracker implements MediaEventTracking {
     IMediaRuleCallback cmdAdBreakSkip =
             (rule, context) -> {
                 if (mediaContext.isInAdBreak()) {
-                    mediaHitGenerator.processAdBreakSkip();
+                    hitGenerator.processAdBreakSkip();
                     mediaContext.clearAdBreakInfo();
                 }
 
@@ -565,14 +565,14 @@ class MediaCollectionTracker implements MediaEventTracking {
                 AdInfo adInfo = AdInfo.fromObjectMap(info);
                 Map<String, String> metadata = getMetadata(context);
                 mediaContext.setAdInfo(adInfo, metadata);
-                mediaHitGenerator.processAdStart();
+                hitGenerator.processAdStart();
 
                 return true;
             };
 
     IMediaRuleCallback cmdAdComplete =
             (rule, context) -> {
-                mediaHitGenerator.processAdComplete();
+                hitGenerator.processAdComplete();
                 mediaContext.clearAdInfo();
 
                 return true;
@@ -581,7 +581,7 @@ class MediaCollectionTracker implements MediaEventTracking {
     IMediaRuleCallback cmdAdSkip =
             (rule, context) -> {
                 if (mediaContext.isInAd()) {
-                    mediaHitGenerator.processAdSkip();
+                    hitGenerator.processAdSkip();
                     mediaContext.clearAdInfo();
                 }
 
@@ -595,14 +595,14 @@ class MediaCollectionTracker implements MediaEventTracking {
                 ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(info);
                 Map<String, String> metadata = getMetadata(context);
                 mediaContext.setChapterInfo(chapterInfo, metadata);
-                mediaHitGenerator.processChapterStart();
+                hitGenerator.processChapterStart();
 
                 return true;
             };
 
     IMediaRuleCallback cmdChapterComplete =
             (rule, context) -> {
-                mediaHitGenerator.processChapterComplete();
+                hitGenerator.processChapterComplete();
                 mediaContext.clearChapterInfo();
 
                 return true;
@@ -611,7 +611,7 @@ class MediaCollectionTracker implements MediaEventTracking {
     IMediaRuleCallback cmdChapterSkip =
             (rule, context) -> {
                 if (mediaContext.isInChapter()) {
-                    mediaHitGenerator.processChapterSkip();
+                    hitGenerator.processChapterSkip();
                     mediaContext.clearChapterInfo();
                 }
 
@@ -665,7 +665,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                 String errorId = getError(context);
 
                 if (errorId != null) {
-                    mediaHitGenerator.processError(errorId);
+                    hitGenerator.processError(errorId);
                 }
 
                 return true;
@@ -673,7 +673,7 @@ class MediaCollectionTracker implements MediaEventTracking {
 
     IMediaRuleCallback cmdBitrateChange =
             (rule, context) -> {
-                mediaHitGenerator.processBitrateChange();
+                hitGenerator.processBitrateChange();
 
                 return true;
             };
@@ -694,7 +694,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 StateInfo stateInfo = StateInfo.fromObjectMap(info);
                 mediaContext.startState(stateInfo);
-                mediaHitGenerator.processStateStart(stateInfo);
+                hitGenerator.processStateStart(stateInfo);
                 return true;
             };
 
@@ -704,7 +704,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 StateInfo stateInfo = StateInfo.fromObjectMap(info);
                 mediaContext.endState(stateInfo);
-                mediaHitGenerator.processStateEnd(stateInfo);
+                hitGenerator.processStateEnd(stateInfo);
                 return true;
             };
 
@@ -727,8 +727,8 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule mediaStart =
                 new MediaRule(MediaRuleName.MediaStart.ordinal(), "API::trackSessionStart");
         mediaStart
-                .addPredicate(isInMedia, false, ErrorMessage.ErrInMedia)
-                .addPredicate(isValidMediaInfo, true, ErrorMessage.ErrInvalidMediaInfo)
+                .addPredicate(isInMedia, false, ErrorMessage.ErrInMedia.getValue())
+                .addPredicate(isValidMediaInfo, true, ErrorMessage.ErrInvalidMediaInfo.getValue())
                 .addAction(cmdMediaStart);
 
         ruleEngine.addRule(mediaStart);
@@ -737,7 +737,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule mediaComplete =
                 new MediaRule(MediaRuleName.MediaComplete.ordinal(), "API::trackSessionComplete");
         mediaComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
                 .addAction(cmdAdSkip)
                 .addAction(cmdAdBreakSkip)
                 .addAction(cmdChapterSkip)
@@ -749,7 +749,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule mediaSkip =
                 new MediaRule(MediaRuleName.MediaSkip.ordinal(), "API::trackSessionEnd");
         mediaSkip
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
                 .addAction(cmdAdSkip)
                 .addAction(cmdAdBreakSkip)
                 .addAction(cmdChapterSkip)
@@ -759,16 +759,19 @@ class MediaCollectionTracker implements MediaEventTracking {
 
         // MediaRule::trackError
         MediaRule error = new MediaRule(MediaRuleName.Error.ordinal(), "API::trackError");
-        error.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidErrorInfo, true, ErrorMessage.ErrInvalidErrorId)
+        error.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isValidErrorInfo, true, ErrorMessage.ErrInvalidErrorId.getValue())
                 .addAction(cmdError);
 
         ruleEngine.addRule(error);
 
         // MediaRule::trackPlay
         MediaRule play = new MediaRule(MediaRuleName.Play.ordinal(), "API::trackPlay");
-        play.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
+        play.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
                 .addAction(cmdSeekComplete)
                 .addAction(cmdBufferComplete)
                 .addAction(cmdPlay);
@@ -777,10 +780,13 @@ class MediaCollectionTracker implements MediaEventTracking {
 
         // MediaRule::trackPause
         MediaRule pause = new MediaRule(MediaRuleName.Pause.ordinal(), "API::trackPause");
-        pause.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
-                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer)
-                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek)
+        pause.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
+                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer.getValue())
+                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek.getValue())
                 .addAction(cmdSeekComplete)
                 .addAction(cmdBufferComplete)
                 .addAction(cmdPause);
@@ -791,10 +797,13 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule bufferStart =
                 new MediaRule(MediaRuleName.BufferStart.ordinal(), "API::trackEvent(BufferStart)");
         bufferStart
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
-                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer)
-                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
+                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer.getValue())
+                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek.getValue())
                 .addAction(cmdBufferStart);
 
         ruleEngine.addRule(bufferStart);
@@ -804,9 +813,12 @@ class MediaCollectionTracker implements MediaEventTracking {
                 new MediaRule(
                         MediaRuleName.BufferComplete.ordinal(), "API::trackEvent(BufferComplete)");
         bufferComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
-                .addPredicate(isInBuffering, true, ErrorMessage.ErrNotInBuffer)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
+                .addPredicate(isInBuffering, true, ErrorMessage.ErrNotInBuffer.getValue())
                 .addAction(cmdBufferComplete);
 
         ruleEngine.addRule(bufferComplete);
@@ -815,10 +827,13 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule seekStart =
                 new MediaRule(MediaRuleName.SeekStart.ordinal(), "API::trackEvent(SeekStart)");
         seekStart
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
-                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek)
-                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
+                .addPredicate(isInSeeking, false, ErrorMessage.ErrInSeek.getValue())
+                .addPredicate(isInBuffering, false, ErrorMessage.ErrInBuffer.getValue())
                 .addAction(cmdSeekStart);
 
         ruleEngine.addRule(seekStart);
@@ -828,9 +843,12 @@ class MediaCollectionTracker implements MediaEventTracking {
                 new MediaRule(
                         MediaRuleName.SeekComplete.ordinal(), "API::trackEvent(SeekComplete)");
         seekComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(allowPlaybackStateChange, true, ErrorMessage.ErrInvalidPlaybackState)
-                .addPredicate(isInSeeking, true, ErrorMessage.ErrNotInSeek)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        allowPlaybackStateChange,
+                        true,
+                        ErrorMessage.ErrInvalidPlaybackState.getValue())
+                .addPredicate(isInSeeking, true, ErrorMessage.ErrNotInSeek.getValue())
                 .addAction(cmdSeekComplete);
 
         ruleEngine.addRule(seekComplete);
@@ -840,9 +858,13 @@ class MediaCollectionTracker implements MediaEventTracking {
                 new MediaRule(
                         MediaRuleName.AdBreakStart.ordinal(), "API::trackEvent(AdBreakStart)");
         adBreakStart
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidAdBreakInfo, true, ErrorMessage.ErrInvalidAdBreakInfo)
-                .addPredicate(isDifferentAdBreakInfo, true, ErrorMessage.ErrDuplicateAdBreakInfo)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        isValidAdBreakInfo, true, ErrorMessage.ErrInvalidAdBreakInfo.getValue())
+                .addPredicate(
+                        isDifferentAdBreakInfo,
+                        true,
+                        ErrorMessage.ErrDuplicateAdBreakInfo.getValue())
                 .addAction(cmdAdSkip)
                 .addAction(cmdAdBreakSkip)
                 .addAction(cmdAdBreakStart);
@@ -855,8 +877,8 @@ class MediaCollectionTracker implements MediaEventTracking {
                         MediaRuleName.AdBreakComplete.ordinal(),
                         "API::trackEvent(AdBreakComplete)");
         adBreakComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak.getValue())
                 .addAction(cmdAdSkip)
                 .addAction(cmdAdBreakComplete);
 
@@ -865,10 +887,10 @@ class MediaCollectionTracker implements MediaEventTracking {
         // MediaRule::trackEvent(AdStart)
         MediaRule adStart =
                 new MediaRule(MediaRuleName.AdStart.ordinal(), "API::trackEvent(AdStart)");
-        adStart.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak)
-                .addPredicate(isValidAdInfo, true, ErrorMessage.ErrInvalidAdInfo)
-                .addPredicate(isDifferentAdInfo, true, ErrorMessage.ErrDuplicateAdInfo)
+        adStart.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak.getValue())
+                .addPredicate(isValidAdInfo, true, ErrorMessage.ErrInvalidAdInfo.getValue())
+                .addPredicate(isDifferentAdInfo, true, ErrorMessage.ErrDuplicateAdInfo.getValue())
                 .addAction(cmdAdSkip)
                 .addAction(cmdAdStart);
 
@@ -878,18 +900,18 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule adComplete =
                 new MediaRule(MediaRuleName.AdComplete.ordinal(), "API::trackEvent(AdComplete)");
         adComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak)
-                .addPredicate(isInAd, true, ErrorMessage.ErrNotInAd)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak.getValue())
+                .addPredicate(isInAd, true, ErrorMessage.ErrNotInAd.getValue())
                 .addAction(cmdAdComplete);
 
         ruleEngine.addRule(adComplete);
 
         // MediaRule::trackEvent(AdSkip)
         MediaRule adSkip = new MediaRule(MediaRuleName.AdSkip.ordinal(), "API::trackEvent(AdSkip)");
-        adSkip.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak)
-                .addPredicate(isInAd, true, ErrorMessage.ErrNotInAd)
+        adSkip.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInAdBreak, true, ErrorMessage.ErrNotInAdBreak.getValue())
+                .addPredicate(isInAd, true, ErrorMessage.ErrNotInAd.getValue())
                 .addAction(cmdAdSkip);
 
         ruleEngine.addRule(adSkip);
@@ -899,9 +921,13 @@ class MediaCollectionTracker implements MediaEventTracking {
                 new MediaRule(
                         MediaRuleName.ChapterStart.ordinal(), "API::trackEvent(ChapterStart)");
         chapterStart
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidChapterInfo, true, ErrorMessage.ErrInvalidChapterInfo)
-                .addPredicate(isDifferentChapterInfo, true, ErrorMessage.ErrDuplicateChapterInfo)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(
+                        isValidChapterInfo, true, ErrorMessage.ErrInvalidChapterInfo.getValue())
+                .addPredicate(
+                        isDifferentChapterInfo,
+                        true,
+                        ErrorMessage.ErrDuplicateChapterInfo.getValue())
                 .addAction(cmdChapterSkip)
                 .addAction(cmdChapterStart);
 
@@ -913,8 +939,8 @@ class MediaCollectionTracker implements MediaEventTracking {
                         MediaRuleName.ChapterComplete.ordinal(),
                         "API::trackEvent(ChapterComplete)");
         chapterComplete
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInChapter, true, ErrorMessage.ErrNotInChapter)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInChapter, true, ErrorMessage.ErrNotInChapter.getValue())
                 .addAction(cmdChapterComplete);
 
         ruleEngine.addRule(chapterComplete);
@@ -923,8 +949,8 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule chapterSkip =
                 new MediaRule(MediaRuleName.ChapterSkip.ordinal(), "API::trackEvent(ChapterSkip)");
         chapterSkip
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isInChapter, true, ErrorMessage.ErrNotInChapter)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isInChapter, true, ErrorMessage.ErrNotInChapter.getValue())
                 .addAction(cmdChapterSkip);
 
         ruleEngine.addRule(chapterSkip);
@@ -934,7 +960,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                 new MediaRule(
                         MediaRuleName.BitrateChange.ordinal(), "API::trackEvent(BitrateChange)");
         bitrateChange
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
                 .addAction(cmdBitrateChange);
 
         ruleEngine.addRule(bitrateChange);
@@ -943,8 +969,8 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule qoeUpdate =
                 new MediaRule(MediaRuleName.QoEUpdate.ordinal(), "API::updateQoEInfo");
         qoeUpdate
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidQoEInfo, true, ErrorMessage.ErrInvalidQoEInfo)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isValidQoEInfo, true, ErrorMessage.ErrInvalidQoEInfo.getValue())
                 .addAction(cmdQoEUpdate);
 
         ruleEngine.addRule(qoeUpdate);
@@ -953,7 +979,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         MediaRule playheadUpdate =
                 new MediaRule(MediaRuleName.PlayheadUpdate.ordinal(), "API::updatePlayhead");
         playheadUpdate
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
                 .addAction(cmdPlayheadUpdate);
 
         ruleEngine.addRule(playheadUpdate);
@@ -961,19 +987,20 @@ class MediaCollectionTracker implements MediaEventTracking {
         // MediaRule::stateStart
         MediaRule stateStart = new MediaRule(MediaRuleName.StateStart.ordinal(), "API::stateStart");
         stateStart
-                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidStateInfo, true, ErrorMessage.ErrInvalidStateInfo)
-                .addPredicate(isInTrackedState, false, ErrorMessage.ErrInTrackedState)
-                .addPredicate(allowStateTrack, true, ErrorMessage.ErrTrackedStatesLimitReached)
+                .addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isValidStateInfo, true, ErrorMessage.ErrInvalidStateInfo.getValue())
+                .addPredicate(isInTrackedState, false, ErrorMessage.ErrInTrackedState.getValue())
+                .addPredicate(
+                        allowStateTrack, true, ErrorMessage.ErrTrackedStatesLimitReached.getValue())
                 .addAction(cmdStateStart);
 
         ruleEngine.addRule(stateStart);
 
         // MediaRule::stateEnd
         MediaRule stateEnd = new MediaRule(MediaRuleName.StateEnd.ordinal(), "API::stateEnd");
-        stateEnd.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia)
-                .addPredicate(isValidStateInfo, true, ErrorMessage.ErrInvalidStateInfo)
-                .addPredicate(isInTrackedState, true, ErrorMessage.ErrNotInTrackedState)
+        stateEnd.addPredicate(isInMedia, true, ErrorMessage.ErrNotInMedia.getValue())
+                .addPredicate(isValidStateInfo, true, ErrorMessage.ErrInvalidStateInfo.getValue())
+                .addPredicate(isInTrackedState, true, ErrorMessage.ErrNotInTrackedState.getValue())
                 .addAction(cmdStateEnd);
 
         ruleEngine.addRule(stateEnd);
@@ -994,7 +1021,7 @@ class MediaCollectionTracker implements MediaEventTracking {
                 // drop the metadata with null values
                 Log.debug(
                         MediaInternalConstants.LOG_TAG,
-                        LOG_TAG,
+                        SOURCE_TAG,
                         "cleanMetadata - Dropping metadata entry key:%s, since the key/value is"
                                 + " null.");
                 continue;
@@ -1006,7 +1033,7 @@ class MediaCollectionTracker implements MediaEventTracking {
             if (!metadataMatcher.find()) {
                 Log.debug(
                         MediaInternalConstants.LOG_TAG,
-                        LOG_TAG,
+                        SOURCE_TAG,
                         "cleanMetadata - Dropping metadata entry key:%s value:%s. Key should"
                                 + " contain only alphabets, digits, '_' and '.'.",
                         key,
@@ -1040,7 +1067,8 @@ class MediaCollectionTracker implements MediaEventTracking {
                 List<PrerollQueuedRule> reorderedRules = reorderPrerollRules(prerollRulesQueue);
 
                 for (PrerollQueuedRule prerollQueuedRule : reorderedRules) {
-                    processRule(prerollQueuedRule.ruleName, prerollQueuedRule.ruleContext);
+                    processRule(
+                            prerollQueuedRule.getRuleName(), prerollQueuedRule.getRuleContext());
                 }
 
                 prerollRulesQueue.clear();
@@ -1058,7 +1086,7 @@ class MediaCollectionTracker implements MediaEventTracking {
         int adBreakStartPosition = -1;
 
         for (int i = 0; i < rules.size(); i++) {
-            if (rules.get(i).ruleName == MediaRuleName.AdBreakStart.ordinal()) {
+            if (rules.get(i).getRuleName() == MediaRuleName.AdBreakStart.ordinal()) {
                 adBreakStartPosition = i;
                 break;
             }
@@ -1068,11 +1096,11 @@ class MediaCollectionTracker implements MediaEventTracking {
         boolean dropPlay = adBreakStartPosition > -1;
 
         for (PrerollQueuedRule eventRule : rules) {
-            if (eventRule.ruleName == MediaRuleName.Play.ordinal() && dropPlay) {
+            if (eventRule.getRuleName() == MediaRuleName.Play.ordinal() && dropPlay) {
                 continue;
             }
 
-            if (eventRule.ruleName == MediaRuleName.AdBreakStart.ordinal()) {
+            if (eventRule.getRuleName() == MediaRuleName.AdBreakStart.ordinal()) {
                 dropPlay = false;
             }
 
@@ -1085,188 +1113,5 @@ class MediaCollectionTracker implements MediaEventTracking {
     @VisibleForTesting
     MediaHitProcessor getHitProcessor() {
         return hitProcessor;
-    }
-}
-
-enum MediaRuleName {
-    Invalid,
-    MediaStart,
-    MediaComplete,
-    MediaSkip,
-    AdBreakStart,
-    AdBreakComplete,
-    AdStart,
-    AdComplete,
-    AdSkip,
-    ChapterStart,
-    ChapterComplete,
-    ChapterSkip,
-    Play,
-    Pause,
-    SeekStart,
-    SeekComplete,
-    BufferStart,
-    BufferComplete,
-    BitrateChange,
-    Error,
-    QoEUpdate,
-    PlayheadUpdate,
-    StateStart,
-    StateEnd;
-
-    static final Map<String, MediaRuleName> eventToRuleMapping;
-
-    static {
-        eventToRuleMapping = new HashMap<>();
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_START, MediaStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.COMPLETE, MediaComplete);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_END, MediaSkip);
-
-        eventToRuleMapping.put(MediaInternalConstants.EventDataKeys.MediaEventName.PLAY, Play);
-        eventToRuleMapping.put(MediaInternalConstants.EventDataKeys.MediaEventName.PAUSE, Pause);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.ADBREAK_START, AdBreakStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.ADBREAK_COMPLETE,
-                AdBreakComplete);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.AD_START, AdStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.AD_COMPLETE, AdComplete);
-        eventToRuleMapping.put(MediaInternalConstants.EventDataKeys.MediaEventName.AD_SKIP, AdSkip);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_START, ChapterStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_COMPLETE,
-                ChapterComplete);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.CHAPTER_SKIP, ChapterSkip);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.SEEK_START, SeekStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.SEEK_COMPLETE, SeekComplete);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.BUFFER_START, BufferStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.BUFFER_COMPLETE,
-                BufferComplete);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.BITRATE_CHANGE, BitrateChange);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.QOE_UPDATE, QoEUpdate);
-        eventToRuleMapping.put(MediaInternalConstants.EventDataKeys.MediaEventName.ERROR, Error);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.PLAYHEAD_UPDATE,
-                PlayheadUpdate);
-
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.STATE_START, StateStart);
-        eventToRuleMapping.put(
-                MediaInternalConstants.EventDataKeys.MediaEventName.STATE_END, StateEnd);
-    }
-
-    static MediaRuleName eventNameToRule(final String eventName) {
-        if (eventToRuleMapping.containsKey(eventName)) {
-            return eventToRuleMapping.get(eventName);
-        }
-
-        return Invalid;
-    }
-}
-
-class ErrorMessage {
-
-    static final String ErrNotInMedia =
-            "Media tracker is not in tracking session, call 'API:trackSessionStart' to begin a new"
-                    + " tracking session.";
-    static final String ErrInMedia =
-            "Media tracker is in active tracking session, call 'API:trackSessionEnd' or"
-                    + " 'API:trackComplete' to end current tracking session.";
-    static final String ErrInBuffer =
-            "Media tracker is tracking buffer events, call 'API:trackEvent(BufferComplete)' first"
-                    + " to stop tracking buffer events.";
-    static final String ErrNotInBuffer =
-            "Media tracker is not tracking buffer events, call 'API:trackEvent(BufferStart)'"
-                    + " before 'API:trackEvent(BufferComplete)'.";
-    static final String ErrInSeek =
-            "Media tracker is tracking seek events, call 'API:trackEvent(SeekComplete)' first to"
-                    + " stop tracking seek events.";
-    static final String ErrNotInSeek =
-            "Media tracker is not tracking seek events, call 'API:trackEvent(SeekStart)' before"
-                    + " 'API:trackEvent(SeekComplete)'.";
-    static final String ErrNotInAdBreak =
-            "Media tracker is not tracking any AdBreak, call 'API:trackEvent(AdBreakStart)' to"
-                    + " begin tracking AdBreak.";
-    static final String ErrNotInAd =
-            "Media tracker is not tracking any Ad, call 'API:trackEvent(AdStart)' to begin"
-                    + " tracking Ad.";
-    static final String ErrNotInChapter =
-            "Media tracker is not tracking any Chapter, call 'API:trackEvent(ChapterStart)' to"
-                    + " begin tracking Chapter.";
-    static final String ErrInvalidMediaInfo =
-            "MediaInfo passed into 'API:trackSessionStart' is invalid.";
-    static final String ErrInvalidAdBreakInfo =
-            "AdBreakInfo passed into 'API:trackEvent(AdBreakStart)' is invalid.";
-    static final String ErrDuplicateAdBreakInfo =
-            "Media tracker is currently tracking the AdBreak passed into"
-                    + " 'API:trackEvent(AdBreakStart)'.";
-    static final String ErrInvalidAdInfo =
-            "AdInfo passed into 'API:trackEvent(AdStart)' is invalid.";
-    static final String ErrDuplicateAdInfo =
-            "Media tracker is currently tracking the Ad passed into 'API:trackEvent(AdStart)'.";
-    static final String ErrInvalidChapterInfo =
-            "ChapterInfo passed into 'API:trackEvent(ChapterStart)' is invalid.";
-    static final String ErrDuplicateChapterInfo =
-            "Media tracker is currently tracking the Chapter passed into"
-                    + " 'API:trackEvent(ChapterStart)'.";
-    static final String ErrInvalidQoEInfo = "QoEInfo passed into 'API:updateQoEInfo' is invalid.";
-    static final String ErrInvalidPlaybackState =
-            "Media tracker is tracking an AdBreak but not tracking any Ad and will drop any calls"
-                    + " to track playback state (Play, Pause, Buffer or Seek) in this state.";
-    static final String ErrInvalidStateInfo =
-            "StateInfo passed into 'API:trackEvent(StateStart)' or 'API:trackEvent(StateEnd)' is"
-                    + " invalid.";
-    static final String ErrInTrackedState =
-            "Media tracker is already tracking the State passed into 'API:trackEvent(StateStart)'.";
-    static final String ErrNotInTrackedState =
-            "Media tracker is not tracking the State passed into 'API:trackEvent(StateEnd)'.";
-    static final String ErrTrackedStatesLimitReached =
-            "Media tracker is already tracking maximum allowed states (10) per session.";
-    static final String ErrInvalidErrorId =
-            "ErrorId passed into 'API:trackError' is invalid. Please pass valid non-empty non-null"
-                    + " string for ErrorId.";
-}
-
-class PrerollQueuedRule {
-    int ruleName;
-    Map<String, Object> ruleContext;
-
-    PrerollQueuedRule(final int ruleName, final Map<String, Object> ruleContext) {
-        this.ruleName = ruleName;
-        this.ruleContext = ruleContext;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-
-        if (!(o instanceof PrerollQueuedRule)) {
-            return false;
-        }
-
-        PrerollQueuedRule other = (PrerollQueuedRule) o;
-
-        return (ruleName == other.ruleName && ruleContext.equals(other.ruleContext));
     }
 }
