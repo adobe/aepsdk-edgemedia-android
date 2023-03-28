@@ -22,6 +22,7 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMQoeDataDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMSessionDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMStreamType
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class MediaXDMEventHelperTests {
@@ -68,7 +69,7 @@ class MediaXDMEventHelperTests {
     private val muteStateInfo = StateInfo.create(MediaConstants.PlayerState.MUTE)
     private val testStateInfo = StateInfo.create("testStateName")
 
-    val metadata = mutableMapOf("key1" to "value1", "key2" to "value2")
+    val metadata = mutableMapOf("key2" to "value1", "key1" to "value2")
 
     @Test
     fun generateSessionDetails() {
@@ -135,6 +136,13 @@ class MediaXDMEventHelperTests {
     }
 
     @Test
+    fun testGenerateAdvertisingPodDetails_withNullAdBreakInfo_returnsNull() {
+        val advertisingPodDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(null)
+
+        assertNull(advertisingPodDetails)
+    }
+
+    @Test
     fun testGenerateAdvertisingDetails() {
         val expectedAdvertisingDetails = XDMAdvertisingDetails()
         expectedAdvertisingDetails.name = "id"
@@ -152,6 +160,13 @@ class MediaXDMEventHelperTests {
         val advertisingDetails = MediaXDMEventHelper.generateAdvertisingDetails(adInfo, metadata)
 
         assertEquals(expectedAdvertisingDetails, advertisingDetails)
+    }
+
+    @Test
+    fun testGenerateAdvertisingDetails_withNullAdInfo_returnsNull() {
+        val advertisingDetails = MediaXDMEventHelper.generateAdvertisingDetails(null, metadata)
+
+        assertNull(advertisingDetails)
     }
 
     @Test
@@ -177,6 +192,13 @@ class MediaXDMEventHelperTests {
     }
 
     @Test
+    fun testGenerateChapterDetails_withNullChapterInfo_returnsNull() {
+        val chapterDetails = MediaXDMEventHelper.generateChapterDetails(null)
+
+        assertNull(chapterDetails)
+    }
+
+    @Test
     fun testGenerateChapterMetadataDetails() {
         val expectedMetadata = listOf(
             XDMCustomMetadata("key1", "value1"),
@@ -196,6 +218,13 @@ class MediaXDMEventHelperTests {
     }
 
     @Test
+    fun testGenerateQoEDetails_withNullQoEInfo_returnsNull() {
+        val qoeDetails = MediaXDMEventHelper.generateQoEDataDetails(null)
+
+        assertNull(qoeDetails)
+    }
+
+    @Test
     fun testGenerateErrorDetails() {
         val expectedErrorDetails = XDMErrorDetails("testError", "player")
         val errorDetails = MediaXDMEventHelper.generateErrorDetails("testError")
@@ -212,5 +241,11 @@ class MediaXDMEventHelperTests {
         val stateDetails = MediaXDMEventHelper.generateStateDetails(listOf(testStateInfo, muteStateInfo))
 
         assertEquals(expectedStateDetailsList, stateDetails)
+    }
+
+    @Test
+    fun testGenerateStateDetails_withNullPlayerStateInfoList_returnsNull() {
+        val stateDetails = MediaXDMEventHelper.generateStateDetails(null)
+        assertNull(stateDetails)
     }
 }

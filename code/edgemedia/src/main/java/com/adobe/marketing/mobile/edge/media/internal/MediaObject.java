@@ -11,6 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media.internal;
 
+import androidx.annotation.NonNull;
 import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.services.Log;
 import com.adobe.marketing.mobile.util.DataReader;
@@ -28,9 +29,9 @@ public class MediaObject {
     private static final String LOG_TAG = "MediaObject";
 
     public static HashMap<String, Object> createMediaInfo(
-            final String id,
-            final String name,
-            final String streamType,
+            @NonNull final String id,
+            @NonNull final String name,
+            @NonNull final String streamType,
             final Media.MediaType mediaType,
             final double length) {
         MediaType mType = (mediaType == Media.MediaType.Video) ? MediaType.Video : MediaType.Audio;
@@ -49,7 +50,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdBreakInfo(
-            final String name, final long position, final double startTime) {
+            @NonNull final String name, final long position, final double startTime) {
         AdBreakInfo adBreakInfo = AdBreakInfo.create(name, position, startTime);
 
         if (adBreakInfo == null) {
@@ -64,7 +65,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdInfo(
-            final String name, final String id, final long position, final double length) {
+            @NonNull final String name, final String id, final long position, final double length) {
         AdInfo adInfo = AdInfo.create(id, name, position, length);
 
         if (adInfo == null) {
@@ -79,7 +80,10 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createChapterInfo(
-            final String name, final long position, final double startTime, final double length) {
+            @NonNull final String name,
+            final long position,
+            final double startTime,
+            final double length) {
         ChapterInfo chapterInfo = ChapterInfo.create(name, position, startTime, length);
 
         if (chapterInfo == null) {
@@ -111,7 +115,7 @@ public class MediaObject {
         return qoeInfo.toObjectMap();
     }
 
-    public static HashMap<String, Object> createStateInfo(final String stateName) {
+    public static HashMap<String, Object> createStateInfo(@NonNull final String stateName) {
         StateInfo stateInfo = StateInfo.create(stateName);
 
         if (stateInfo == null) {
@@ -584,13 +588,13 @@ class AdBreakInfo {
     private final long position;
     private final double startTime;
 
-    private AdBreakInfo(final String name, final long position, final double startTime) {
+    private AdBreakInfo(@NonNull final String name, final long position, final double startTime) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
     }
 
-    public String getName() {
+    @NonNull public String getName() {
         return name;
     }
 
@@ -648,7 +652,7 @@ class AdBreakInfo {
     }
 
     public static AdBreakInfo create(
-            final String name, final long position, final double startTime) {
+            @NonNull final String name, final long position, final double startTime) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -705,7 +709,10 @@ class ChapterInfo {
     private final double length;
 
     private ChapterInfo(
-            final String name, final long position, final double startTime, final double length) {
+            @NonNull final String name,
+            final long position,
+            final double startTime,
+            final double length) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
@@ -777,7 +784,10 @@ class ChapterInfo {
     }
 
     public static ChapterInfo create(
-            final String name, final long position, final double startTime, final double length) {
+            @NonNull final String name,
+            final long position,
+            final double startTime,
+            final double length) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -959,7 +969,7 @@ class QoEInfo {
         return new QoEInfo(bitrate, droppedFrames, fps, startupTime);
     }
 
-    public static QoEInfo fromObjectMap(final Map<String, Object> info) {
+    public static QoEInfo fromObjectMap(@NonNull final Map<String, Object> info) {
         if (info == null) {
             return null;
         }
@@ -987,11 +997,11 @@ class StateInfo {
     private static final String LOG_TAG = "StateInfo";
     private final String stateName;
 
-    private StateInfo(final String stateName) {
+    private StateInfo(@NonNull final String stateName) {
         this.stateName = stateName;
     }
 
-    public String getStateName() {
+    @NonNull public String getStateName() {
         return stateName;
     }
 
@@ -1032,7 +1042,7 @@ class StateInfo {
         return responseStringBuilder.toString();
     }
 
-    public static StateInfo create(final String stateName) {
+    public static StateInfo create(@NonNull final String stateName) {
         if (stateName == null || stateName.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -1056,7 +1066,7 @@ class StateInfo {
         return new StateInfo(stateName);
     }
 
-    public static StateInfo fromObjectMap(final Map<String, Object> info) {
+    public static StateInfo fromObjectMap(@NonNull final Map<String, Object> info) {
         if (info == null) {
             return null;
         }

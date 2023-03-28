@@ -12,7 +12,6 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.edge.media.MediaConstants
-import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMAdvertisingDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMAdvertisingPodDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMChapterDetails
@@ -22,7 +21,6 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMPlayerStateData
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMQoeDataDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMSessionDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMStreamType
-import com.adobe.marketing.mobile.services.Log
 
 internal class MediaXDMEventHelper {
     companion object {
@@ -74,39 +72,37 @@ internal class MediaXDMEventHelper {
             sessionDetails.hasResume = forceResume || mediaInfo.isResumed // To also handle the internally triggered resume by the SDK for long running sessions >= 24 hours
 
             metadata.forEach { (key, value) ->
-                run {
-                    if (!standardMediaMetadataSet.contains(key)) {
-                        return@forEach
-                    }
+                if (!standardMediaMetadataSet.contains(key)) {
+                    return@forEach
+                }
 
-                    when (key) {
-                        // Video standard metadata cases
-                        MediaConstants.VideoMetadataKeys.AD_LOAD -> sessionDetails.adLoad = value
-                        MediaConstants.VideoMetadataKeys.ASSET_ID -> sessionDetails.assetID = value
-                        MediaConstants.VideoMetadataKeys.AUTHORIZED -> sessionDetails.authorized = value
-                        MediaConstants.VideoMetadataKeys.DAY_PART -> sessionDetails.dayPart = value
-                        MediaConstants.VideoMetadataKeys.EPISODE -> sessionDetails.episode = value
-                        MediaConstants.VideoMetadataKeys.FEED -> sessionDetails.feed = value
-                        MediaConstants.VideoMetadataKeys.FIRST_AIR_DATE -> sessionDetails.firstAirDate = value
-                        MediaConstants.VideoMetadataKeys.FIRST_DIGITAL_DATE -> sessionDetails.firstDigitalDate = value
-                        MediaConstants.VideoMetadataKeys.GENRE -> sessionDetails.genre = value
-                        MediaConstants.VideoMetadataKeys.MVPD -> sessionDetails.mvpd = value
-                        MediaConstants.VideoMetadataKeys.NETWORK -> sessionDetails.network = value
-                        MediaConstants.VideoMetadataKeys.ORIGINATOR -> sessionDetails.originator = value
-                        MediaConstants.VideoMetadataKeys.RATING -> sessionDetails.rating = value
-                        MediaConstants.VideoMetadataKeys.SEASON -> sessionDetails.season = value
-                        MediaConstants.VideoMetadataKeys.SHOW -> sessionDetails.show = value
-                        MediaConstants.VideoMetadataKeys.SHOW_TYPE -> sessionDetails.showType = value
-                        MediaConstants.VideoMetadataKeys.STREAM_FORMAT -> sessionDetails.streamFormat = value
+                when (key) {
+                    // Video standard metadata cases
+                    MediaConstants.VideoMetadataKeys.AD_LOAD -> sessionDetails.adLoad = value
+                    MediaConstants.VideoMetadataKeys.ASSET_ID -> sessionDetails.assetID = value
+                    MediaConstants.VideoMetadataKeys.AUTHORIZED -> sessionDetails.authorized = value
+                    MediaConstants.VideoMetadataKeys.DAY_PART -> sessionDetails.dayPart = value
+                    MediaConstants.VideoMetadataKeys.EPISODE -> sessionDetails.episode = value
+                    MediaConstants.VideoMetadataKeys.FEED -> sessionDetails.feed = value
+                    MediaConstants.VideoMetadataKeys.FIRST_AIR_DATE -> sessionDetails.firstAirDate = value
+                    MediaConstants.VideoMetadataKeys.FIRST_DIGITAL_DATE -> sessionDetails.firstDigitalDate = value
+                    MediaConstants.VideoMetadataKeys.GENRE -> sessionDetails.genre = value
+                    MediaConstants.VideoMetadataKeys.MVPD -> sessionDetails.mvpd = value
+                    MediaConstants.VideoMetadataKeys.NETWORK -> sessionDetails.network = value
+                    MediaConstants.VideoMetadataKeys.ORIGINATOR -> sessionDetails.originator = value
+                    MediaConstants.VideoMetadataKeys.RATING -> sessionDetails.rating = value
+                    MediaConstants.VideoMetadataKeys.SEASON -> sessionDetails.season = value
+                    MediaConstants.VideoMetadataKeys.SHOW -> sessionDetails.show = value
+                    MediaConstants.VideoMetadataKeys.SHOW_TYPE -> sessionDetails.showType = value
+                    MediaConstants.VideoMetadataKeys.STREAM_FORMAT -> sessionDetails.streamFormat = value
 
-                        // Audio standard metadata cases
-                        MediaConstants.AudioMetadataKeys.ALBUM -> sessionDetails.album = value
-                        MediaConstants.AudioMetadataKeys.ARTIST -> sessionDetails.artist = value
-                        MediaConstants.AudioMetadataKeys.AUTHOR -> sessionDetails.author = value
-                        MediaConstants.AudioMetadataKeys.LABEL -> sessionDetails.label = value
-                        MediaConstants.AudioMetadataKeys.PUBLISHER -> sessionDetails.publisher = value
-                        MediaConstants.AudioMetadataKeys.STATION -> sessionDetails.station = value
-                    }
+                    // Audio standard metadata cases
+                    MediaConstants.AudioMetadataKeys.ALBUM -> sessionDetails.album = value
+                    MediaConstants.AudioMetadataKeys.ARTIST -> sessionDetails.artist = value
+                    MediaConstants.AudioMetadataKeys.AUTHOR -> sessionDetails.author = value
+                    MediaConstants.AudioMetadataKeys.LABEL -> sessionDetails.label = value
+                    MediaConstants.AudioMetadataKeys.PUBLISHER -> sessionDetails.publisher = value
+                    MediaConstants.AudioMetadataKeys.STATION -> sessionDetails.station = value
                 }
             }
 
@@ -118,103 +114,7 @@ internal class MediaXDMEventHelper {
             val customMetadataList = mutableListOf<XDMCustomMetadata>()
 
             metadata.forEach { (key, value) ->
-                run {
-                    if (!standardMediaMetadataSet.contains(key)) {
-                        customMetadataList.add(XDMCustomMetadata(key, value))
-                    }
-                }
-            }
-
-            return customMetadataList.sortedBy { it.name }
-        }
-
-        @JvmStatic
-        fun generateAdvertisingPodDetails(adBreakInfo: AdBreakInfo?): XDMAdvertisingPodDetails? {
-            val adBreakInfo = adBreakInfo
-            if (adBreakInfo !is AdBreakInfo) {
-                Log.trace(LOG_TAG, sourceTag, "found empty ad break info.")
-                return null
-            }
-
-            return XDMAdvertisingPodDetails(
-                adBreakInfo.name,
-                adBreakInfo.position,
-                adBreakInfo.startTime.toLong()
-            )
-        }
-
-        @JvmStatic
-        fun generateAdvertisingDetails(adInfo: AdInfo?, metadata: Map<String, String>): XDMAdvertisingDetails? {
-            val adInfo = adInfo
-            if (adInfo !is AdInfo) {
-                Log.trace(LOG_TAG, sourceTag, "found empty ad info.")
-                return null
-            }
-
-            val advertisingDetails = XDMAdvertisingDetails()
-            advertisingDetails.name = adInfo.id
-            advertisingDetails.friendlyName = adInfo.name
-            advertisingDetails.length = adInfo.length.toLong()
-            advertisingDetails.podPosition = adInfo.position
-
-            // Append standard metadata to advertisingDetails
-            metadata.forEach { (key, value) ->
-                run {
-                    if (!standardAdMetadataSet.contains(key)) {
-                        return@forEach
-                    }
-
-                    when (key) {
-                        MediaConstants.AdMetadataKeys.ADVERTISER -> advertisingDetails.advertiser = value
-                        MediaConstants.AdMetadataKeys.CAMPAIGN_ID -> advertisingDetails.campaignID = value
-                        MediaConstants.AdMetadataKeys.CREATIVE_ID -> advertisingDetails.creativeID = value
-                        MediaConstants.AdMetadataKeys.CREATIVE_URL -> advertisingDetails.creativeURL = value
-                        MediaConstants.AdMetadataKeys.PLACEMENT_ID -> advertisingDetails.placementID = value
-                        MediaConstants.AdMetadataKeys.SITE_ID -> advertisingDetails.siteID = value
-                    }
-                }
-            }
-
-            return advertisingDetails
-        }
-
-        @JvmStatic
-        fun generateAdCustomMetadata(metadata: Map<String, String>): List<XDMCustomMetadata> {
-            val customMetadataList = mutableListOf<XDMCustomMetadata>()
-
-            metadata.forEach { (key, value) ->
-                run {
-                    if (!standardAdMetadataSet.contains(key)) {
-                        customMetadataList.add(XDMCustomMetadata(key, value))
-                    }
-                }
-            }
-
-            return customMetadataList.sortedBy { it.name }
-        }
-
-        @JvmStatic
-        fun generateChapterDetails(chapterInfo: ChapterInfo?): XDMChapterDetails? {
-            val chapterInfo = chapterInfo
-            if (chapterInfo !is ChapterInfo) {
-                Log.trace(LOG_TAG, sourceTag, "found empty chapter info.")
-                return null
-            }
-
-            return XDMChapterDetails(
-                chapterInfo.name,
-                chapterInfo.position,
-                chapterInfo.length.toLong(),
-                chapterInfo.startTime.toLong()
-            )
-        }
-
-        @JvmStatic
-        fun generateChapterMetadata(metadata: Map<String, String>): List<XDMCustomMetadata> {
-            val customMetadataList = mutableListOf<XDMCustomMetadata>()
-
-            metadata.forEach { (key, value) ->
-                run {
+                if (!standardMediaMetadataSet.contains(key)) {
                     customMetadataList.add(XDMCustomMetadata(key, value))
                 }
             }
@@ -223,23 +123,110 @@ internal class MediaXDMEventHelper {
         }
 
         @JvmStatic
-        fun generateQoEDataDetails(qoeInfo: QoEInfo?): XDMQoeDataDetails? {
-            val qoeInfo = qoeInfo
-            if (qoeInfo !is QoEInfo) {
-                Log.trace(LOG_TAG, sourceTag, "found empty QoE info.")
-                return null
+        fun generateAdvertisingPodDetails(adBreakInfo: AdBreakInfo?): XDMAdvertisingPodDetails? {
+            adBreakInfo?.let {
+                return XDMAdvertisingPodDetails(it.name, it.position, it.startTime.toLong())
             }
 
-            return XDMQoeDataDetails(
-                qoeInfo.bitrate.toLong(),
-                qoeInfo.droppedFrames.toLong(),
-                qoeInfo.fps.toLong(),
-                qoeInfo.startupTime.toLong()
-            )
+            return null
         }
 
         @JvmStatic
-        fun generateErrorDetails(errorID: String): XDMErrorDetails? {
+        fun generateAdvertisingDetails(adInfo: AdInfo?, metadata: Map<String, String>): XDMAdvertisingDetails? {
+            adInfo?.let {
+                val advertisingDetails = XDMAdvertisingDetails()
+                advertisingDetails.name = adInfo.id
+                advertisingDetails.friendlyName = adInfo.name
+                advertisingDetails.length = adInfo.length.toLong()
+                advertisingDetails.podPosition = adInfo.position
+
+                // Append standard metadata to advertisingDetails
+                metadata.forEach { (key, value) ->
+                    if (!standardAdMetadataSet.contains(key)) {
+                        return@forEach
+                    }
+
+                    when (key) {
+                        MediaConstants.AdMetadataKeys.ADVERTISER ->
+                            advertisingDetails.advertiser =
+                                value
+                        MediaConstants.AdMetadataKeys.CAMPAIGN_ID ->
+                            advertisingDetails.campaignID =
+                                value
+                        MediaConstants.AdMetadataKeys.CREATIVE_ID ->
+                            advertisingDetails.creativeID =
+                                value
+                        MediaConstants.AdMetadataKeys.CREATIVE_URL ->
+                            advertisingDetails.creativeURL =
+                                value
+                        MediaConstants.AdMetadataKeys.PLACEMENT_ID ->
+                            advertisingDetails.placementID =
+                                value
+                        MediaConstants.AdMetadataKeys.SITE_ID ->
+                            advertisingDetails.siteID =
+                                value
+                    }
+                }
+                return advertisingDetails
+            }
+
+            return null
+        }
+
+        @JvmStatic
+        fun generateAdCustomMetadata(metadata: Map<String, String>): List<XDMCustomMetadata> {
+            val customMetadataList = mutableListOf<XDMCustomMetadata>()
+
+            metadata.forEach { (key, value) ->
+                if (!standardAdMetadataSet.contains(key)) {
+                    customMetadataList.add(XDMCustomMetadata(key, value))
+                }
+            }
+
+            return customMetadataList.sortedBy { it.name }
+        }
+
+        @JvmStatic
+        fun generateChapterDetails(chapterInfo: ChapterInfo?): XDMChapterDetails? {
+            chapterInfo?.let {
+                return XDMChapterDetails(
+                    chapterInfo.name,
+                    chapterInfo.position,
+                    chapterInfo.length.toLong(),
+                    chapterInfo.startTime.toLong()
+                )
+            }
+
+            return null
+        }
+
+        @JvmStatic
+        fun generateChapterMetadata(metadata: Map<String, String>): List<XDMCustomMetadata> {
+            val customMetadataList = mutableListOf<XDMCustomMetadata>()
+
+            metadata.forEach { (key, value) ->
+                customMetadataList.add(XDMCustomMetadata(key, value))
+            }
+
+            return customMetadataList.sortedBy { it.name }
+        }
+
+        @JvmStatic
+        fun generateQoEDataDetails(qoeInfo: QoEInfo?): XDMQoeDataDetails? {
+            qoeInfo?.let {
+                return XDMQoeDataDetails(
+                    qoeInfo.bitrate.toLong(),
+                    qoeInfo.droppedFrames.toLong(),
+                    qoeInfo.fps.toLong(),
+                    qoeInfo.startupTime.toLong()
+                )
+            }
+
+            return null
+        }
+
+        @JvmStatic
+        fun generateErrorDetails(errorID: String): XDMErrorDetails {
             return XDMErrorDetails(
                 errorID,
                 MediaInternalConstants.ErrorSource.PLAYER
@@ -247,20 +234,23 @@ internal class MediaXDMEventHelper {
         }
 
         @JvmStatic
-        fun generateStateDetails(states: List<StateInfo>?): List<XDMPlayerStateData>? {
-            val states = states
-            if (states !is List<StateInfo> || states.isEmpty()) {
-                return null
-            }
-
-            val playerStateDetailsList = mutableListOf<XDMPlayerStateData>()
-            states.forEach { state ->
-                run {
-                    playerStateDetailsList.add(XDMPlayerStateData(state.stateName))
+        fun generateStateDetails(states: List<StateInfo?>?): List<XDMPlayerStateData>? {
+            states?.let {
+                if (states.isEmpty()) {
+                    return null
                 }
+
+                val playerStateDetailsList = mutableListOf<XDMPlayerStateData>()
+                states.forEach { state ->
+                    state?.let {
+                        playerStateDetailsList.add(XDMPlayerStateData(state.stateName))
+                    }
+                }
+
+                return if (playerStateDetailsList.isEmpty()) null else playerStateDetailsList
             }
 
-            return playerStateDetailsList
+            return null
         }
     }
 }
