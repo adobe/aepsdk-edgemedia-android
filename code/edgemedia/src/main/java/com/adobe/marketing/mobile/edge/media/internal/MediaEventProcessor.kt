@@ -13,43 +13,105 @@ package com.adobe.marketing.mobile.edge.media.internal
 
 import androidx.annotation.VisibleForTesting
 import com.adobe.marketing.mobile.Event
+import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
+import com.adobe.marketing.mobile.services.Log
+import java.util.UUID
 
 internal class MediaEventProcessor(
     private val mediaState: MediaState,
     private val dispatcher: (event: Event) -> Unit
 ) {
-    private val SOURCE_TAG = "MediaEventProcessor"
+    private val sourceTag = "MediaEventProcessor"
 
     @VisibleForTesting
     internal val mediaSessions: MutableMap<String, MediaSession> = mutableMapOf()
 
+    /**
+     * Creates new [MediaSession], assigning it a new random ID.
+     * @return the session ID of the new [MediaSession]
+     */
+    fun createSession(): String {
+        val sessionId = UUID.randomUUID().toString()
+        val session = MediaRealTimeSession(sessionId, mediaState, dispatcher)
+        mediaSessions[sessionId] = session
+        Log.trace(LOG_TAG, sourceTag, "Created new session ($sessionId)")
+        return sessionId
+    }
+
+    /**
+     * Ends the [MediaSession] with the given `sessionId`.
+     * @param sessionId the ID of the [MediaSession] to end
+     * @see [MediaSession.end]
+     */
+    fun endSession(sessionId: String) {
+        val session = mediaSessions[sessionId]
+        session?.end {
+            mediaSessions.remove(sessionId)
+            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
+        }
+    }
+
+    /**
+     * Queues the [XDMMediaEvent] for processing in the [MediaSession] with ID `sessionId`.
+     * @param sessionId the ID of the [MediaSession] to queue the event
+     * @param event the [XDMMediaEvent] to process
+     * @see [MediaSession.queue]
+     */
+    fun processEvent(sessionId: String, event: XDMMediaEvent) {
+        val session = mediaSessions[sessionId]
+        session?.let { mediaSession ->
+            mediaSession.queue(event)
+            Log.trace(LOG_TAG, sourceTag, "Successfully queued event (${event.xdmData.eventType}) for session ($sessionId)")
+        }
+    }
+
+    /**
+     * Sets the `backendSessionId` to the [MediaSession] with matching `requestEventId`.
+     * @see [MediaSession.handleSessionUpdate]
+     */
     fun notifyBackendSessionId(requestEventId: String, backendSessionId: String?) {
-        mediaSessions.forEach { (sessionId, session) ->
+        mediaSessions.forEach { (_, session) ->
             session.handleSessionUpdate(requestEventId, backendSessionId)
         }
 
         // Session may be aborted if backend session ID is invalid
-        mediaSessions.values.removeAll { !it.isSessionActive }
+        mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
     }
 
+    /**
+     * Notify [MediaSession] with matching `requestEventId` of the error response from
+     * the backend service.
+     * @see [MediaSession.handleErrorResponse]
+     */
     fun notifyErrorResponse(requestEventId: String, data: Map<String, Any>) {
-        mediaSessions.forEach { (sessionId, session) ->
+        mediaSessions.forEach { (_, session) ->
             session.handleErrorResponse(requestEventId, data)
         }
 
         // Session may be aborted on error response
-        mediaSessions.values.removeAll { !it.isSessionActive }
+        mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
     }
 
+    /**
+     * Update the [MediaState] with the given `stateData` and notify all [MediaSession]s of
+     * the state update.
+     * @param stateData Map containing Configuration shared state data
+     * @see [MediaSession.handleMediaStateUpdate]
+     */
     fun updateMediaState(stateData: Map<String, Any>) {
         mediaState.updateState(stateData)
-        mediaSessions.forEach { (sessionId, session) ->
+        mediaSessions.forEach { (_, session) ->
             session.handleMediaStateUpdate()
         }
     }
 
+    /**
+     * Abort all the active [MediaSession]s.
+     * @see [MediaSession.abort]
+     */
     fun abortAllSessions() {
-        mediaSessions.forEach { (sessionId, session) ->
+        mediaSessions.forEach { (_, session) ->
             session.abort()
         }
 

@@ -12,8 +12,15 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.Event
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaCollection
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -21,6 +28,7 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import java.util.*
 
 class MediaEventProcessorTests {
     private var mockState: MediaState = Mockito.mock(MediaState::class.java)
@@ -32,16 +40,133 @@ class MediaEventProcessorTests {
 
     @Before
     fun setup() {
+        mediaEventProcessor = MediaEventProcessor(mockState, dispatcher)
+    }
+
+    private fun setTestSessionsToProcessor() {
         mediaSession1 = SpyMediaSession("testSession1", mockState, dispatcher)
         mediaSession2 = SpyMediaSession("testSession2", mockState, dispatcher)
 
-        mediaEventProcessor = MediaEventProcessor(mockState, dispatcher)
         mediaEventProcessor.mediaSessions["testSession1"] = mediaSession1
         mediaEventProcessor.mediaSessions["testSession2"] = mediaSession2
     }
 
     @Test
+    fun `createSession() creates a new MediaRealTimeSession`() {
+        val sessionId = mediaEventProcessor.createSession()
+
+        assertNotNull(sessionId)
+        assertEquals(1, mediaEventProcessor.mediaSessions.size)
+
+        val session = mediaEventProcessor.mediaSessions[sessionId]
+        assertNotNull(session)
+        assertTrue(session is MediaRealTimeSession)
+
+        // validate sessionId is UUID
+        UUID.fromString(sessionId) // throws if parsing fails
+    }
+
+    @Test
+    fun `createSession() create multiple Media Sessions`() {
+        val sessionId1 = mediaEventProcessor.createSession()
+        val sessionId2 = mediaEventProcessor.createSession()
+        val sessionId3 = mediaEventProcessor.createSession()
+
+        assertNotNull(sessionId1)
+        assertNotNull(sessionId2)
+        assertNotNull(sessionId3)
+
+        assertEquals(3, mediaEventProcessor.mediaSessions.size)
+
+        val session1 = mediaEventProcessor.mediaSessions[sessionId1]
+        val session2 = mediaEventProcessor.mediaSessions[sessionId2]
+        val session3 = mediaEventProcessor.mediaSessions[sessionId3]
+
+        assertNotEquals(session1, session2)
+        assertNotEquals(session1, session3)
+        assertNotEquals(session2, session3)
+    }
+
+    @Test
+    fun `endSession() ends Media Session and removes from sessions map`() {
+        setTestSessionsToProcessor()
+
+        mediaEventProcessor.endSession("testSession1")
+
+        // verify session 1 ended
+        assertFalse(mediaSession1.isSessionActive)
+        assertTrue(mediaSession1.handleSessionEndCalled)
+        assertNotNull(mediaSession1.handleSessionEndParamEndHandler)
+        mediaSession1.handleSessionEndParamEndHandler?.let { it() } // call session end handler
+
+        // verify session 2 did not end
+        assertTrue(mediaSession2.isSessionActive)
+        assertFalse(mediaSession2.handleSessionEndCalled)
+        assertNull(mediaSession2.handleSessionEndParamEndHandler)
+
+        // verify sessions map updated
+        assertEquals(1, mediaEventProcessor.mediaSessions.size)
+        assertNull(mediaEventProcessor.mediaSessions["testSession1"])
+        assertNotNull(mediaEventProcessor.mediaSessions["testSession2"])
+    }
+
+    @Test
+    fun `endSession() does nothing when passed invalid session id`() {
+        setTestSessionsToProcessor()
+
+        mediaEventProcessor.endSession("invalidId")
+
+        // verify session 1 did not end
+        assertTrue(mediaSession1.isSessionActive)
+        assertFalse(mediaSession1.handleSessionEndCalled)
+        assertNull(mediaSession1.handleSessionEndParamEndHandler)
+
+        // verify session 2 did not end
+        assertTrue(mediaSession2.isSessionActive)
+        assertFalse(mediaSession2.handleSessionEndCalled)
+        assertNull(mediaSession2.handleSessionEndParamEndHandler)
+
+        // verify sessions map updated
+        assertEquals(2, mediaEventProcessor.mediaSessions.size)
+        assertNotNull(mediaEventProcessor.mediaSessions["testSession1"])
+        assertNotNull(mediaEventProcessor.mediaSessions["testSession2"])
+    }
+
+    @Test
+    fun `processEvent() queues XDMMediaEvent for valid session ID`() {
+        setTestSessionsToProcessor()
+        val event = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(), XDMMediaCollection()))
+
+        mediaEventProcessor.processEvent("testSession1", event)
+
+        // verify session 1 queues event
+        assertTrue(mediaSession1.handleQueueEventCalled)
+        assertEquals(event, mediaSession1.handleQueueEventParamXDMMediaEvent)
+
+        // verify session 2 did not queue event
+        assertFalse(mediaSession2.handleQueueEventCalled)
+        assertNull(mediaSession2.handleQueueEventParamXDMMediaEvent)
+    }
+
+    @Test
+    fun `processEvent() does not queue XDMMediaEvent for invalid session ID`() {
+        setTestSessionsToProcessor()
+        val event = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(), XDMMediaCollection()))
+
+        mediaEventProcessor.processEvent("invalidSessionId", event)
+
+        // verify session 1 did not queue event
+        assertFalse(mediaSession1.handleQueueEventCalled)
+        assertNull(mediaSession1.handleQueueEventParamXDMMediaEvent)
+
+        // verify session 2 did not queue event
+        assertFalse(mediaSession2.handleQueueEventCalled)
+        assertNull(mediaSession2.handleQueueEventParamXDMMediaEvent)
+    }
+
+    @Test
     fun `abortAllSessions() calls abort on all sessions`() {
+        setTestSessionsToProcessor()
         mediaEventProcessor.abortAllSessions()
 
         assertTrue(mediaSession1.handleSessionAbortCalled)
@@ -51,6 +176,7 @@ class MediaEventProcessorTests {
 
     @Test
     fun `notifyBackendSessionId() calls handleSessionUpdate on all sessions`() {
+        setTestSessionsToProcessor()
         mediaEventProcessor.notifyBackendSessionId("123", "backendSessionId")
 
         assertTrue(mediaSession1.handleSessionUpdateCalled)
@@ -66,6 +192,7 @@ class MediaEventProcessorTests {
 
     @Test
     fun `notifyBackendSessionId() removes inactive sessions`() {
+        setTestSessionsToProcessor()
         mediaSession1.isSessionActive = false
         mediaEventProcessor.notifyBackendSessionId("123", "backendSessionId")
 
@@ -76,6 +203,7 @@ class MediaEventProcessorTests {
 
     @Test
     fun `notifyErrorResponse() calls handleErrorResponse for all sessions`() {
+        setTestSessionsToProcessor()
         val errorHandle = mapOf(
             "status" to 400L,
             "type" to "https://ns.adobe.com/aep/errors/va-edge-0400-400"
@@ -95,6 +223,7 @@ class MediaEventProcessorTests {
 
     @Test
     fun `notifyErrorResponse() removes inactive sessions`() {
+        setTestSessionsToProcessor()
         mediaSession1.isSessionActive = false
         mediaEventProcessor.notifyErrorResponse(
             "123",
@@ -110,7 +239,8 @@ class MediaEventProcessorTests {
     }
 
     @Test
-    fun `updateMediaState() calls handleErrorResponse for all sessions`() {
+    fun `updateMediaState() calls handleMediaStateUpdate for all sessions`() {
+        setTestSessionsToProcessor()
         val stateUpdate = mapOf(
             "edgemedia.channel" to "testChannel",
             "edgemedia.playerName" to "testPlayerName",
@@ -125,6 +255,7 @@ class MediaEventProcessorTests {
 
     @Test
     fun `updateMediaState() updates MediaState`() {
+        setTestSessionsToProcessor()
         val stateUpdate = mapOf(
             "edgemedia.channel" to "testChannel",
             "edgemedia.playerName" to "testPlayerName",
