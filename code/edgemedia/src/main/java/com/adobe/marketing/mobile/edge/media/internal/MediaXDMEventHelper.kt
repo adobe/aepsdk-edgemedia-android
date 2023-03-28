@@ -26,7 +26,7 @@ import com.adobe.marketing.mobile.services.Log
 
 internal class MediaXDMEventHelper {
     companion object {
-        private const val sourceTag = "MediaXDMEventHelper"
+        private const val SOURCE_TAG = "MediaXDMEventHelper"
 
         private val standardMediaMetadataSet: Set<String> = setOf(
             MediaConstants.VideoMetadataKeys.AD_LOAD,
@@ -74,10 +74,6 @@ internal class MediaXDMEventHelper {
             sessionDetails.hasResume = forceResume || mediaInfo.isResumed // To also handle the internally triggered resume by the SDK for long running sessions >= 24 hours
 
             metadata.forEach { (key, value) ->
-                if (!standardMediaMetadataSet.contains(key)) {
-                    return@forEach
-                }
-
                 when (key) {
                     // Video standard metadata cases
                     MediaConstants.VideoMetadataKeys.AD_LOAD -> sessionDetails.adLoad = value
@@ -127,7 +123,7 @@ internal class MediaXDMEventHelper {
         @JvmStatic
         fun generateAdvertisingPodDetails(adBreakInfo: AdBreakInfo?): XDMAdvertisingPodDetails? {
             if (adBreakInfo == null) {
-                Log.trace(LOG_TAG, sourceTag, "found empty ad break info.")
+                Log.trace(LOG_TAG, SOURCE_TAG, "found empty ad break info.")
                 return null
             }
 
@@ -137,7 +133,7 @@ internal class MediaXDMEventHelper {
         @JvmStatic
         fun generateAdvertisingDetails(adInfo: AdInfo?, metadata: Map<String, String>): XDMAdvertisingDetails? {
             if (adInfo == null) {
-                Log.trace(LOG_TAG, sourceTag, "found empty ad info.")
+                Log.trace(LOG_TAG, SOURCE_TAG, "found empty ad info.")
                 return null
             }
 
@@ -149,10 +145,6 @@ internal class MediaXDMEventHelper {
 
             // Append standard metadata to advertisingDetails
             metadata.forEach { (key, value) ->
-                if (!standardAdMetadataSet.contains(key)) {
-                    return@forEach
-                }
-
                 when (key) {
                     MediaConstants.AdMetadataKeys.ADVERTISER ->
                         advertisingDetails.advertiser =
@@ -194,7 +186,7 @@ internal class MediaXDMEventHelper {
         @JvmStatic
         fun generateChapterDetails(chapterInfo: ChapterInfo?): XDMChapterDetails? {
             if (chapterInfo == null) {
-                Log.trace(LOG_TAG, sourceTag, "found empty chapter info.")
+                Log.trace(LOG_TAG, SOURCE_TAG, "found empty chapter info.")
                 return null
             }
 
@@ -220,7 +212,7 @@ internal class MediaXDMEventHelper {
         @JvmStatic
         fun generateQoEDataDetails(qoeInfo: QoEInfo?): XDMQoeDataDetails? {
             if (qoeInfo == null) {
-                Log.trace(LOG_TAG, sourceTag, "found empty QoE info.")
+                Log.trace(LOG_TAG, SOURCE_TAG, "found empty QoE info.")
                 return null
             }
 
