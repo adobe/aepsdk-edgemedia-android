@@ -103,7 +103,7 @@ class MediaEventTracker implements MediaEventTracking {
             return false;
         }
 
-        MediaRuleName rule = MediaRuleName.getRuleName(eventName);
+        MediaRuleName rule = MediaRuleName.create(eventName);
         if (rule == MediaRuleName.Invalid) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,

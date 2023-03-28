@@ -155,7 +155,7 @@ public class MediaEventTrackerTests {
             return null;
         }
 
-        MediaRuleName rule = MediaRuleName.getRuleName(eventName);
+        MediaRuleName rule = MediaRuleName.create(eventName);
         if (rule == MediaRuleName.Invalid) {
             return null;
         }

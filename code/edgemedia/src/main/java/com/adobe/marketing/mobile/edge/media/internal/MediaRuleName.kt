@@ -39,7 +39,7 @@ internal enum class MediaRuleName {
 
     companion object {
         @JvmStatic
-        fun getRuleName(eventName: String): MediaRuleName {
+        fun create(eventName: String): MediaRuleName {
             when (eventName) {
                 MediaInternalConstants.EventDataKeys.MediaEventName.SESSION_START -> return MediaStart
                 MediaInternalConstants.EventDataKeys.MediaEventName.COMPLETE -> return MediaComplete
