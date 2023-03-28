@@ -69,7 +69,7 @@ class MediaXDMEventHelperTests {
     private val muteStateInfo = StateInfo.create(MediaConstants.PlayerState.MUTE)
     private val testStateInfo = StateInfo.create("testStateName")
 
-    val metadata = mutableMapOf("key2" to "value1", "key1" to "value2")
+    val metadata = mutableMapOf("key2" to "value2", "key1" to "value1")
 
     @Test
     fun generateSessionDetails() {
