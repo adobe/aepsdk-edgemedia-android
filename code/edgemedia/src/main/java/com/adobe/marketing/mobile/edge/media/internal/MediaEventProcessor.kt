@@ -46,9 +46,13 @@ internal class MediaEventProcessor(
      */
     fun endSession(sessionId: String) {
         val session = mediaSessions[sessionId]
-        session?.end {
-            mediaSessions.remove(sessionId)
-            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
+        if (session != null) {
+            session.end {
+                mediaSessions.remove(sessionId)
+                Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
+            }
+        } else {
+            Log.trace(LOG_TAG, sourceTag, "Cannot end media session as session ID ($sessionId) is invalid.")
         }
     }
 
@@ -60,9 +64,11 @@ internal class MediaEventProcessor(
      */
     fun processEvent(sessionId: String, event: XDMMediaEvent) {
         val session = mediaSessions[sessionId]
-        session?.let { mediaSession ->
-            mediaSession.queue(event)
+        if (session != null) {
+            session.queue(event)
             Log.trace(LOG_TAG, sourceTag, "Successfully queued event (${event.xdmData.eventType}) for session ($sessionId)")
+        } else {
+            Log.trace(LOG_TAG, sourceTag, "Cannot queue event (${event.xdmData.eventType}) as session ID ($sessionId) is invalid.")
         }
     }
 

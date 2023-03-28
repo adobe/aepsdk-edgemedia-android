@@ -102,6 +102,7 @@ internal class MediaRealTimeSession(
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {
+            Log.warning(LOG_TAG, sourceTag, "handleSessionUpdate - Session $id: Aborting session as session ID ($backendSessionId) returned from session start request is invalid.")
             abort()
         }
     }
@@ -128,7 +129,7 @@ internal class MediaRealTimeSession(
         }
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
-            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
+            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error returned from session start request. $data")
             abort()
         }
     }
