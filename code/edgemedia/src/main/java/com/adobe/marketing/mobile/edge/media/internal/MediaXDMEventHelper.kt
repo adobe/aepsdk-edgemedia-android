@@ -12,6 +12,7 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.edge.media.MediaConstants
+import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMAdvertisingDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMAdvertisingPodDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMChapterDetails
@@ -21,10 +22,11 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMPlayerStateData
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMQoeDataDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMSessionDetails
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMStreamType
+import com.adobe.marketing.mobile.services.Log
 
 internal class MediaXDMEventHelper {
     companion object {
-        private val sourceTag = "MediaXDMEventHelper"
+        private const val sourceTag = "MediaXDMEventHelper"
 
         private val standardMediaMetadataSet: Set<String> = setOf(
             MediaConstants.VideoMetadataKeys.AD_LOAD,
@@ -124,53 +126,56 @@ internal class MediaXDMEventHelper {
 
         @JvmStatic
         fun generateAdvertisingPodDetails(adBreakInfo: AdBreakInfo?): XDMAdvertisingPodDetails? {
-            adBreakInfo?.let {
-                return XDMAdvertisingPodDetails(it.name, it.position, it.startTime.toLong())
+            if (adBreakInfo == null) {
+                Log.trace(LOG_TAG, sourceTag, "found empty ad break info.")
+                return null
             }
 
-            return null
+            return XDMAdvertisingPodDetails(adBreakInfo.name, adBreakInfo.position, adBreakInfo.startTime.toLong())
         }
 
         @JvmStatic
         fun generateAdvertisingDetails(adInfo: AdInfo?, metadata: Map<String, String>): XDMAdvertisingDetails? {
-            adInfo?.let {
-                val advertisingDetails = XDMAdvertisingDetails()
-                advertisingDetails.name = adInfo.id
-                advertisingDetails.friendlyName = adInfo.name
-                advertisingDetails.length = adInfo.length.toLong()
-                advertisingDetails.podPosition = adInfo.position
-
-                // Append standard metadata to advertisingDetails
-                metadata.forEach { (key, value) ->
-                    if (!standardAdMetadataSet.contains(key)) {
-                        return@forEach
-                    }
-
-                    when (key) {
-                        MediaConstants.AdMetadataKeys.ADVERTISER ->
-                            advertisingDetails.advertiser =
-                                value
-                        MediaConstants.AdMetadataKeys.CAMPAIGN_ID ->
-                            advertisingDetails.campaignID =
-                                value
-                        MediaConstants.AdMetadataKeys.CREATIVE_ID ->
-                            advertisingDetails.creativeID =
-                                value
-                        MediaConstants.AdMetadataKeys.CREATIVE_URL ->
-                            advertisingDetails.creativeURL =
-                                value
-                        MediaConstants.AdMetadataKeys.PLACEMENT_ID ->
-                            advertisingDetails.placementID =
-                                value
-                        MediaConstants.AdMetadataKeys.SITE_ID ->
-                            advertisingDetails.siteID =
-                                value
-                    }
-                }
-                return advertisingDetails
+            if (adInfo == null) {
+                Log.trace(LOG_TAG, sourceTag, "found empty ad info.")
+                return null
             }
 
-            return null
+            val advertisingDetails = XDMAdvertisingDetails()
+            advertisingDetails.name = adInfo.id
+            advertisingDetails.friendlyName = adInfo.name
+            advertisingDetails.length = adInfo.length.toLong()
+            advertisingDetails.podPosition = adInfo.position
+
+            // Append standard metadata to advertisingDetails
+            metadata.forEach { (key, value) ->
+                if (!standardAdMetadataSet.contains(key)) {
+                    return@forEach
+                }
+
+                when (key) {
+                    MediaConstants.AdMetadataKeys.ADVERTISER ->
+                        advertisingDetails.advertiser =
+                            value
+                    MediaConstants.AdMetadataKeys.CAMPAIGN_ID ->
+                        advertisingDetails.campaignID =
+                            value
+                    MediaConstants.AdMetadataKeys.CREATIVE_ID ->
+                        advertisingDetails.creativeID =
+                            value
+                    MediaConstants.AdMetadataKeys.CREATIVE_URL ->
+                        advertisingDetails.creativeURL =
+                            value
+                    MediaConstants.AdMetadataKeys.PLACEMENT_ID ->
+                        advertisingDetails.placementID =
+                            value
+                    MediaConstants.AdMetadataKeys.SITE_ID ->
+                        advertisingDetails.siteID =
+                            value
+                }
+            }
+
+            return advertisingDetails
         }
 
         @JvmStatic
@@ -188,16 +193,17 @@ internal class MediaXDMEventHelper {
 
         @JvmStatic
         fun generateChapterDetails(chapterInfo: ChapterInfo?): XDMChapterDetails? {
-            chapterInfo?.let {
-                return XDMChapterDetails(
-                    chapterInfo.name,
-                    chapterInfo.position,
-                    chapterInfo.length.toLong(),
-                    chapterInfo.startTime.toLong()
-                )
+            if (chapterInfo == null) {
+                Log.trace(LOG_TAG, sourceTag, "found empty chapter info.")
+                return null
             }
 
-            return null
+            return XDMChapterDetails(
+                chapterInfo.name,
+                chapterInfo.position,
+                chapterInfo.length.toLong(),
+                chapterInfo.startTime.toLong()
+            )
         }
 
         @JvmStatic
@@ -213,16 +219,17 @@ internal class MediaXDMEventHelper {
 
         @JvmStatic
         fun generateQoEDataDetails(qoeInfo: QoEInfo?): XDMQoeDataDetails? {
-            qoeInfo?.let {
-                return XDMQoeDataDetails(
-                    qoeInfo.bitrate.toLong(),
-                    qoeInfo.droppedFrames.toLong(),
-                    qoeInfo.fps.toLong(),
-                    qoeInfo.startupTime.toLong()
-                )
+            if (qoeInfo == null) {
+                Log.trace(LOG_TAG, sourceTag, "found empty QoE info.")
+                return null
             }
 
-            return null
+            return XDMQoeDataDetails(
+                qoeInfo.bitrate.toLong(),
+                qoeInfo.droppedFrames.toLong(),
+                qoeInfo.fps.toLong(),
+                qoeInfo.startupTime.toLong()
+            )
         }
 
         @JvmStatic
@@ -235,22 +242,18 @@ internal class MediaXDMEventHelper {
 
         @JvmStatic
         fun generateStateDetails(states: List<StateInfo?>?): List<XDMPlayerStateData>? {
-            states?.let {
-                if (states.isEmpty()) {
-                    return null
-                }
-
-                val playerStateDetailsList = mutableListOf<XDMPlayerStateData>()
-                states.forEach { state ->
-                    state?.let {
-                        playerStateDetailsList.add(XDMPlayerStateData(state.stateName))
-                    }
-                }
-
-                return if (playerStateDetailsList.isEmpty()) null else playerStateDetailsList
+            if (states == null || states.isEmpty()) {
+                return null
             }
 
-            return null
+            val playerStateDetailsList = mutableListOf<XDMPlayerStateData>()
+            states.forEach { state ->
+                if (state != null) {
+                    playerStateDetailsList.add(XDMPlayerStateData(state.stateName))
+                }
+            }
+
+            return if (playerStateDetailsList.isEmpty()) null else playerStateDetailsList
         }
     }
 }
