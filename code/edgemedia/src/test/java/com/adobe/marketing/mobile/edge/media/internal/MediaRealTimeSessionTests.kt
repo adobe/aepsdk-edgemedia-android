@@ -125,13 +125,8 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        val latch = CountDownLatch(1)
+        session.handleErrorResponse(requestId, data)
 
-        session.handleErrorResponse(requestId, data) {
-            latch.countDown()
-        }
-
-        assertTrue(latch.await(2, TimeUnit.SECONDS))
         assertTrue(session.events.isEmpty())
         assertFalse(session.isSessionActive)
     }
@@ -151,13 +146,8 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        val latch = CountDownLatch(1)
+        session.handleErrorResponse(requestId, data)
 
-        session.handleErrorResponse(requestId, data) {
-            latch.countDown()
-        }
-
-        assertTrue(latch.await(2, TimeUnit.SECONDS))
         assertTrue(session.events.isEmpty())
         assertFalse(session.isSessionActive)
     }
@@ -171,9 +161,7 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        session.handleErrorResponse(requestId, data) {
-            fail("Session abort handler should not be called!")
-        }
+        session.handleErrorResponse(requestId, data)
 
         // Add delay to ensure session abort handler is not called
         runBlocking {
@@ -193,9 +181,7 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        session.handleErrorResponse(requestId, data) {
-            fail("Session abort handler should not be called!")
-        }
+        session.handleErrorResponse(requestId, data)
 
         // Add delay to ensure session abort handler is not called
         runBlocking {
@@ -216,9 +202,7 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        session.handleErrorResponse(requestId, data) {
-            fail("Session abort handler should not be called!")
-        }
+        session.handleErrorResponse(requestId, data)
 
         // Add delay to ensure session abort handler is not called
         runBlocking {
@@ -238,9 +222,7 @@ class MediaRealTimeSessionTests {
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
-        session.handleErrorResponse("otherRequestId", data) {
-            fail("Session abort handler should not be called!")
-        }
+        session.handleErrorResponse("otherRequestId", data)
 
         // Add delay to ensure session abort handler is not called
         runBlocking {

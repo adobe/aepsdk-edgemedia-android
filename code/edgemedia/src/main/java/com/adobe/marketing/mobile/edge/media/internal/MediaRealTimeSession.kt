@@ -90,11 +90,10 @@ internal class MediaRealTimeSession(
      *
      * @param requestEventId the [Edge] request event ID
      * @param backendSessionId the backend session ID for the current [MediaSession]
-     * @param sessionAbortHandler closure passed to [abort] if backendSessionId is invalid
      *
      * @see [MediaSession.abort]
      */
-    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit) {
+    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
@@ -103,7 +102,7 @@ internal class MediaRealTimeSession(
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {
-            abort(sessionAbortHandler)
+            abort()
         }
     }
 
@@ -113,11 +112,10 @@ internal class MediaRealTimeSession(
      *
      * @param requestEventId the [Edge] request event ID
      * @param data contains errors returned by the backend server
-     * @param sessionAbortHandler closure passed to [abort] if error is 400
      *
      * @see [MediaSession.abort]
      */
-    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit) {
+    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
@@ -131,7 +129,7 @@ internal class MediaRealTimeSession(
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
             Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
-            abort(sessionAbortHandler)
+            abort()
         }
     }
 

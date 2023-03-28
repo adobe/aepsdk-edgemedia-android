@@ -103,15 +103,13 @@ internal abstract class MediaSession(
      * Handles response from server containing the session ID.
      * @param requestEventId the [Edge] request event ID
      * @param backendSessionId the backend session ID for the current [MediaSession]
-     * @param sessionAbortHandler closure called if the session is aborted due to an invalid backendSessionId
      */
-    abstract fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit = { })
+    abstract fun handleSessionUpdate(requestEventId: String, backendSessionId: String?)
 
     /**
      * Handles error responses from the server.
      * @param requestEventId the [Edge] request event ID
      * @param data contains errors returned by the backend server
-     * @param sessionAbortHandler closure called if the session is aborted due to the error response
      */
-    abstract fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit = { })
+    abstract fun handleErrorResponse(requestEventId: String, data: Map<String, Any>)
 }

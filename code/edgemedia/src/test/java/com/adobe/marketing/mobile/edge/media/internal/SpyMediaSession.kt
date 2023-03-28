@@ -53,22 +53,18 @@ internal class SpyMediaSession(
     var handleSessionUpdateCalled: Boolean = false
     var handleSessionUpdateParamRequestEventId: String? = null
     var handleSessionUpdateParamBackendSessionId: String? = null
-    var handleSessionUpdateParamAbortHandler: (() -> Unit)? = null
-    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit) {
+    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
         handleSessionUpdateCalled = true
         handleSessionUpdateParamRequestEventId = requestEventId
         handleSessionUpdateParamBackendSessionId = backendSessionId
-        handleSessionUpdateParamAbortHandler = sessionAbortHandler
     }
 
     var handleErrorResponseCalled: Boolean = false
     var handleErrorResponseParamRequestEventId: String? = null
     var handleErrorResponseParamData: Map<String, Any>? = null
-    var handleErrorResponseParamAbortHandler: (() -> Unit)? = null
-    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit) {
+    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
         handleErrorResponseCalled = true
         handleErrorResponseParamRequestEventId = requestEventId
         handleErrorResponseParamData = data
-        handleErrorResponseParamAbortHandler = sessionAbortHandler
     }
 }
