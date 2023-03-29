@@ -23,6 +23,7 @@ internal class MediaEventProcessor(
     private val dispatcher: (event: Event) -> Unit
 ) {
     private val sourceTag = "MediaEventProcessor"
+    private val sessionsMutex = Any()
 
     @VisibleForTesting
     internal val mediaSessions: MutableMap<String, MediaSession> = mutableMapOf()
@@ -32,11 +33,13 @@ internal class MediaEventProcessor(
      * @return the session ID of the new [MediaSession]
      */
     fun createSession(): String {
-        val sessionId = UUID.randomUUID().toString()
-        val session = MediaRealTimeSession(sessionId, mediaState, dispatcher)
-        mediaSessions[sessionId] = session
-        Log.trace(LOG_TAG, sourceTag, "Created new session ($sessionId)")
-        return sessionId
+        synchronized(sessionsMutex) {
+            val sessionId = UUID.randomUUID().toString()
+            val session = MediaRealTimeSession(sessionId, mediaState, dispatcher)
+            mediaSessions[sessionId] = session
+            Log.trace(LOG_TAG, sourceTag, "Created new session ($sessionId)")
+            return sessionId
+        }
     }
 
     /**
@@ -45,14 +48,20 @@ internal class MediaEventProcessor(
      * @see [MediaSession.end]
      */
     fun endSession(sessionId: String) {
-        val session = mediaSessions[sessionId]
-        if (session != null) {
-            session.end {
-                mediaSessions.remove(sessionId)
-                Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
+        synchronized(sessionsMutex) {
+            val session = mediaSessions[sessionId]
+            if (session != null) {
+                session.end {
+                    mediaSessions.remove(sessionId)
+                    Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
+                }
+            } else {
+                Log.trace(
+                    LOG_TAG,
+                    sourceTag,
+                    "Cannot end media session as session ID ($sessionId) is invalid."
+                )
             }
-        } else {
-            Log.trace(LOG_TAG, sourceTag, "Cannot end media session as session ID ($sessionId) is invalid.")
         }
     }
 
@@ -63,12 +72,22 @@ internal class MediaEventProcessor(
      * @see [MediaSession.queue]
      */
     fun processEvent(sessionId: String, event: XDMMediaEvent) {
-        val session = mediaSessions[sessionId]
-        if (session != null) {
-            session.queue(event)
-            Log.trace(LOG_TAG, sourceTag, "Successfully queued event (${event.xdmData.eventType}) for session ($sessionId)")
-        } else {
-            Log.trace(LOG_TAG, sourceTag, "Cannot queue event (${event.xdmData.eventType}) as session ID ($sessionId) is invalid.")
+        synchronized(sessionsMutex) {
+            val session = mediaSessions[sessionId]
+            if (session != null) {
+                session.queue(event)
+                Log.trace(
+                    LOG_TAG,
+                    sourceTag,
+                    "Successfully queued event (${event.xdmData.eventType}) for session ($sessionId)"
+                )
+            } else {
+                Log.trace(
+                    LOG_TAG,
+                    sourceTag,
+                    "Cannot queue event (${event.xdmData.eventType}) as session ID ($sessionId) is invalid."
+                )
+            }
         }
     }
 
@@ -77,12 +96,14 @@ internal class MediaEventProcessor(
      * @see [MediaSession.handleSessionUpdate]
      */
     fun notifyBackendSessionId(requestEventId: String, backendSessionId: String?) {
-        mediaSessions.forEach { (_, session) ->
-            session.handleSessionUpdate(requestEventId, backendSessionId)
-        }
+        synchronized(sessionsMutex) {
+            mediaSessions.forEach { (_, session) ->
+                session.handleSessionUpdate(requestEventId, backendSessionId)
+            }
 
-        // Session may be aborted if backend session ID is invalid
-        mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+            // Session may be aborted if backend session ID is invalid
+            mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+        }
     }
 
     /**
@@ -91,12 +112,14 @@ internal class MediaEventProcessor(
      * @see [MediaSession.handleErrorResponse]
      */
     fun notifyErrorResponse(requestEventId: String, data: Map<String, Any>) {
-        mediaSessions.forEach { (_, session) ->
-            session.handleErrorResponse(requestEventId, data)
-        }
+        synchronized(sessionsMutex) {
+            mediaSessions.forEach { (_, session) ->
+                session.handleErrorResponse(requestEventId, data)
+            }
 
-        // Session may be aborted on error response
-        mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+            // Session may be aborted on error response
+            mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+        }
     }
 
     /**
@@ -106,9 +129,11 @@ internal class MediaEventProcessor(
      * @see [MediaSession.handleMediaStateUpdate]
      */
     fun updateMediaState(stateData: Map<String, Any>) {
-        mediaState.updateState(stateData)
-        mediaSessions.forEach { (_, session) ->
-            session.handleMediaStateUpdate()
+        synchronized(sessionsMutex) {
+            mediaState.updateState(stateData)
+            mediaSessions.forEach { (_, session) ->
+                session.handleMediaStateUpdate()
+            }
         }
     }
 
@@ -117,11 +142,13 @@ internal class MediaEventProcessor(
      * @see [MediaSession.abort]
      */
     fun abortAllSessions() {
-        mediaSessions.forEach { (_, session) ->
-            session.abort()
-        }
+        synchronized(sessionsMutex) {
+            mediaSessions.forEach { (_, session) ->
+                session.abort()
+            }
 
-        // Remove all session after abort
-        mediaSessions.clear()
+            // Remove all session after abort
+            mediaSessions.clear()
+        }
     }
 }
