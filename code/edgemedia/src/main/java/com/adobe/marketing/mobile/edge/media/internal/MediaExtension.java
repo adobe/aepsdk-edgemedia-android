@@ -42,7 +42,13 @@ public class MediaExtension extends Extension {
     MediaExtension(final ExtensionApi extensionApi) {
         super(extensionApi);
         trackers = new HashMap<>();
-        mediaEventProcessor = new MediaEventProcessor();
+        mediaEventProcessor =
+                new MediaEventProcessor(
+                        new MediaState(),
+                        event -> {
+                            getApi().dispatch(event);
+                            return null;
+                        });
     }
 
     @NonNull @Override

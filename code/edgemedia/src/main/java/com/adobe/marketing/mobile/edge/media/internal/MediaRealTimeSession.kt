@@ -40,10 +40,6 @@ internal class MediaRealTimeSession(
     @VisibleForTesting
     internal var sessionStartEdgeRequestId: String? = null
 
-    // List of events to be processed
-    @VisibleForTesting
-    internal val events: MutableList<XDMMediaEvent> = mutableListOf()
-
     /**
      * Handles media state update notifications by triggering the event processing loop.
      */
@@ -54,24 +50,24 @@ internal class MediaRealTimeSession(
     /**
      * Handles session end requests. Attempts to finish processing any queued events and calls the
      * session end closure if all events were processed.
-     * @param sessionEndHandler closure called after session is successfully ended
      * @see [MediaSession.end]
      */
-    override fun handleSessionEnd(sessionEndHandler: () -> Unit) {
+    override fun handleSessionEnd() {
         processMediaEvents()
-        if (events.isEmpty()) {
-            sessionEndHandler()
+        if (eventQueue.isEmpty()) {
+            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id) with id $mediaBackendSessionId")
+        } else {
+            Log.trace(LOG_TAG, sourceTag, "Media session ($id) with id $mediaBackendSessionId was ended but not all queued events could be processed.")
         }
     }
 
     /**
      * Handles session abort requests. Removes all queued events and calls the session end closure.
-     * @param sessionAbortHandler closure called after session is successfully aborted
      * @see [MediaSession.abort]
      */
-    override fun handleSessionAbort(sessionAbortHandler: () -> Unit) {
-        events.clear()
-        sessionAbortHandler()
+    override fun handleSessionAbort() {
+        eventQueue.clear()
+        Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id) with id $mediaBackendSessionId")
     }
 
     /**
@@ -79,7 +75,7 @@ internal class MediaRealTimeSession(
      * @see [MediaSession.queue]
      */
     override fun handleQueueEvent(event: XDMMediaEvent) {
-        events.add(event)
+        eventQueue.add(event)
         processMediaEvents()
     }
 
@@ -90,20 +86,21 @@ internal class MediaRealTimeSession(
      *
      * @param requestEventId the [Edge] request event ID
      * @param backendSessionId the backend session ID for the current [MediaSession]
-     * @param sessionAbortHandler closure passed to [abort] if backendSessionId is invalid
      *
      * @see [MediaSession.abort]
      */
-    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?, sessionAbortHandler: () -> Unit) {
+    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
 
         mediaBackendSessionId = backendSessionId
+        Log.trace(LOG_TAG, sourceTag, "Session ($id) updated with Edge Network session ID ($mediaBackendSessionId).")
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {
-            abort(sessionAbortHandler)
+            Log.warning(LOG_TAG, sourceTag, "handleSessionUpdate - Session ($id): Aborting session as session ID ($backendSessionId) returned from session start request is invalid.")
+            abort()
         }
     }
 
@@ -113,11 +110,10 @@ internal class MediaRealTimeSession(
      *
      * @param requestEventId the [Edge] request event ID
      * @param data contains errors returned by the backend server
-     * @param sessionAbortHandler closure passed to [abort] if error is 400
      *
      * @see [MediaSession.abort]
      */
-    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>, sessionAbortHandler: () -> Unit) {
+    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
         if (requestEventId != sessionStartEdgeRequestId) {
             return
         }
@@ -130,8 +126,8 @@ internal class MediaRealTimeSession(
         }
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
-            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error occurred while dispatching session start request. $data")
-            abort(sessionAbortHandler)
+            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session ($id): Aborting session as error returned from session start request. $data")
+            abort()
         }
     }
 
@@ -143,15 +139,15 @@ internal class MediaRealTimeSession(
      */
     private fun processMediaEvents() {
         if (!state.isValid) {
-            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
+            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
             return
         }
 
-        while (events.isNotEmpty()) {
-            val event = events.first()
+        while (eventQueue.isNotEmpty()) {
+            val event = eventQueue.first()
 
             if (event.xdmData.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
-                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
+                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the media session id is unavailable, will retry later.")
                 return
             }
 
@@ -159,7 +155,7 @@ internal class MediaRealTimeSession(
 
             dispatchExperienceEvent(event, dispatchHandler)
 
-            events.removeFirst()
+            eventQueue.removeFirst()
         }
     }
 

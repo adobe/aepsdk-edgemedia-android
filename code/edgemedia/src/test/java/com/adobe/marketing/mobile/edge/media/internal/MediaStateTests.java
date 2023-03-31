@@ -115,9 +115,9 @@ public class MediaStateTests {
     @Test
     public void test_isValid_validPlayerName_validChannel_validAppVersion_isValidTrue() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.playerName", "name");
-        states.put("media.channel", "channel");
-        states.put("media.appVersion", "1.0.0");
+        states.put("edgemedia.playerName", "name");
+        states.put("edgemedia.channel", "channel");
+        states.put("edgemedia.appVersion", "1.0.0");
         mediaState.updateState(states);
 
         assertTrue(mediaState.isValid());
@@ -126,8 +126,8 @@ public class MediaStateTests {
     @Test
     public void test_isValid_validPlayerName_validChannel_noAppVersion_isValidTrue() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.playerName", "name");
-        states.put("media.channel", "channel");
+        states.put("edgemedia.playerName", "name");
+        states.put("edgemedia.channel", "channel");
         mediaState.updateState(states);
 
         // Is valid if playerName and channel are valid, appVersion not considered
@@ -137,8 +137,8 @@ public class MediaStateTests {
     @Test
     public void test_isValid_validPlayerName_noChannel_validAppVersion_isValidFalse() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.playerName", "name");
-        states.put("media.appVersion", "1.0.0");
+        states.put("edgemedia.playerName", "name");
+        states.put("edgemedia.appVersion", "1.0.0");
         mediaState.updateState(states);
 
         assertFalse(mediaState.isValid());
@@ -147,8 +147,8 @@ public class MediaStateTests {
     @Test
     public void test_isValid_noPlayerName_validChannel_validAppVersion_isValidFalse() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.channel", "channel");
-        states.put("media.appVersion", "1.0.0");
+        states.put("edgemedia.channel", "channel");
+        states.put("edgemedia.appVersion", "1.0.0");
         mediaState.updateState(states);
 
         assertFalse(mediaState.isValid());
@@ -157,9 +157,9 @@ public class MediaStateTests {
     @Test
     public void test_isValid_validPlayerName_emptyChannel_validAppVersion_isValidFalse() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.playerName", "name");
-        states.put("media.channel", "");
-        states.put("media.appVersion", "1.0.0");
+        states.put("edgemedia.playerName", "name");
+        states.put("edgemedia.channel", "");
+        states.put("edgemedia.appVersion", "1.0.0");
         mediaState.updateState(states);
 
         assertFalse(mediaState.isValid());
@@ -168,9 +168,9 @@ public class MediaStateTests {
     @Test
     public void test_isValid_emptyPlayerName_validChannel_validAppVersion_isValidFalse() {
         Map<String, Object> states = new HashMap<>();
-        states.put("media.playerName", "");
-        states.put("media.channel", "channel");
-        states.put("media.appVersion", "1.0.0");
+        states.put("edgemedia.playerName", "");
+        states.put("edgemedia.channel", "channel");
+        states.put("edgemedia.appVersion", "1.0.0");
         mediaState.updateState(states);
 
         assertFalse(mediaState.isValid());
