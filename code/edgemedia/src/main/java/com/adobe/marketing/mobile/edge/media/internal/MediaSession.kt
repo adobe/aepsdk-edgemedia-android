@@ -36,13 +36,13 @@ internal abstract class MediaSession(
 
     // List of events to be processed
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    internal val events: MutableList<XDMMediaEvent> = mutableListOf()
+    internal val eventQueue: MutableList<XDMMediaEvent> = mutableListOf()
 
     /**
      * Get the number of queued [XDMMediaEvent]s.
      */
     fun getQueueSize(): Int {
-        return events.size
+        return eventQueue.size
     }
 
     /**

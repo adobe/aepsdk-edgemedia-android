@@ -112,7 +112,7 @@ class MediaEventProcessorTests {
         setTestSessionsToProcessor()
 
         // SpyMediaSession doesn't remove events from queue even when end() is called
-        mediaSession1.events.add(XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(), XDMMediaCollection())))
+        mediaSession1.eventQueue.add(XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(), XDMMediaCollection())))
 
         mediaEventProcessor.endSession("testSession1")
 

@@ -54,7 +54,7 @@ internal class MediaRealTimeSession(
      */
     override fun handleSessionEnd() {
         processMediaEvents()
-        if (events.isEmpty()) {
+        if (eventQueue.isEmpty()) {
             Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id) with id $mediaBackendSessionId")
         } else {
             Log.trace(LOG_TAG, sourceTag, "Media session ($id) with id $mediaBackendSessionId was ended but not all queued events could be processed.")
@@ -66,7 +66,7 @@ internal class MediaRealTimeSession(
      * @see [MediaSession.abort]
      */
     override fun handleSessionAbort() {
-        events.clear()
+        eventQueue.clear()
         Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id) with id $mediaBackendSessionId")
     }
 
@@ -75,7 +75,7 @@ internal class MediaRealTimeSession(
      * @see [MediaSession.queue]
      */
     override fun handleQueueEvent(event: XDMMediaEvent) {
-        events.add(event)
+        eventQueue.add(event)
         processMediaEvents()
     }
 
@@ -143,8 +143,8 @@ internal class MediaRealTimeSession(
             return
         }
 
-        while (events.isNotEmpty()) {
-            val event = events.first()
+        while (eventQueue.isNotEmpty()) {
+            val event = eventQueue.first()
 
             if (event.xdmData.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
                 Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the media session id is unavailable, will retry later.")
@@ -155,7 +155,7 @@ internal class MediaRealTimeSession(
 
             dispatchExperienceEvent(event, dispatchHandler)
 
-            events.removeFirst()
+            eventQueue.removeFirst()
         }
     }
 

@@ -74,13 +74,13 @@ class MediaRealTimeSessionTests {
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.sessionStartEdgeRequestId = requestEventId // current request ID must match passed ID
-        session.events.add(event)
+        session.eventQueue.add(event)
 
         session.handleSessionUpdate(requestEventId, sessionId)
 
         assertEquals(sessionId, session.mediaBackendSessionId)
         assertTrue(session.isSessionActive) // verify session is still active
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
     }
 
     @Test
@@ -89,14 +89,14 @@ class MediaRealTimeSessionTests {
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.sessionStartEdgeRequestId = requestEventId // current request ID must match passed ID
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
         session.mediaBackendSessionId = "sessionId" // set valid backend session ID
 
         session.handleSessionUpdate(requestEventId, "") // pass invalid session ID
 
         assertNull(session.mediaBackendSessionId)
         assertFalse(session.isSessionActive) // verify session is inactive from abort() call
-        assertTrue(session.events.isEmpty()) // event queue is cleared from abort() call
+        assertTrue(session.eventQueue.isEmpty()) // event queue is cleared from abort() call
     }
 
     @Test
@@ -106,14 +106,14 @@ class MediaRealTimeSessionTests {
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.sessionStartEdgeRequestId = "otherEdgeRequestID"
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.PLAY))
         session.mediaBackendSessionId = sessionId // set valid backend session ID
 
         session.handleSessionUpdate(requestEventId, "otherSessionId")
 
         assertEquals(sessionId, session.mediaBackendSessionId) // verify backend session id unchanged
         assertTrue(session.isSessionActive) // verify session is still active
-        assertFalse(session.events.isEmpty()) // event queue not processed
+        assertFalse(session.eventQueue.isEmpty()) // event queue not processed
     }
 
     @Test
@@ -122,12 +122,12 @@ class MediaRealTimeSessionTests {
         val data = mapOf<String, Any>("status" to 400L, "type" to "https://ns.adobe.com/aep/errors/va-edge-0400-400")
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data)
 
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
         assertFalse(session.isSessionActive)
     }
 
@@ -143,12 +143,12 @@ class MediaRealTimeSessionTests {
         )
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data)
 
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
         assertFalse(session.isSessionActive)
     }
 
@@ -158,7 +158,7 @@ class MediaRealTimeSessionTests {
         val data = mapOf<String, Any>("status" to 200L, "type" to "https://ns.adobe.com/aep/errors/va-edge-0400-400")
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data)
@@ -168,7 +168,7 @@ class MediaRealTimeSessionTests {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
 
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
         assertTrue(session.isSessionActive)
     }
 
@@ -178,7 +178,7 @@ class MediaRealTimeSessionTests {
         val data = mapOf<String, Any>("status" to 400L, "type" to "https://ns.adobe.com/aep/errors/va-edge-0200-200")
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data)
@@ -188,7 +188,7 @@ class MediaRealTimeSessionTests {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
 
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
         assertTrue(session.isSessionActive)
     }
 
@@ -199,7 +199,7 @@ class MediaRealTimeSessionTests {
         val data = mapOf<String, Any>("hello" to 400L, "world" to "https://ns.adobe.com/aep/errors/va-edge-0200-200")
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse(requestId, data)
@@ -209,7 +209,7 @@ class MediaRealTimeSessionTests {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
 
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
         assertTrue(session.isSessionActive)
     }
 
@@ -219,7 +219,7 @@ class MediaRealTimeSessionTests {
         val data = mapOf<String, Any>("status" to 400L, "type" to "https://ns.adobe.com/aep/errors/va-edge-0400-400")
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
         session.sessionStartEdgeRequestId = requestId // current request id must match to process request
 
         session.handleErrorResponse("otherRequestId", data)
@@ -229,7 +229,7 @@ class MediaRealTimeSessionTests {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
 
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
         assertTrue(session.isSessionActive)
     }
 
@@ -242,11 +242,11 @@ class MediaRealTimeSessionTests {
         val event = getXDMMediaEvent(XDMMediaEventType.SESSION_START)
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(event)
+        session.eventQueue.add(event)
 
         // Verify events queue is empty after calling handleMediaStateUpdate
         session.handleMediaStateUpdate()
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
     }
 
     @Test
@@ -256,11 +256,11 @@ class MediaRealTimeSessionTests {
         val event = getXDMMediaEvent(XDMMediaEventType.SESSION_START)
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(event)
+        session.eventQueue.add(event)
 
         session.end()
 
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
     }
 
     @Test
@@ -270,7 +270,7 @@ class MediaRealTimeSessionTests {
         val event = getXDMMediaEvent(XDMMediaEventType.SESSION_START)
 
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(event)
+        session.eventQueue.add(event)
 
         session.end()
 
@@ -278,17 +278,17 @@ class MediaRealTimeSessionTests {
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
     }
 
     @Test
     fun `abort() clears queue and calls session abort handler`() {
         val session = MediaRealTimeSession(id, mockState, dispatcher)
-        session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
+        session.eventQueue.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
 
         session.abort()
 
-        assertTrue(session.events.isEmpty())
+        assertTrue(session.eventQueue.isEmpty())
     }
 
     @Test
@@ -305,9 +305,9 @@ class MediaRealTimeSessionTests {
         session.queue(event2)
 
         // MediaState was set to invalid so event will still be in queue
-        assertEquals(2, session.events.size)
-        assertEquals(event1, session.events[0])
-        assertEquals(event2, session.events[1])
+        assertEquals(2, session.eventQueue.size)
+        assertEquals(event1, session.eventQueue[0])
+        assertEquals(event2, session.eventQueue[1])
     }
 
     @Test
@@ -359,7 +359,7 @@ class MediaRealTimeSessionTests {
         runBlocking {
             delay(TimeUnit.SECONDS.toMillis(1))
         }
-        assertFalse(session.events.isEmpty())
+        assertFalse(session.eventQueue.isEmpty())
     }
 
     @Test
