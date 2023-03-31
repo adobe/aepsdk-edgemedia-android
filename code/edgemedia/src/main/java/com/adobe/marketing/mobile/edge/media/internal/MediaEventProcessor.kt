@@ -25,6 +25,11 @@ internal class MediaEventProcessor(
     private val sourceTag = "MediaEventProcessor"
     private val sessionsMutex = Any()
 
+    // Determines if a MediaSession can be removed from the queue
+    private val isMediaSessionInactive = { mediaSession: MediaSession ->
+        !mediaSession.isSessionActive && mediaSession.getQueueSize() == 0
+    }
+
     @VisibleForTesting
     internal val mediaSessions: MutableMap<String, MediaSession> = mutableMapOf()
 
@@ -51,9 +56,9 @@ internal class MediaEventProcessor(
         synchronized(sessionsMutex) {
             val session = mediaSessions[sessionId]
             if (session != null) {
-                session.end {
+                session.end()
+                if (isMediaSessionInactive(session)) {
                     mediaSessions.remove(sessionId)
-                    Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($sessionId)")
                 }
             } else {
                 Log.trace(
@@ -102,7 +107,7 @@ internal class MediaEventProcessor(
             }
 
             // Session may be aborted if backend session ID is invalid
-            mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+            mediaSessions.values.removeAll { isMediaSessionInactive(it) }
         }
     }
 
@@ -118,7 +123,7 @@ internal class MediaEventProcessor(
             }
 
             // Session may be aborted on error response
-            mediaSessions.values.removeAll { mediaSession -> !mediaSession.isSessionActive }
+            mediaSessions.values.removeAll { isMediaSessionInactive(it) }
         }
     }
 

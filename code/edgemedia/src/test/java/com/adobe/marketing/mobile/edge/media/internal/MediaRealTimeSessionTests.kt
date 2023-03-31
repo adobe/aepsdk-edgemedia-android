@@ -31,7 +31,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import java.util.*
+import java.util.Date
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -258,11 +258,8 @@ class MediaRealTimeSessionTests {
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.events.add(event)
 
-        val latch = CountDownLatch(1)
+        session.end()
 
-        session.end { latch.countDown() }
-
-        assertTrue(latch.await(2, TimeUnit.SECONDS))
         assertTrue(session.events.isEmpty())
     }
 
@@ -275,7 +272,7 @@ class MediaRealTimeSessionTests {
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.events.add(event)
 
-        session.end { fail("Session end handler should not be called!") }
+        session.end()
 
         // Add delay to ensure session end handler is not called
         runBlocking {
@@ -289,11 +286,8 @@ class MediaRealTimeSessionTests {
         val session = MediaRealTimeSession(id, mockState, dispatcher)
         session.events.add(getXDMMediaEvent(XDMMediaEventType.SESSION_START))
 
-        val latch = CountDownLatch(1)
+        session.abort()
 
-        session.abort { latch.countDown() }
-
-        assertTrue(latch.await(2, TimeUnit.SECONDS))
         assertTrue(session.events.isEmpty())
     }
 

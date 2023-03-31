@@ -40,10 +40,6 @@ internal class MediaRealTimeSession(
     @VisibleForTesting
     internal var sessionStartEdgeRequestId: String? = null
 
-    // List of events to be processed
-    @VisibleForTesting
-    internal val events: MutableList<XDMMediaEvent> = mutableListOf()
-
     /**
      * Handles media state update notifications by triggering the event processing loop.
      */
@@ -54,24 +50,24 @@ internal class MediaRealTimeSession(
     /**
      * Handles session end requests. Attempts to finish processing any queued events and calls the
      * session end closure if all events were processed.
-     * @param sessionEndHandler closure called after session is successfully ended
      * @see [MediaSession.end]
      */
-    override fun handleSessionEnd(sessionEndHandler: () -> Unit) {
+    override fun handleSessionEnd() {
         processMediaEvents()
         if (events.isEmpty()) {
-            sessionEndHandler()
+            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id)")
+        } else {
+            Log.trace(LOG_TAG, sourceTag, "Media session ($id) was ended but not all queued events could be processed.")
         }
     }
 
     /**
      * Handles session abort requests. Removes all queued events and calls the session end closure.
-     * @param sessionAbortHandler closure called after session is successfully aborted
      * @see [MediaSession.abort]
      */
-    override fun handleSessionAbort(sessionAbortHandler: () -> Unit) {
+    override fun handleSessionAbort() {
         events.clear()
-        sessionAbortHandler()
+        Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id)")
     }
 
     /**
@@ -99,6 +95,7 @@ internal class MediaRealTimeSession(
         }
 
         mediaBackendSessionId = backendSessionId
+        Log.trace(LOG_TAG, sourceTag, "Session $id updated with Edge Network session ID ($mediaBackendSessionId).")
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {

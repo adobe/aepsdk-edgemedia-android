@@ -96,17 +96,37 @@ class MediaEventProcessorTests {
         // verify session 1 ended
         assertFalse(mediaSession1.isSessionActive)
         assertTrue(mediaSession1.handleSessionEndCalled)
-        assertNotNull(mediaSession1.handleSessionEndParamEndHandler)
-        mediaSession1.handleSessionEndParamEndHandler?.let { it() } // call session end handler
 
         // verify session 2 did not end
         assertTrue(mediaSession2.isSessionActive)
         assertFalse(mediaSession2.handleSessionEndCalled)
-        assertNull(mediaSession2.handleSessionEndParamEndHandler)
 
         // verify sessions map updated
         assertEquals(1, mediaEventProcessor.mediaSessions.size)
         assertNull(mediaEventProcessor.mediaSessions["testSession1"])
+        assertNotNull(mediaEventProcessor.mediaSessions["testSession2"])
+    }
+
+    @Test
+    fun `endSession() ends Media Session but does not remove from sessions map if events are in queue`() {
+        setTestSessionsToProcessor()
+
+        // SpyMediaSession doesn't remove events from queue even when end() is called
+        mediaSession1.events.add(XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(), XDMMediaCollection())))
+
+        mediaEventProcessor.endSession("testSession1")
+
+        // verify session 1 ended
+        assertFalse(mediaSession1.isSessionActive) // media session is not active
+        assertTrue(mediaSession1.handleSessionEndCalled)
+
+        // verify session 2 did not end
+        assertTrue(mediaSession2.isSessionActive)
+        assertFalse(mediaSession2.handleSessionEndCalled)
+
+        // verify sessions map not updated
+        assertEquals(2, mediaEventProcessor.mediaSessions.size)
+        assertNotNull(mediaEventProcessor.mediaSessions["testSession1"])
         assertNotNull(mediaEventProcessor.mediaSessions["testSession2"])
     }
 
@@ -119,12 +139,10 @@ class MediaEventProcessorTests {
         // verify session 1 did not end
         assertTrue(mediaSession1.isSessionActive)
         assertFalse(mediaSession1.handleSessionEndCalled)
-        assertNull(mediaSession1.handleSessionEndParamEndHandler)
 
         // verify session 2 did not end
         assertTrue(mediaSession2.isSessionActive)
         assertFalse(mediaSession2.handleSessionEndCalled)
-        assertNull(mediaSession2.handleSessionEndParamEndHandler)
 
         // verify sessions map updated
         assertEquals(2, mediaEventProcessor.mediaSessions.size)

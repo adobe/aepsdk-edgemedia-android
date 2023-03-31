@@ -34,6 +34,17 @@ internal abstract class MediaSession(
     internal var isSessionActive: Boolean = true
         @VisibleForTesting internal set
 
+    // List of events to be processed
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
+    internal val events: MutableList<XDMMediaEvent> = mutableListOf()
+
+    /**
+     * Get the number of queued [XDMMediaEvent]s.
+     */
+    fun getQueueSize(): Int {
+        return events.size
+    }
+
     /**
      * Queues the [XDMMediaEvent].
      * Operation fails if the current session was ended or aborted.
@@ -50,30 +61,28 @@ internal abstract class MediaSession(
 
     /**
      * Ends the current session.
-     * @param sessionEndHandler closure called after session is successfully ended
      */
-    fun end(sessionEndHandler: () -> Unit = { }) {
+    fun end() {
         if (!isSessionActive) {
             Log.debug(LOG_TAG, sourceTag, "end - failed to end session. Media Session ($id) is inactive.")
             return
         }
 
         isSessionActive = false
-        handleSessionEnd(sessionEndHandler)
+        handleSessionEnd()
     }
 
     /**
      * Aborts the current session.
-     * @param sessionAbortHandler closure called after session is successfully aborted
      */
-    fun abort(sessionAbortHandler: () -> Unit = { }) {
+    fun abort() {
         if (!isSessionActive) {
             Log.debug(LOG_TAG, sourceTag, "abort - failed to abort session. Media Session ($id) is inactive.")
             return
         }
 
         isSessionActive = false
-        handleSessionAbort(sessionAbortHandler)
+        handleSessionAbort()
     }
 
     /**
@@ -83,15 +92,13 @@ internal abstract class MediaSession(
 
     /**
      * Ends the current session.
-     * @param sessionEndHandler closure called after session is successfully ended
      */
-    protected abstract fun handleSessionEnd(sessionEndHandler: () -> Unit)
+    protected abstract fun handleSessionEnd()
 
     /**
      * Aborts the current session.
-     * @param sessionAbortHandler closure called after session is successfully aborted
      */
-    protected abstract fun handleSessionAbort(sessionAbortHandler: () -> Unit)
+    protected abstract fun handleSessionAbort()
 
     /**
      * Queues the [XDMMediaEvent] for processing.

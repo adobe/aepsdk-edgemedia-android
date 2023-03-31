@@ -18,7 +18,6 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -59,23 +58,9 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = true
 
-        val sessionEndHandler: () -> Unit = { }
-        session.end(sessionEndHandler)
-
-        assertTrue(session.handleSessionEndCalled)
-        assertEquals(sessionEndHandler, session.handleSessionEndParamEndHandler)
-        assertFalse(session.isSessionActive) // end() sets session active to false
-    }
-
-    @Test
-    fun `end() with active session calls handleSessionEnd with default handler`() {
-        val session = SpyMediaSession(id, mockState, dispatcher)
-        session.isSessionActive = true
-
         session.end()
 
         assertTrue(session.handleSessionEndCalled)
-        assertNotNull(session.handleSessionEndParamEndHandler)
         assertFalse(session.isSessionActive) // end() sets session active to false
     }
 
@@ -84,11 +69,9 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = false
 
-        val sessionEndHandler: () -> Unit = { }
-        session.end(sessionEndHandler)
+        session.end()
 
         assertFalse(session.handleSessionEndCalled)
-        assertNull(session.handleSessionEndParamEndHandler)
     }
 
     @Test
@@ -96,23 +79,9 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = true
 
-        val sessionEndHandler: () -> Unit = { }
-        session.abort(sessionEndHandler)
-
-        assertTrue(session.handleSessionAbortCalled)
-        assertEquals(sessionEndHandler, session.handleSessionAbortParamAbortHandler)
-        assertFalse(session.isSessionActive) // abort() sets session active to false
-    }
-
-    @Test
-    fun `abort() with active session calls handleSessionAbort with default handler`() {
-        val session = SpyMediaSession(id, mockState, dispatcher)
-        session.isSessionActive = true
-
         session.abort()
 
         assertTrue(session.handleSessionAbortCalled)
-        assertNotNull(session.handleSessionAbortParamAbortHandler)
         assertFalse(session.isSessionActive) // abort() sets session active to false
     }
 
@@ -121,10 +90,8 @@ class MediaSessionTests {
         val session = SpyMediaSession(id, mockState, dispatcher)
         session.isSessionActive = false
 
-        val sessionEndHandler: () -> Unit = { }
-        session.end(sessionEndHandler)
+        session.end()
 
         assertFalse(session.handleSessionAbortCalled)
-        assertNull(session.handleSessionAbortParamAbortHandler)
     }
 }

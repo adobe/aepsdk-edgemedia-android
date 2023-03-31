@@ -30,17 +30,13 @@ internal class SpyMediaSession(
     }
 
     var handleSessionEndCalled: Boolean = false
-    var handleSessionEndParamEndHandler: (() -> Unit)? = null
-    override fun handleSessionEnd(sessionEndHandler: () -> Unit) {
+    override fun handleSessionEnd() {
         handleSessionEndCalled = true
-        handleSessionEndParamEndHandler = sessionEndHandler
     }
 
     var handleSessionAbortCalled: Boolean = false
-    var handleSessionAbortParamAbortHandler: (() -> Unit)? = null
-    override fun handleSessionAbort(sessionAbortHandler: () -> Unit) {
+    override fun handleSessionAbort() {
         handleSessionAbortCalled = true
-        handleSessionAbortParamAbortHandler = sessionAbortHandler
     }
 
     var handleQueueEventCalled: Boolean = false
