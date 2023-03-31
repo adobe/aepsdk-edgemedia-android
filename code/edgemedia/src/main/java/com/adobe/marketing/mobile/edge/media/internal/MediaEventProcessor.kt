@@ -57,9 +57,6 @@ internal class MediaEventProcessor(
             val session = mediaSessions[sessionId]
             if (session != null) {
                 session.end()
-                if (isMediaSessionInactive(session)) {
-                    mediaSessions.remove(sessionId)
-                }
             } else {
                 Log.trace(
                     LOG_TAG,
@@ -67,6 +64,9 @@ internal class MediaEventProcessor(
                     "Cannot end media session as session ID ($sessionId) is invalid."
                 )
             }
+
+            // Clean up any ended sessions
+            mediaSessions.values.removeAll { isMediaSessionInactive(it) }
         }
     }
 
