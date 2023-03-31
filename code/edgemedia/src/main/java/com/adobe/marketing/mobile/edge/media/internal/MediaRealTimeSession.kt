@@ -55,9 +55,9 @@ internal class MediaRealTimeSession(
     override fun handleSessionEnd() {
         processMediaEvents()
         if (events.isEmpty()) {
-            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id)")
+            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id) with id $mediaBackendSessionId")
         } else {
-            Log.trace(LOG_TAG, sourceTag, "Media session ($id) was ended but not all queued events could be processed.")
+            Log.trace(LOG_TAG, sourceTag, "Media session ($id) with id $mediaBackendSessionId was ended but not all queued events could be processed.")
         }
     }
 
@@ -67,7 +67,7 @@ internal class MediaRealTimeSession(
      */
     override fun handleSessionAbort() {
         events.clear()
-        Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id)")
+        Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id) with id $mediaBackendSessionId")
     }
 
     /**
@@ -95,11 +95,11 @@ internal class MediaRealTimeSession(
         }
 
         mediaBackendSessionId = backendSessionId
-        Log.trace(LOG_TAG, sourceTag, "Session $id updated with Edge Network session ID ($mediaBackendSessionId).")
+        Log.trace(LOG_TAG, sourceTag, "Session ($id) updated with Edge Network session ID ($mediaBackendSessionId).")
         if (mediaBackendSessionId != null) {
             processMediaEvents()
         } else {
-            Log.warning(LOG_TAG, sourceTag, "handleSessionUpdate - Session $id: Aborting session as session ID ($backendSessionId) returned from session start request is invalid.")
+            Log.warning(LOG_TAG, sourceTag, "handleSessionUpdate - Session ($id): Aborting session as session ID ($backendSessionId) returned from session start request is invalid.")
             abort()
         }
     }
@@ -126,7 +126,7 @@ internal class MediaRealTimeSession(
         }
 
         if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
-            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session $id: Aborting session as error returned from session start request. $data")
+            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session ($id): Aborting session as error returned from session start request. $data")
             abort()
         }
     }
@@ -139,7 +139,7 @@ internal class MediaRealTimeSession(
      */
     private fun processMediaEvents() {
         if (!state.isValid) {
-            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
+            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
             return
         }
 
@@ -147,7 +147,7 @@ internal class MediaRealTimeSession(
             val event = events.first()
 
             if (event.xdmData.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
-                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session $id: Exiting as the media session id is unavailable, will retry later.")
+                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the media session id is unavailable, will retry later.")
                 return
             }
 
