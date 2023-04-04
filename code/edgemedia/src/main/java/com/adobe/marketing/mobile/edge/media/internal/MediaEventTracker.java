@@ -223,10 +223,10 @@ class MediaEventTracker implements MediaEventTracking {
     IMediaRuleCallback isInChapter = (rule, context) -> mediaContext.isInChapter();
 
     IMediaRuleCallback isInBuffering =
-            (rule, context) -> mediaContext.isInState(MediaPlayBackState.Buffer);
+            (rule, context) -> mediaContext.isInState(MediaPlaybackState.Buffer);
 
     IMediaRuleCallback isInSeeking =
-            (rule, context) -> mediaContext.isInState(MediaPlayBackState.Seek);
+            (rule, context) -> mediaContext.isInState(MediaPlaybackState.Seek);
 
     IMediaRuleCallback isValidMediaInfo =
             (rule, context) -> {
@@ -331,7 +331,7 @@ class MediaEventTracker implements MediaEventTracking {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 StateInfo stateInfo = StateInfo.fromObjectMap(info);
-                return mediaContext.isInState(stateInfo);
+                return mediaContext.isInPlayerState(stateInfo);
             };
 
     IMediaRuleCallback allowStateTrack =
@@ -454,10 +454,10 @@ class MediaEventTracker implements MediaEventTracking {
                 int ruleName = rule.getName();
 
                 if (ruleName == MediaRuleName.AdStart.ordinal()) {
-                    if (mediaContext.isInState(MediaPlayBackState.Init)
-                            && !mediaContext.isInState(MediaPlayBackState.Buffer)
-                            && !mediaContext.isInState(MediaPlayBackState.Seek)) {
-                        mediaContext.enterState(MediaPlayBackState.Play);
+                    if (mediaContext.isInState(MediaPlaybackState.Init)
+                            && !mediaContext.isInState(MediaPlaybackState.Buffer)
+                            && !mediaContext.isInState(MediaPlaybackState.Seek)) {
+                        mediaContext.enterState(MediaPlaybackState.Play);
                     }
                 }
 
@@ -465,8 +465,8 @@ class MediaEventTracker implements MediaEventTracking {
                 // we manually switch to pause as there is not way to go back to init state.
                 if (ruleName == MediaRuleName.BufferComplete.ordinal()
                         || ruleName == MediaRuleName.SeekComplete.ordinal()) {
-                    if (mediaContext.isInState(MediaPlayBackState.Init)) {
-                        mediaContext.enterState(MediaPlayBackState.Pause);
+                    if (mediaContext.isInState(MediaPlaybackState.Init)) {
+                        mediaContext.enterState(MediaPlaybackState.Pause);
                     }
                 }
 
@@ -620,26 +620,26 @@ class MediaEventTracker implements MediaEventTracking {
 
     IMediaRuleCallback cmdPlay =
             (rule, context) -> {
-                mediaContext.enterState(MediaPlayBackState.Play);
+                mediaContext.enterState(MediaPlaybackState.Play);
                 return true;
             };
 
     IMediaRuleCallback cmdPause =
             (rule, context) -> {
-                mediaContext.enterState(MediaPlayBackState.Pause);
+                mediaContext.enterState(MediaPlaybackState.Pause);
                 return true;
             };
 
     IMediaRuleCallback cmdBufferStart =
             (rule, context) -> {
-                mediaContext.enterState(MediaPlayBackState.Buffer);
+                mediaContext.enterState(MediaPlaybackState.Buffer);
                 return true;
             };
 
     IMediaRuleCallback cmdBufferComplete =
             (rule, context) -> {
-                if (mediaContext.isInState(MediaPlayBackState.Buffer)) {
-                    mediaContext.exitState(MediaPlayBackState.Buffer);
+                if (mediaContext.isInState(MediaPlaybackState.Buffer)) {
+                    mediaContext.exitState(MediaPlaybackState.Buffer);
                 }
 
                 return true;
@@ -647,14 +647,14 @@ class MediaEventTracker implements MediaEventTracking {
 
     IMediaRuleCallback cmdSeekStart =
             (rule, context) -> {
-                mediaContext.enterState(MediaPlayBackState.Seek);
+                mediaContext.enterState(MediaPlaybackState.Seek);
                 return true;
             };
 
     IMediaRuleCallback cmdSeekComplete =
             (rule, context) -> {
-                if (mediaContext.isInState(MediaPlayBackState.Seek)) {
-                    mediaContext.exitState(MediaPlayBackState.Seek);
+                if (mediaContext.isInState(MediaPlaybackState.Seek)) {
+                    mediaContext.exitState(MediaPlaybackState.Seek);
                 }
 
                 return true;

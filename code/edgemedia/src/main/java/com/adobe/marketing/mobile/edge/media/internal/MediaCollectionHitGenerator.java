@@ -31,7 +31,7 @@ class MediaCollectionHitGenerator {
     private boolean isTracking;
     private long interval;
     private long refTS;
-    private MediaPlayBackState previousState;
+    private MediaPlaybackState previousState;
     private long previousStateTS;
     private final String refSessionId;
 
@@ -47,7 +47,7 @@ class MediaCollectionHitGenerator {
 
         this.refTS = refTS;
         this.refSessionId = refSessionId;
-        previousState = MediaPlayBackState.Init;
+        previousState = MediaPlaybackState.Init;
         previousStateTS = refTS;
         lastQOEData = new HashMap<>();
         downloadedContent =
@@ -163,7 +163,7 @@ class MediaCollectionHitGenerator {
 
     /** Restart session again after 24 hr timeout or idle timeout recovered. */
     void processSessionRestart() {
-        previousState = MediaPlayBackState.Init;
+        previousState = MediaPlaybackState.Init;
         previousStateTS = refTS;
 
         lastQOEData.clear();
@@ -218,7 +218,7 @@ class MediaCollectionHitGenerator {
             return;
         }
 
-        MediaPlayBackState currentState = getPlaybackState();
+        MediaPlaybackState currentState = getPlaybackState();
 
         if (previousState != currentState || doFlush) {
             String eventType = getMediaCollectionEvent(currentState);
@@ -333,35 +333,35 @@ class MediaCollectionHitGenerator {
         }
     }
 
-    MediaPlayBackState getPlaybackState() {
-        if (mediaContext.isInState(MediaPlayBackState.Buffer)) {
-            return MediaPlayBackState.Buffer;
-        } else if (mediaContext.isInState(MediaPlayBackState.Seek)) {
-            return MediaPlayBackState.Seek;
-        } else if (mediaContext.isInState(MediaPlayBackState.Play)) {
-            return MediaPlayBackState.Play;
-        } else if (mediaContext.isInState(MediaPlayBackState.Pause)) {
-            return MediaPlayBackState.Pause;
-        } else if (mediaContext.isInState(MediaPlayBackState.Stall)) {
-            return MediaPlayBackState.Stall;
+    MediaPlaybackState getPlaybackState() {
+        if (mediaContext.isInState(MediaPlaybackState.Buffer)) {
+            return MediaPlaybackState.Buffer;
+        } else if (mediaContext.isInState(MediaPlaybackState.Seek)) {
+            return MediaPlaybackState.Seek;
+        } else if (mediaContext.isInState(MediaPlaybackState.Play)) {
+            return MediaPlaybackState.Play;
+        } else if (mediaContext.isInState(MediaPlaybackState.Pause)) {
+            return MediaPlaybackState.Pause;
+        } else if (mediaContext.isInState(MediaPlaybackState.Stall)) {
+            return MediaPlaybackState.Stall;
         } else {
-            return MediaPlayBackState.Init;
+            return MediaPlaybackState.Init;
         }
     }
 
-    String getMediaCollectionEvent(final MediaPlayBackState state) {
-        if (state == MediaPlayBackState.Buffer) {
+    String getMediaCollectionEvent(final MediaPlaybackState state) {
+        if (state == MediaPlaybackState.Buffer) {
             return MediaCollectionConstants.EventType.BUFFER_START;
-        } else if (state == MediaPlayBackState.Seek) {
+        } else if (state == MediaPlaybackState.Seek) {
             return MediaCollectionConstants.EventType.PAUSE_START;
-        } else if (state == MediaPlayBackState.Play) {
+        } else if (state == MediaPlaybackState.Play) {
             return MediaCollectionConstants.EventType.PLAY;
-        } else if (state == MediaPlayBackState.Pause) {
+        } else if (state == MediaPlaybackState.Pause) {
             return MediaCollectionConstants.EventType.PAUSE_START;
-        } else if (state == MediaPlayBackState.Stall) {
+        } else if (state == MediaPlaybackState.Stall) {
             // Stall not supported by backend we just send Play event for it
             return MediaCollectionConstants.EventType.PLAY;
-        } else if (state == MediaPlayBackState.Init) {
+        } else if (state == MediaPlaybackState.Init) {
             // We should never hit this condition as there is not event to denote init.
             // Ping without any previous playback state denotes init.
             return MediaCollectionConstants.EventType.PING;

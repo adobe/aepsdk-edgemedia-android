@@ -390,7 +390,7 @@ public class MediaCollectionHitGeneratorTests {
 
         mediaContext.setChapterInfo(chapterInfo, chapterMetadata);
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
         hitGenerator.processSessionRestart();
 
@@ -510,7 +510,7 @@ public class MediaCollectionHitGeneratorTests {
 
         mediaContext.setChapterInfo(chapterInfo, chapterMetadata);
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
         hitGenerator.processSessionRestart();
 
@@ -611,7 +611,7 @@ public class MediaCollectionHitGeneratorTests {
     public void test_ProcessIdleCompleteStateTrackingResumesAfterIdle() {
         StateInfo stateInfo = StateInfo.create("fullscreen");
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
         mediaContext.startState(stateInfo);
 
@@ -678,7 +678,7 @@ public class MediaCollectionHitGeneratorTests {
     public void test_ProcessIdleCompleteNoActiveStates() {
         StateInfo stateInfo = StateInfo.create("fullscreen");
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
         mediaContext.startState(stateInfo);
 
@@ -730,7 +730,7 @@ public class MediaCollectionHitGeneratorTests {
     public void test_ProcessIdleCompleteStateTrackingResumesAfterIdle2() {
         StateInfo stateInfo = StateInfo.create("fullscreen");
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
         mediaContext.startState(stateInfo);
 
@@ -803,7 +803,7 @@ public class MediaCollectionHitGeneratorTests {
         assertEquals(0, hitProcessor.hitCountfromActiveSession());
 
         {
-            mediaContext.enterState(MediaPlayBackState.Play);
+            mediaContext.enterState(MediaPlaybackState.Play);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -821,7 +821,7 @@ public class MediaCollectionHitGeneratorTests {
         }
 
         {
-            mediaContext.enterState(MediaPlayBackState.Buffer);
+            mediaContext.enterState(MediaPlaybackState.Buffer);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -839,7 +839,7 @@ public class MediaCollectionHitGeneratorTests {
         }
 
         {
-            mediaContext.exitState(MediaPlayBackState.Buffer);
+            mediaContext.exitState(MediaPlaybackState.Buffer);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -857,7 +857,7 @@ public class MediaCollectionHitGeneratorTests {
         }
 
         {
-            mediaContext.enterState(MediaPlayBackState.Seek);
+            mediaContext.enterState(MediaPlaybackState.Seek);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -875,7 +875,7 @@ public class MediaCollectionHitGeneratorTests {
         }
 
         {
-            mediaContext.exitState(MediaPlayBackState.Seek);
+            mediaContext.exitState(MediaPlaybackState.Seek);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -893,7 +893,7 @@ public class MediaCollectionHitGeneratorTests {
         }
 
         {
-            mediaContext.enterState(MediaPlayBackState.Pause);
+            mediaContext.enterState(MediaPlaybackState.Pause);
             hitGenerator.processPlayback(false);
             assertEquals(1, hitProcessor.hitCountfromActiveSession());
 
@@ -987,7 +987,7 @@ public class MediaCollectionHitGeneratorTests {
         hitProcessor.clearHitsFromActionSession();
 
         {
-            mediaContext.enterState(MediaPlayBackState.Play);
+            mediaContext.enterState(MediaPlaybackState.Play);
             hitGenerator.processPlayback(false);
             Map<String, Object> qoeData = MediaCollectionHelper.extractQoEData(mediaContext);
 
@@ -1090,7 +1090,7 @@ public class MediaCollectionHitGeneratorTests {
         hitProcessor.clearHitsFromActionSession();
 
         {
-            mediaContext.enterState(MediaPlayBackState.Play);
+            mediaContext.enterState(MediaPlaybackState.Play);
             hitGenerator.processPlayback(false);
             Map<String, Object> qoeData = MediaCollectionHelper.extractQoEData(mediaContext);
 
@@ -1119,7 +1119,7 @@ public class MediaCollectionHitGeneratorTests {
 
     @Test
     public void test_processPlaybackSameState() {
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
         hitGenerator.processPlayback(false);
 
         assertEquals(1, hitProcessor.hitCountfromActiveSession());
@@ -1151,7 +1151,7 @@ public class MediaCollectionHitGeneratorTests {
                 new MediaCollectionHitGenerator(
                         mediaContext, hitProcessor, config, 0, refSessionId);
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
         hitGenerator.processPlayback(false);
 
         assertEquals(1, hitProcessor.hitCountfromActiveSession());
@@ -1245,7 +1245,7 @@ public class MediaCollectionHitGeneratorTests {
 
     @Test
     public void test_processPlaybackSameStateTimeout() {
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
         hitGenerator.processPlayback(false);
 
         assertEquals(1, hitProcessor.hitCountfromActiveSession());
@@ -1280,7 +1280,7 @@ public class MediaCollectionHitGeneratorTests {
 
     @Test
     public void test_processPlaybackFlush() {
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
         hitGenerator.processPlayback(true);
 
         assertEquals(1, hitProcessor.hitCountfromActiveSession());
@@ -1469,17 +1469,17 @@ public class MediaCollectionHitGeneratorTests {
 
     @Test
     public void test_getPlaybackState_mediaContextState() {
-        List<MediaPlayBackState> playbackStates = new ArrayList<>();
-        playbackStates.add(MediaPlayBackState.Init);
-        playbackStates.add(MediaPlayBackState.Play);
-        playbackStates.add(MediaPlayBackState.Pause);
-        playbackStates.add(MediaPlayBackState.Seek);
-        playbackStates.add(MediaPlayBackState.Buffer);
-        playbackStates.add(MediaPlayBackState.Stall);
+        List<MediaPlaybackState> playbackStates = new ArrayList<>();
+        playbackStates.add(MediaPlaybackState.Init);
+        playbackStates.add(MediaPlaybackState.Play);
+        playbackStates.add(MediaPlaybackState.Pause);
+        playbackStates.add(MediaPlaybackState.Seek);
+        playbackStates.add(MediaPlaybackState.Buffer);
+        playbackStates.add(MediaPlaybackState.Stall);
 
-        for (MediaPlayBackState state : playbackStates) {
+        for (MediaPlaybackState state : playbackStates) {
             mediaContext.enterState(state);
-            MediaPlayBackState playBackState = hitGenerator.getPlaybackState();
+            MediaPlaybackState playBackState = hitGenerator.getPlaybackState();
             assertEquals(state, playBackState);
             mediaContext.exitState(state);
         }
@@ -1487,29 +1487,29 @@ public class MediaCollectionHitGeneratorTests {
 
     @Test
     public void test_getMediaCollectionEvent_forMediaPlaybackState() {
-        Map<MediaPlayBackState, String> playBackStateToMediaCollectionEventMap = new HashMap<>();
+        Map<MediaPlaybackState, String> playBackStateToMediaCollectionEventMap = new HashMap<>();
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Init, MediaCollectionConstants.EventType.PING);
+                MediaPlaybackState.Init, MediaCollectionConstants.EventType.PING);
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Play, MediaCollectionConstants.EventType.PLAY);
+                MediaPlaybackState.Play, MediaCollectionConstants.EventType.PLAY);
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Pause, MediaCollectionConstants.EventType.PAUSE_START);
+                MediaPlaybackState.Pause, MediaCollectionConstants.EventType.PAUSE_START);
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Buffer, MediaCollectionConstants.EventType.BUFFER_START);
+                MediaPlaybackState.Buffer, MediaCollectionConstants.EventType.BUFFER_START);
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Seek, MediaCollectionConstants.EventType.PAUSE_START);
+                MediaPlaybackState.Seek, MediaCollectionConstants.EventType.PAUSE_START);
         playBackStateToMediaCollectionEventMap.put(
-                MediaPlayBackState.Stall, MediaCollectionConstants.EventType.PLAY);
+                MediaPlaybackState.Stall, MediaCollectionConstants.EventType.PLAY);
 
-        List<MediaPlayBackState> playbackStates = new ArrayList<>();
-        playbackStates.add(MediaPlayBackState.Init);
-        playbackStates.add(MediaPlayBackState.Play);
-        playbackStates.add(MediaPlayBackState.Pause);
-        playbackStates.add(MediaPlayBackState.Seek);
-        playbackStates.add(MediaPlayBackState.Buffer);
-        playbackStates.add(MediaPlayBackState.Stall);
+        List<MediaPlaybackState> playbackStates = new ArrayList<>();
+        playbackStates.add(MediaPlaybackState.Init);
+        playbackStates.add(MediaPlaybackState.Play);
+        playbackStates.add(MediaPlaybackState.Pause);
+        playbackStates.add(MediaPlaybackState.Seek);
+        playbackStates.add(MediaPlaybackState.Buffer);
+        playbackStates.add(MediaPlaybackState.Stall);
 
-        for (MediaPlayBackState state : playbackStates) {
+        for (MediaPlaybackState state : playbackStates) {
             String actual = hitGenerator.getMediaCollectionEvent(state);
             String expected = playBackStateToMediaCollectionEventMap.get(state);
             assertEquals(expected, actual);

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-enum MediaPlayBackState {
+enum MediaPlaybackState {
     Init,
     Play,
     Pause,
@@ -60,7 +60,7 @@ class MediaContext {
     private QoEInfo qoeInfo;
     private Map<String, String> mediaMetadata, adMetadata, chapterMetadata;
     private boolean buffering, seeking;
-    private MediaPlayBackState playState;
+    private MediaPlaybackState playState;
     private double playhead;
     private final Map<String, Boolean> states;
 
@@ -89,7 +89,7 @@ class MediaContext {
             mediaMetadata = new HashMap<>(metadata);
         }
 
-        playState = MediaPlayBackState.Init;
+        playState = MediaPlaybackState.Init;
         playhead = 0;
     }
 
@@ -218,7 +218,7 @@ class MediaContext {
         chapterMetadata.clear();
     }
 
-    void enterState(final MediaPlayBackState state) {
+    void enterState(final MediaPlaybackState state) {
         Log.trace(MediaInternalConstants.LOG_TAG, LOG_TAG, "enterState - " + state.toString());
 
         switch (state) {
@@ -246,7 +246,7 @@ class MediaContext {
         }
     }
 
-    void exitState(final MediaPlayBackState state) {
+    void exitState(final MediaPlaybackState state) {
         Log.trace(MediaInternalConstants.LOG_TAG, LOG_TAG, "exitState - " + state.toString());
 
         switch (state) {
@@ -268,7 +268,7 @@ class MediaContext {
         }
     }
 
-    boolean isInState(final MediaPlayBackState state) {
+    boolean isInState(final MediaPlaybackState state) {
         boolean retVal = false;
 
         switch (state) {
@@ -294,9 +294,9 @@ class MediaContext {
     }
 
     boolean isIdle() {
-        return !isInState(MediaPlayBackState.Play)
-                || isInState(MediaPlayBackState.Buffer)
-                || isInState(MediaPlayBackState.Seek);
+        return !isInState(MediaPlaybackState.Play)
+                || isInState(MediaPlaybackState.Buffer)
+                || isInState(MediaPlaybackState.Seek);
     }
 
     boolean startState(final StateInfo stateInfo) {
@@ -310,7 +310,7 @@ class MediaContext {
             return false;
         }
 
-        if (isInState(stateInfo)) {
+        if (isInPlayerState(stateInfo)) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
@@ -324,7 +324,7 @@ class MediaContext {
     }
 
     boolean endState(final StateInfo stateInfo) {
-        if (!isInState(stateInfo)) {
+        if (!isInPlayerState(stateInfo)) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
                     LOG_TAG,
@@ -337,7 +337,7 @@ class MediaContext {
         return true;
     }
 
-    boolean isInState(final StateInfo stateInfo) {
+    boolean isInPlayerState(final StateInfo stateInfo) {
         String stateName = stateInfo.getStateName();
         return states.containsKey(stateName) && states.get(stateName);
     }

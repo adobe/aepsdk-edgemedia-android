@@ -143,79 +143,79 @@ public class MediaContextTests {
 
     @Test
     public void test_BufferState_setOnMediaContext() {
-        MediaPlayBackState state = MediaPlayBackState.Buffer;
+        MediaPlaybackState state = MediaPlaybackState.Buffer;
 
-        assertFalse(mediaContext.isInState(MediaPlayBackState.Buffer));
+        assertFalse(mediaContext.isInState(MediaPlaybackState.Buffer));
 
         mediaContext.enterState(state);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Buffer));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Buffer));
 
         mediaContext.exitState(state);
 
-        assertFalse(mediaContext.isInState(MediaPlayBackState.Buffer));
+        assertFalse(mediaContext.isInState(MediaPlaybackState.Buffer));
     }
 
     @Test
     public void test_SeekState_setOnMediaContext() {
-        MediaPlayBackState state = MediaPlayBackState.Seek;
+        MediaPlaybackState state = MediaPlaybackState.Seek;
 
-        assertFalse(mediaContext.isInState(MediaPlayBackState.Seek));
+        assertFalse(mediaContext.isInState(MediaPlaybackState.Seek));
 
         mediaContext.enterState(state);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Seek));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Seek));
 
         mediaContext.exitState(state);
 
-        assertFalse(mediaContext.isInState(MediaPlayBackState.Seek));
+        assertFalse(mediaContext.isInState(MediaPlaybackState.Seek));
     }
 
     @Test
     public void test_PlayState_setOnMediaContext() {
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Init));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Init));
 
-        mediaContext.enterState(MediaPlayBackState.Pause);
+        mediaContext.enterState(MediaPlaybackState.Pause);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Pause));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Pause));
 
-        mediaContext.enterState(MediaPlayBackState.Play);
+        mediaContext.enterState(MediaPlaybackState.Play);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Play));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Play));
 
-        mediaContext.enterState(MediaPlayBackState.Stall);
+        mediaContext.enterState(MediaPlaybackState.Stall);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Stall));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Stall));
 
         // Never enter idle state again
-        mediaContext.enterState(MediaPlayBackState.Init);
+        mediaContext.enterState(MediaPlaybackState.Init);
 
-        assertTrue(mediaContext.isInState(MediaPlayBackState.Stall));
+        assertTrue(mediaContext.isInState(MediaPlaybackState.Stall));
     }
 
     @Test
     public void test_IdleState_setOnMediaContext() {
         assertTrue(mediaContext.isIdle());
 
-        mediaContext.enterState(MediaPlayBackState.Buffer);
+        mediaContext.enterState(MediaPlaybackState.Buffer);
 
         assertTrue(mediaContext.isIdle());
 
-        mediaContext.enterState(MediaPlayBackState.Seek);
+        mediaContext.enterState(MediaPlaybackState.Seek);
 
         assertTrue(mediaContext.isIdle());
 
-        mediaContext.enterState(MediaPlayBackState.Pause);
+        mediaContext.enterState(MediaPlaybackState.Pause);
 
         assertTrue(mediaContext.isIdle());
 
-        mediaContext.enterState(MediaPlayBackState.Stall);
+        mediaContext.enterState(MediaPlaybackState.Stall);
 
         assertTrue(mediaContext.isIdle());
 
-        mediaContext.enterState(MediaPlayBackState.Play);
-        mediaContext.exitState(MediaPlayBackState.Seek);
-        mediaContext.exitState(MediaPlayBackState.Buffer);
+        mediaContext.enterState(MediaPlaybackState.Play);
+        mediaContext.exitState(MediaPlaybackState.Seek);
+        mediaContext.exitState(MediaPlaybackState.Buffer);
         assertFalse(mediaContext.isIdle());
     }
 
@@ -223,16 +223,16 @@ public class MediaContextTests {
     public void test_stateInfo_simpleStateTracking() {
         StateInfo stateInfo = StateInfo.create("myCustomState");
 
-        assertFalse(mediaContext.isInState(stateInfo));
+        assertFalse(mediaContext.isInPlayerState(stateInfo));
         assertFalse(mediaContext.hasTrackedState(stateInfo));
 
         assertTrue(mediaContext.startState(stateInfo));
-        assertTrue(mediaContext.isInState(stateInfo));
+        assertTrue(mediaContext.isInPlayerState(stateInfo));
 
         assertFalse(mediaContext.startState(stateInfo));
         assertTrue(mediaContext.endState(stateInfo));
 
-        assertFalse(mediaContext.isInState(stateInfo));
+        assertFalse(mediaContext.isInPlayerState(stateInfo));
         assertTrue(mediaContext.hasTrackedState(stateInfo));
         assertFalse(mediaContext.endState(stateInfo));
     }
@@ -242,11 +242,11 @@ public class MediaContextTests {
         StateInfo stateInfo = StateInfo.create("myCustomState");
 
         assertFalse(mediaContext.endState(stateInfo));
-        assertFalse(mediaContext.isInState(stateInfo));
+        assertFalse(mediaContext.isInPlayerState(stateInfo));
         assertFalse(mediaContext.hasTrackedState(stateInfo));
 
         assertTrue(mediaContext.startState(stateInfo));
-        assertTrue(mediaContext.isInState(stateInfo));
+        assertTrue(mediaContext.isInPlayerState(stateInfo));
 
         assertTrue(mediaContext.endState(stateInfo));
         assertTrue(mediaContext.hasTrackedState(stateInfo));
@@ -257,12 +257,12 @@ public class MediaContextTests {
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
             assertTrue(mediaContext.startState(stateInfo));
-            assertTrue(mediaContext.isInState(stateInfo));
+            assertTrue(mediaContext.isInPlayerState(stateInfo));
         }
 
         StateInfo stateInfo = StateInfo.create("myCustomState");
         assertFalse(mediaContext.startState(stateInfo));
-        assertFalse(mediaContext.isInState(stateInfo));
+        assertFalse(mediaContext.isInPlayerState(stateInfo));
     }
 
     @Test
@@ -270,22 +270,22 @@ public class MediaContextTests {
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
             assertTrue(mediaContext.startState(stateInfo));
-            assertTrue(mediaContext.isInState(stateInfo));
+            assertTrue(mediaContext.isInPlayerState(stateInfo));
         }
 
         assertTrue(mediaContext.hasReachedStateLimit());
 
         StateInfo stateInfo = StateInfo.create("myCustomState");
         assertFalse(mediaContext.startState(stateInfo));
-        assertFalse(mediaContext.isInState(stateInfo));
+        assertFalse(mediaContext.isInPlayerState(stateInfo));
 
         StateInfo stateInfo1 = StateInfo.create("0");
 
-        assertTrue(mediaContext.isInState(stateInfo1));
+        assertTrue(mediaContext.isInPlayerState(stateInfo1));
         assertTrue(mediaContext.endState(stateInfo1));
-        assertFalse(mediaContext.isInState(stateInfo1));
+        assertFalse(mediaContext.isInPlayerState(stateInfo1));
         assertTrue(mediaContext.startState(stateInfo1));
-        assertTrue(mediaContext.isInState(stateInfo1));
+        assertTrue(mediaContext.isInPlayerState(stateInfo1));
         assertTrue(mediaContext.hasTrackedState(stateInfo1));
     }
 
@@ -295,25 +295,25 @@ public class MediaContextTests {
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
             assertTrue(mediaContext.startState(stateInfo));
-            assertTrue(mediaContext.isInState(stateInfo));
+            assertTrue(mediaContext.isInPlayerState(stateInfo));
         }
 
         assertTrue(mediaContext.hasReachedStateLimit());
 
         StateInfo newStateInfo = StateInfo.create("myCustomState");
         assertFalse(mediaContext.startState(newStateInfo));
-        assertFalse(mediaContext.isInState(newStateInfo));
+        assertFalse(mediaContext.isInPlayerState(newStateInfo));
 
         for (int i = 9; i >= 0; i--) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
             assertTrue(mediaContext.endState(stateInfo));
-            assertFalse(mediaContext.isInState(stateInfo));
+            assertFalse(mediaContext.isInPlayerState(stateInfo));
         }
 
         assertTrue(mediaContext.hasReachedStateLimit());
 
         assertFalse(mediaContext.startState(newStateInfo));
-        assertFalse(mediaContext.isInState(newStateInfo));
+        assertFalse(mediaContext.isInPlayerState(newStateInfo));
     }
 
     @Test
@@ -321,7 +321,7 @@ public class MediaContextTests {
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
             assertTrue(mediaContext.startState(stateInfo));
-            assertTrue(mediaContext.isInState(stateInfo));
+            assertTrue(mediaContext.isInPlayerState(stateInfo));
         }
 
         assertTrue(mediaContext.hasReachedStateLimit());
@@ -330,12 +330,12 @@ public class MediaContextTests {
 
         StateInfo stateInfo = StateInfo.create("myCustomState");
         assertTrue(mediaContext.startState(stateInfo));
-        assertTrue(mediaContext.isInState(stateInfo));
+        assertTrue(mediaContext.isInPlayerState(stateInfo));
 
         StateInfo stateInfo1 = StateInfo.create("0");
 
         assertTrue(mediaContext.startState(stateInfo1));
-        assertTrue(mediaContext.isInState(stateInfo1));
+        assertTrue(mediaContext.isInPlayerState(stateInfo1));
     }
 
     @Test

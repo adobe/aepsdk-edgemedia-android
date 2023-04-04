@@ -26,7 +26,6 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito
-import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import java.util.*
 
@@ -280,6 +279,6 @@ class MediaEventProcessorTests {
             "edgemedia.appVersion" to "testAppVersion"
         )
         mediaEventProcessor.updateMediaState(stateUpdate)
-        verify(mockState, times(1)).updateState(eq(stateUpdate))
+        verify(mockState).updateState(eq(stateUpdate))
     }
 }
