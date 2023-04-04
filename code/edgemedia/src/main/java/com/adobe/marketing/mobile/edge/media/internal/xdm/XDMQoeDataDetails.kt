@@ -39,4 +39,8 @@ internal data class XDMQoeDataDetails(
 
         return map.toMap()
     }
+
+    fun isValid(): Boolean {
+        return bitrate != null && droppedFrames != null && framesPerSecond != null && timeToStart != null
+    }
 }
