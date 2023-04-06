@@ -24,12 +24,13 @@ import com.adobe.marketing.mobile.util.DataReader
 import com.adobe.marketing.mobile.util.StringUtils
 import java.util.Date
 
-internal class MediaXDMEventGenerator(context: MediaContext, eventProcessor: MediaEventProcessor, trackerConfig: Map<String, Any>, refTS: Long) {
+internal class MediaXDMEventGenerator(
+    private val mediaContext: MediaContext,
+    private val mediaEventProcessor: MediaEventProcessor,
+    private val trackerConfig: Map<String, Any>,
+    private var refTS: Long
+) {
     private val SOURCE_TAG = "MediaExperienceEventGenerator"
-    private var mediaContext = context
-    private val mediaEventProcessor = eventProcessor
-    private val trackerConfig = trackerConfig
-    private var refTS: Long = refTS
     private var lastReportedQoe: XDMQoeDataDetails? = null
     private var isTracking: Boolean = false
     private var currentPlaybackState: MediaPlaybackState? = null
@@ -43,15 +44,15 @@ internal class MediaXDMEventGenerator(context: MediaContext, eventProcessor: Med
     }
 
     fun processSessionStart(forceResume: Boolean = false) {
-        var sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaContext.mediaInfo, mediaContext.mediaMetadata, forceResume)
+        val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaContext.mediaInfo, mediaContext.mediaMetadata, forceResume)
         val customMetadata = MediaXDMEventHelper.generateMediaCustomMetadata(mediaContext.mediaMetadata)
 
-        var channel = DataReader.optString(trackerConfig, MediaConstants.TrackerConfig.CHANNEL, null)
+        val channel = DataReader.optString(trackerConfig, MediaConstants.TrackerConfig.CHANNEL, null)
         if (!StringUtils.isNullOrEmpty(channel)) {
             sessionDetails.channel = channel
         }
 
-        var mediaCollection = XDMMediaCollection()
+        val mediaCollection = XDMMediaCollection()
         mediaCollection.sessionDetails = sessionDetails
         mediaCollection.customMetadata = customMetadata
 

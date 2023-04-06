@@ -12,6 +12,7 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.edge.media.MediaConstants
+import com.adobe.marketing.mobile.edge.media.MediaConstants.PlayerState
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMCustomMetadata
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaCollection
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
@@ -43,17 +44,21 @@ class MediaXDMEventGeneratorTests {
 
     @Captor
     private lateinit var sessionIdCaptor: ArgumentCaptor<String>
+
+    // Used for function call with non-optional parameters to wrap the capture parameter in a non-optional type.
     private fun <T> capture(argumentCaptor: ArgumentCaptor<T>): T = argumentCaptor.capture()
 
     @Before
     fun setup() {
-        eventCaptor = ArgumentCaptor.forClass(XDMMediaEvent::class.java)
-        sessionIdCaptor = ArgumentCaptor.forClass(String::class.java)
         mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0)
         metadata = mapOf("k1" to "v1", MediaConstants.VideoMetadataKeys.SHOW to "show")
         mediaContext = MediaContext(mediaInfo, metadata)
+
+        eventCaptor = ArgumentCaptor.forClass(XDMMediaEvent::class.java)
+        sessionIdCaptor = ArgumentCaptor.forClass(String::class.java)
         mockEventProcessor = Mockito.mock(MediaEventProcessor::class.java)
         Mockito.`when`(mockEventProcessor.createSession()).thenReturn((currSessionId++).toString())
+
         eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, mapOf(), 0)
     }
 
@@ -70,7 +75,34 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.sessionDetails = sessionDetails
         mediaCollection.customMetadata = customMetadata
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection))
+
+        // test
+        eventGenerator.processSessionStart()
+
+        // verify
+        verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val actualEvent = eventCaptor.value
+
+        assertEquals(expectedEvent, actualEvent)
+    }
+
+    @Test
+    fun testProcessSessionStart_withValidChannelValuePassedInTrackerConfig() {
+        // setup
+        eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, mapOf(MediaConstants.TrackerConfig.CHANNEL to "channel"), 0)
+        val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata)
+        sessionDetails.show = "show"
+        sessionDetails.channel = "channel"
+
+        val customMetadata = listOf(XDMCustomMetadata("k1", "v1"))
+
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.playhead = getPlayhead()
+        mediaCollection.sessionDetails = sessionDetails
+        mediaCollection.customMetadata = customMetadata
+
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processSessionStart()
@@ -90,7 +122,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_COMPLETE, getDateFormattedTimestampFor(10), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_COMPLETE, Date(10), mediaCollection))
 
         // test
         eventGenerator.processSessionComplete()
@@ -103,6 +135,28 @@ class MediaXDMEventGeneratorTests {
     }
 
     @Test
+    fun testProcessSessionComplete_afterSessionEnd_getsIgnored() {
+        // setup
+        updateTs(10, reset = true)
+
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.playhead = getPlayhead()
+
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, Date(10), mediaCollection))
+
+        // test
+        eventGenerator.processSessionEnd()
+        eventGenerator.processSessionComplete() // ignored
+
+        // verify
+        verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+
+        assertEquals(1, capturedEventValues.size)
+        assertEquals(expectedEvent, capturedEventValues[0])
+    }
+
+    @Test
     fun testProcessSessionEnd() {
         // setup
         updateTs(10, reset = true)
@@ -110,7 +164,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, getDateFormattedTimestampFor(10), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, Date(10), mediaCollection))
 
         // test
         eventGenerator.processSessionEnd()
@@ -120,6 +174,28 @@ class MediaXDMEventGeneratorTests {
         val actualEvent = eventCaptor.value
 
         assertEquals(expectedEvent, actualEvent)
+    }
+
+    @Test
+    fun testProcessSessionEnd_afterSessionComplete_getsIgnored() {
+        // setup
+        updateTs(10, reset = true)
+
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.playhead = getPlayhead()
+
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_COMPLETE, Date(10), mediaCollection))
+
+        // test
+        eventGenerator.processSessionComplete()
+        eventGenerator.processSessionEnd() // ignored
+
+        // verify
+        verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+
+        assertEquals(1, capturedEventValues.size)
+        assertEquals(expectedEvent, capturedEventValues[0])
     }
 
     @Test
@@ -133,7 +209,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.playhead = getPlayhead()
         mediaCollection.advertisingPodDetails = adBreakDetails
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processAdBreakStart()
@@ -151,10 +227,10 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_COMPLETE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_COMPLETE, Date(0), mediaCollection))
 
         // test
-        eventGenerator.processAdBreakComplete()
+        eventGenerator.processAdBreakSkip()
 
         // verify
         verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
@@ -169,7 +245,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_COMPLETE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_COMPLETE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processAdBreakComplete()
@@ -196,7 +272,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.advertisingDetails = adDetails
         mediaCollection.customMetadata = adMetadata
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processAdStart()
@@ -214,7 +290,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_SKIP, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_SKIP, Date(0), mediaCollection))
 
         // test
         eventGenerator.processAdSkip()
@@ -232,7 +308,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_COMPLETE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_COMPLETE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processAdComplete()
@@ -259,7 +335,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.chapterDetails = chapterDetails
         mediaCollection.customMetadata = chapterMetadata
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processChapterStart()
@@ -277,7 +353,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_SKIP, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_SKIP, Date(0), mediaCollection))
 
         // test
         eventGenerator.processChapterSkip()
@@ -295,7 +371,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_COMPLETE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_COMPLETE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processChapterComplete()
@@ -313,7 +389,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, Date(0), mediaCollection))
 
         // test
         eventGenerator.processSessionAbort()
@@ -338,7 +414,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.sessionDetails = sessionDetails
         mediaCollection.customMetadata = customMetadata
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processSessionRestart()
@@ -348,6 +424,136 @@ class MediaXDMEventGeneratorTests {
         val actualEvent = eventCaptor.value
 
         assertEquals(expectedEvent, actualEvent)
+    }
+
+    @Test
+    fun testProcessSessionRestart_withinChapterRestartsChapter() {
+        // setup
+        val chapterInfo = ChapterInfo.create("chapter", 1, 15.0, 30.0)
+        val metadata = mapOf("k1" to "v1")
+        mediaContext.setChapterInfo(chapterInfo, metadata)
+        val chapterDetails = MediaXDMEventHelper.generateChapterDetails(chapterInfo)
+        val chapterMetadata = MediaXDMEventHelper.generateChapterMetadata(metadata)
+
+        val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata, forceResume = true)
+        sessionDetails.show = "show"
+
+        val customMetadata = listOf(XDMCustomMetadata("k1", "v1"))
+
+        val mediaCollection1 = XDMMediaCollection()
+        mediaCollection1.playhead = getPlayhead()
+        mediaCollection1.sessionDetails = sessionDetails
+        mediaCollection1.customMetadata = customMetadata
+
+        val mediaCollection2 = XDMMediaCollection()
+        mediaCollection2.playhead = getPlayhead()
+        mediaCollection2.chapterDetails = chapterDetails
+        mediaCollection2.customMetadata = chapterMetadata
+
+        val expectedEvent1 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection1))
+        val expectedEvent2 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.CHAPTER_START, Date(0), mediaCollection2))
+
+        // test
+        eventGenerator.processSessionRestart()
+
+        // verify
+        verify(mockEventProcessor, times(2)).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+        assertEquals(expectedEvent1, capturedEventValues[0])
+        assertEquals(expectedEvent2, capturedEventValues[1])
+    }
+
+    @Test
+    fun testProcessSessionRestart_withinAdBreakAndAdRestartsAdBreakAndAd() {
+        // setup
+        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2.0)
+        mediaContext.adBreakInfo = adBreakInfo
+        val adBreakDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(adBreakInfo)
+
+        val adInfo = AdInfo.create("id", "ad", 1, 15.0)
+        val metadata = mapOf(MediaConstants.AdMetadataKeys.SITE_ID to "testSiteID", "k1" to "v1")
+        mediaContext.setAdInfo(adInfo, metadata)
+
+        val adDetails = MediaXDMEventHelper.generateAdvertisingDetails(adInfo, metadata)
+        val adMetadata = MediaXDMEventHelper.generateAdCustomMetadata(metadata)
+
+        val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata, forceResume = true)
+        sessionDetails.show = "show"
+
+        val customMetadata = listOf(XDMCustomMetadata("k1", "v1"))
+
+        val mediaCollection1 = XDMMediaCollection()
+        mediaCollection1.playhead = getPlayhead()
+        mediaCollection1.sessionDetails = sessionDetails
+        mediaCollection1.customMetadata = customMetadata
+
+        val mediaCollection2 = XDMMediaCollection()
+        mediaCollection2.playhead = getPlayhead()
+        mediaCollection2.advertisingPodDetails = adBreakDetails
+
+        val mediaCollection3 = XDMMediaCollection()
+        mediaCollection3.playhead = getPlayhead()
+        mediaCollection3.advertisingDetails = adDetails
+        mediaCollection3.customMetadata = adMetadata
+
+        val expectedEvent1 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection1))
+        val expectedEvent2 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_BREAK_START, Date(0), mediaCollection2))
+        val expectedEvent3 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.AD_START, Date(0), mediaCollection3))
+        // test
+        eventGenerator.processSessionRestart()
+
+        // verify
+        verify(mockEventProcessor, times(3)).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+        assertEquals(expectedEvent1, capturedEventValues[0])
+        assertEquals(expectedEvent2, capturedEventValues[1])
+        assertEquals(expectedEvent3, capturedEventValues[2])
+    }
+
+    @Test
+    fun testProcessSessionRestart_withPlayerStatesActiveRestartsActivePlayerStates() {
+        // setup
+        mediaContext.startState(StateInfo.create(MediaConstants.PlayerState.FULLSCREEN))
+        mediaContext.startState(StateInfo.create(MediaConstants.PlayerState.MUTE))
+        mediaContext.startState(StateInfo.create("customPlayerState"))
+        val playerStatesOrderedList = mediaContext.activeTrackedStates
+
+        val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata, forceResume = true)
+        sessionDetails.show = "show"
+
+        val customMetadata = listOf(XDMCustomMetadata("k1", "v1"))
+
+        val mediaCollection1 = XDMMediaCollection()
+        mediaCollection1.playhead = getPlayhead()
+        mediaCollection1.sessionDetails = sessionDetails
+        mediaCollection1.customMetadata = customMetadata
+
+        val mediaCollection2 = XDMMediaCollection()
+        mediaCollection2.playhead = getPlayhead()
+        mediaCollection2.statesStart = listOf(XDMPlayerStateData(playerStatesOrderedList[0].stateName))
+
+        val mediaCollection3 = XDMMediaCollection()
+        mediaCollection3.playhead = getPlayhead()
+        mediaCollection3.statesStart = listOf(XDMPlayerStateData(playerStatesOrderedList[1].stateName))
+
+        val mediaCollection4 = XDMMediaCollection()
+        mediaCollection4.playhead = getPlayhead()
+        mediaCollection4.statesStart = listOf(XDMPlayerStateData(playerStatesOrderedList[2].stateName))
+
+        val expectedEvent1 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_START, Date(0), mediaCollection1))
+        val expectedEvent2 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, Date(0), mediaCollection2))
+        val expectedEvent3 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, Date(0), mediaCollection3))
+        val expectedEvent4 = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, Date(0), mediaCollection4))
+        // test
+        eventGenerator.processSessionRestart()
+
+        // verify
+        verify(mockEventProcessor, times(4)).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+        assertEquals(expectedEvent1, capturedEventValues[0])
+        assertEquals(expectedEvent2, capturedEventValues[1])
+        assertEquals(expectedEvent3, capturedEventValues[2])
+        assertEquals(expectedEvent4, capturedEventValues[3])
     }
 
     @Test
@@ -362,7 +568,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.playhead = getPlayhead()
         mediaCollection.qoeDataDetails = qoeDetails
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.BITRATE_CHANGE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.BITRATE_CHANGE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processBitrateChange()
@@ -381,7 +587,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.playhead = getPlayhead()
         mediaCollection.errorDetails = MediaXDMEventHelper.generateErrorDetails("errorID")
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.ERROR, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.ERROR, Date(0), mediaCollection))
 
         // test
         eventGenerator.processError("errorID")
@@ -401,7 +607,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PLAY, Date(0), mediaCollection))
 
         // test
         eventGenerator.processPlayback()
@@ -421,7 +627,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PAUSE_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PAUSE_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processPlayback()
@@ -441,7 +647,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PAUSE_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PAUSE_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processPlayback()
@@ -461,7 +667,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.BUFFER_START, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.BUFFER_START, Date(0), mediaCollection))
 
         // test
         eventGenerator.processPlayback()
@@ -479,7 +685,7 @@ class MediaXDMEventGeneratorTests {
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(0), mediaCollection))
 
         // test
         eventGenerator.processPlayback(doFlush = true)
@@ -492,13 +698,57 @@ class MediaXDMEventGeneratorTests {
     }
 
     @Test
+    fun testProcessPlayback_afterSessionEnd_getsIgnored() {
+        // setup
+        mediaContext.enterState(MediaPlaybackState.Play)
+
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.playhead = getPlayhead()
+
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_END, Date(0), mediaCollection))
+
+        // test
+        eventGenerator.processSessionEnd()
+        eventGenerator.processPlayback() // ignored
+
+        // verify
+        verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+
+        assertEquals(1, capturedEventValues.size)
+        assertEquals(expectedEvent, capturedEventValues[0])
+    }
+
+    @Test
+    fun testProcessPlayback_afterSessionComplete_getsIgnored() {
+        // setup
+        mediaContext.enterState(MediaPlaybackState.Play)
+
+        val mediaCollection = XDMMediaCollection()
+        mediaCollection.playhead = getPlayhead()
+
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.SESSION_COMPLETE, Date(0), mediaCollection))
+
+        // test
+        eventGenerator.processSessionComplete()
+        eventGenerator.processPlayback() // ignored
+
+        // verify
+        verify(mockEventProcessor).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
+        val capturedEventValues = eventCaptor.allValues
+
+        assertEquals(1, capturedEventValues.size)
+        assertEquals(expectedEvent, capturedEventValues[0])
+    }
+
+    @Test
     fun testProcessStateStart() {
         // setup
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
         mediaCollection.statesStart = listOf(XDMPlayerStateData(MediaConstants.PlayerState.FULLSCREEN))
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processStateStart(StateInfo.create(MediaConstants.PlayerState.FULLSCREEN))
@@ -517,7 +767,7 @@ class MediaXDMEventGeneratorTests {
         mediaCollection.playhead = getPlayhead()
         mediaCollection.statesEnd = listOf(XDMPlayerStateData(MediaConstants.PlayerState.FULLSCREEN))
 
-        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, getDateFormattedTimestampFor(0), mediaCollection))
+        val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.STATES_UPDATE, Date(0), mediaCollection))
 
         // test
         eventGenerator.processStateEnd(StateInfo.create(MediaConstants.PlayerState.FULLSCREEN))
@@ -542,7 +792,7 @@ class MediaXDMEventGeneratorTests {
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
-            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
             // test
             eventGenerator.processPlayback()
@@ -567,7 +817,7 @@ class MediaXDMEventGeneratorTests {
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
-            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
             // test
             eventGenerator.processPlayback()
@@ -595,7 +845,7 @@ class MediaXDMEventGeneratorTests {
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
-            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
             // test
             eventGenerator.processPlayback()
@@ -622,7 +872,7 @@ class MediaXDMEventGeneratorTests {
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
-            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+            val expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
             // test
             eventGenerator.processPlayback()
@@ -648,7 +898,7 @@ class MediaXDMEventGeneratorTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
-        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test main content ping interval
         eventGenerator.processPlayback()
@@ -662,7 +912,7 @@ class MediaXDMEventGeneratorTests {
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
-        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test ad content ping interval
         eventGenerator.processPlayback()
@@ -684,7 +934,7 @@ class MediaXDMEventGeneratorTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
-        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test main content ping interval
         eventGenerator.processPlayback()
@@ -698,7 +948,7 @@ class MediaXDMEventGeneratorTests {
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
-        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test ad content ping interval
         eventGenerator.processPlayback()
@@ -713,7 +963,7 @@ class MediaXDMEventGeneratorTests {
         eventGenerator.processPlayback()
 
         mediaCollection.playhead = getPlayhead()
-        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // verify main content ping interval after exiting from ad
         verify(mockEventProcessor, times(3)).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
@@ -732,7 +982,7 @@ class MediaXDMEventGeneratorTests {
 
         val mediaCollection = XDMMediaCollection()
         mediaCollection.playhead = getPlayhead()
-        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        var expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test main content ping interval
         eventGenerator.processPlayback()
@@ -746,7 +996,7 @@ class MediaXDMEventGeneratorTests {
         updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS)
 
         mediaCollection.playhead = getPlayhead()
-        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // test ad content ping interval
         eventGenerator.processPlayback()
@@ -761,7 +1011,7 @@ class MediaXDMEventGeneratorTests {
         eventGenerator.processPlayback()
 
         mediaCollection.playhead = getPlayhead()
-        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, getDateFormattedTimestampFor(mockTimestamp), mediaCollection))
+        expectedEvent = XDMMediaEvent(XDMMediaSchema(XDMMediaEventType.PING, Date(mockTimestamp), mediaCollection))
 
         // verify main content ping interval after exiting from ad
         verify(mockEventProcessor, times(3)).processEvent(capture(sessionIdCaptor), capture(eventCaptor))
@@ -785,8 +1035,5 @@ class MediaXDMEventGeneratorTests {
 
     private fun getPlayhead(): Long {
         return mediaContext.playhead.toLong()
-    }
-    private fun getDateFormattedTimestampFor(value: Long): Date {
-        return Date(value)
     }
 }

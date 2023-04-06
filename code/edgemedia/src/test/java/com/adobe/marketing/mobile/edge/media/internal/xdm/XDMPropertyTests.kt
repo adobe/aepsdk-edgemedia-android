@@ -13,6 +13,7 @@ package com.adobe.marketing.mobile.edge.media.internal.xdm
 
 import com.adobe.marketing.mobile.util.TimeUtils
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -227,6 +228,54 @@ class XDMPropertyTests {
 
         assertNotNull(xdm)
         assertTrue(xdm.isEmpty())
+    }
+
+    @Test
+    fun `XDMQoeDataDetails isValid all properties returns true`() {
+        val qoeDataDetails = XDMQoeDataDetails()
+        qoeDataDetails.bitrate = 128
+        qoeDataDetails.droppedFrames = 10
+        qoeDataDetails.framesPerSecond = 59
+        qoeDataDetails.timeToStart = 5
+
+        assertTrue(qoeDataDetails.isValid())
+    }
+
+    @Test
+    fun `XDMQoeDataDetails isValid missing properties returns false`() {
+        val qoeDataDetails1 = XDMQoeDataDetails()
+
+        assertFalse(qoeDataDetails1.isValid())
+
+        qoeDataDetails1.droppedFrames = 10
+        qoeDataDetails1.framesPerSecond = 59
+        qoeDataDetails1.timeToStart = 5
+
+        assertFalse(qoeDataDetails1.isValid())
+
+        val qoeDataDetails2 = XDMQoeDataDetails()
+
+        qoeDataDetails2.bitrate = 10
+        qoeDataDetails2.framesPerSecond = 59
+        qoeDataDetails2.timeToStart = 5
+
+        assertFalse(qoeDataDetails2.isValid())
+
+        val qoeDataDetails3 = XDMQoeDataDetails()
+
+        qoeDataDetails3.bitrate = 10
+        qoeDataDetails3.droppedFrames = 59
+        qoeDataDetails3.timeToStart = 5
+
+        assertFalse(qoeDataDetails3.isValid())
+
+        val qoeDataDetails4 = XDMQoeDataDetails()
+
+        qoeDataDetails4.bitrate = 10
+        qoeDataDetails4.droppedFrames = 59
+        qoeDataDetails4.framesPerSecond = 5
+
+        assertFalse(qoeDataDetails4.isValid())
     }
 
     @Test
