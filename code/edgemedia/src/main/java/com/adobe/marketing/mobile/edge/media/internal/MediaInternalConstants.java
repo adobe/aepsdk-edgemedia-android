@@ -210,4 +210,10 @@ final class MediaInternalConstants {
 
         private ErrorSource() {}
     }
+
+    static final class PingInterval {
+        static final int REALTIME_TRACKING_MS = 10 * 1000; // 10 sec
+
+        private PingInterval() {}
+    }
 }
