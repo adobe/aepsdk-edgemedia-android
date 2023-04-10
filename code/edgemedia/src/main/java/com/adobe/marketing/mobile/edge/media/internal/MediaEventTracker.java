@@ -37,12 +37,12 @@ class MediaEventTracker implements MediaEventTracking {
     private Map<String, Object> trackerConfig;
 
     // Idle Detection
-    private static final long IDLE_TIMEOUT = 1800000; // 30mins
+    private static final long IDLE_TIMEOUT = 1800000; // 30 minutes
     private static final long CONTENT_START_DURATION = 1000;
     private boolean isTrackerIdle, isMediaIdle;
     private long mediaIdleStartTS = 0;
 
-    private static final int INVALID_TIMESTAMP = -1; // Indicates uninitialize value of timestamp.
+    private static final int INVALID_TIMESTAMP = -1; // Indicates uninitialized value of timestamp.
     // Session Timeout
     private static final long SESSION_TIMEOUT_IN_MILLIS =
             TimeUnit.DAYS.toMillis(1); // Restart session after 24 hrs.
@@ -491,8 +491,6 @@ class MediaEventTracker implements MediaEventTracking {
 
                 long refTS = getRefTS(context);
                 Map<String, String> metadata = getMetadata(context);
-
-                String refSessionId = getSessionId(context);
 
                 mediaContext = new MediaContext(mediaInfo, metadata);
 
@@ -1092,7 +1090,7 @@ class MediaEventTracker implements MediaEventTracking {
             }
         }
 
-        // We drop any play rule before adbreak start.
+        // We drop any play rule before adBreak start.
         boolean dropPlay = adBreakStartPosition > -1;
 
         for (PrerollQueuedRule eventRule : rules) {

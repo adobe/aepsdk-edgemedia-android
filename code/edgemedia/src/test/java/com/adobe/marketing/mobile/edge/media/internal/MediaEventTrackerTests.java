@@ -132,14 +132,16 @@ public class MediaEventTrackerTests {
     }
 
     private void setMocks() {
-        Mockito.when(mockEventProcessor.createSession())
-                .thenAnswer(
+        Mockito.doAnswer(
                         new Answer<String>() {
                             @Override
                             public String answer(InvocationOnMock invocation) throws Throwable {
                                 return String.valueOf(++currSessionId);
                             }
-                        });
+                        })
+                .when(mockEventProcessor)
+                .createSession();
+
         Mockito.doAnswer(
                         new Answer<Void>() {
                             @Override
