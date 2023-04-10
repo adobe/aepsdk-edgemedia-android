@@ -8,7 +8,7 @@ body:
     label:  Prerequisites
     description: Please check the following items before logging a new bug report.
     options:
-    - label: This is not a Security Disclosure, otherwise please follow the guidelines in [Security Policy](https://github.com/adobe/aepsdk-edge-android/security/policy).
+    - label: This is not a Security Disclosure, otherwise please follow the guidelines in [Security Policy](https://github.com/adobe/aepsdk-edgemedia-android/security/policy).
       required: true
     - label: I have searched in this repository's issues to see if it has already been reported.
       required: true
@@ -29,7 +29,7 @@ body:
       Please provide the OS version, SDK version(s) used, IDE version, and any other specific settings that could help us narrow down the problem.
       Example:
         - **OS**: Android 13
-        - **SDK(s)**: edge 2.0.0, core 2.0.0
+        - **SDK(s)**: edgemedia 2.0.0, edge 2.0.0, edgeidentity 2.0.0, core 2.0.0
         - **IDE**: Android Studio 2021.3.1 Patch 1
   validations:
     required: true
