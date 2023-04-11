@@ -13,15 +13,17 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
 import com.adobe.marketing.mobile.edge.media.Media;
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent;
 import com.adobe.marketing.mobile.util.CloneFailedException;
 import com.adobe.marketing.mobile.util.DataReader;
 import com.adobe.marketing.mobile.util.EventDataUtils;
@@ -31,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class MediaEventTrackerTests {
     Map<String, String> emptyMetadata;
@@ -51,7 +56,11 @@ public class MediaEventTrackerTests {
     private static final String KEY_METADATA = "key_metadata";
     private static final String KEY_EVENT_TS = "key_eventts";
     private static final String KEY_SESSIONID = "key_sessionid";
-    private final FakeMediaHitProcessor hitProcessor;
+
+    private final MediaEventProcessor mockEventProcessor;
+    private final Map<String, List<XDMMediaEvent>> mockSessionMap;
+
+    private int currSessionId = 0;
 
     public MediaEventTrackerTests() {
 
@@ -115,8 +124,41 @@ public class MediaEventTrackerTests {
 
         mediaTrackerAPIEventGenertor = TestMediaPublicTracker.create("tracker0", true);
 
-        hitProcessor = new FakeMediaHitProcessor();
-        tracker = new MediaEventTracker(hitProcessor, config);
+        mockEventProcessor = Mockito.mock(MediaEventProcessor.class);
+        mockSessionMap = new HashMap<>();
+        tracker = new MediaEventTracker(mockEventProcessor, config);
+
+        setMocks();
+    }
+
+    private void setMocks() {
+        Mockito.doAnswer(
+                        new Answer<String>() {
+                            @Override
+                            public String answer(InvocationOnMock invocation) throws Throwable {
+                                return String.valueOf(++currSessionId);
+                            }
+                        })
+                .when(mockEventProcessor)
+                .createSession();
+
+        Mockito.doAnswer(
+                        new Answer<Void>() {
+                            @Override
+                            public Void answer(final InvocationOnMock invocation) {
+                                final Object[] args = invocation.getArguments();
+                                addEventToMockSessionMap((String) args[0], (XDMMediaEvent) args[1]);
+                                return null;
+                            }
+                        })
+                .when(mockEventProcessor)
+                .processEvent(Mockito.anyString(), Mockito.any());
+    }
+
+    private void addEventToMockSessionMap(String sessionId, XDMMediaEvent event) {
+        List<XDMMediaEvent> eventList = mockSessionMap.getOrDefault(sessionId, new ArrayList<>());
+        eventList.add(event);
+        mockSessionMap.put(sessionId, eventList);
     }
 
     boolean trackerHandleAPI() {
@@ -1789,19 +1831,17 @@ public class MediaEventTrackerTests {
 
         mediaTrackerAPIEventGenertor.trackPause();
         trackerHandleAPI();
-
-        String session1 = hitProcessor.getActiveSession();
-        // sessionstart, pause
-        assertEquals(hitProcessor.hitCount(session1), 2);
+        // sessionStart, pause (sessionId = "1")
+        assertEquals(2, mockSessionMap.get("1").size());
 
         mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.DAYS.toMillis(1));
         mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
         // Assertions
-        assertEquals(1, hitProcessor.sessionCount());
-        // sessionstart, pause, end
-        assertEquals(hitProcessor.hitCount(session1), 3);
+        assertEquals(1, mockSessionMap.size());
+        // sessionStart, pause, sessionEnd
+        assertEquals(3, mockSessionMap.get("1").size());
     }
 
     @Test
@@ -1813,22 +1853,24 @@ public class MediaEventTrackerTests {
         mediaTrackerAPIEventGenertor.trackPlay();
         trackerHandleAPI();
 
-        String session1 = hitProcessor.getActiveSession();
-        // sessionstart, play
-        assertEquals(hitProcessor.hitCount(session1), 2);
+        // sessionStart, play (sessionId = "1")
+        assertNotNull(mockSessionMap.get("1"));
+        assertEquals(2, mockSessionMap.get("1").size());
 
         mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.DAYS.toMillis(1));
         mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
-        String session2 = hitProcessor.getActiveSession();
+        // verify sessionEnd was called for session "1"
+        verify(mockEventProcessor).endSession("1");
 
-        assertNotEquals(session1, session2);
-        assertEquals(2, hitProcessor.sessionCount());
-        // sessionstart, play, end
-        assertEquals(hitProcessor.hitCount(session1), 3);
-        // sessionstart, play
-        assertEquals(hitProcessor.hitCount(session2), 2);
+        assertEquals(2, mockSessionMap.size());
+        // sessionStart, play, sessionEnd (sessionId = "1")
+        assertNotNull(mockSessionMap.get("1"));
+        assertEquals(3, mockSessionMap.get("1").size());
+        // sessionStart, play (sessionId = "2")
+        assertNotNull(mockSessionMap.get("2"));
+        assertEquals(2, mockSessionMap.get("2").size());
     }
 
     @Test
@@ -1840,23 +1882,21 @@ public class MediaEventTrackerTests {
         mediaTrackerAPIEventGenertor.trackPause();
         trackerHandleAPI();
 
-        String session1 = hitProcessor.getActiveSession();
-        // sessionstart, pause
-        assertEquals(hitProcessor.hitCount(session1), 2);
+        // sessionStart, pause (sessionId = "1")
+        assertNotNull(mockSessionMap.get("1"));
+        assertEquals(2, mockSessionMap.get("1").size());
 
         mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.MINUTES.toMillis(30));
         mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
-        assertEquals(hitProcessor.sessionCount(), 1);
-
-        // sessionstart, pause, end
-        assertEquals(hitProcessor.hitCount(session1), 3);
-        assertTrue(hitProcessor.sessionEnded(session1));
+        assertEquals(1, mockSessionMap.size()); // session count
+        // sessionStart, pause, sessionEnd (sessionId = "1")
+        assertEquals(3, mockSessionMap.get("1").size());
     }
 
     @Test
-    public void test_doesNotCloseActionSession_after30mins() {
+    public void test_doesNotCloseActiveSession_after30mins() {
         mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
         mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
@@ -1864,14 +1904,12 @@ public class MediaEventTrackerTests {
         mediaTrackerAPIEventGenertor.trackPlay();
         trackerHandleAPI();
 
-        String session1 = hitProcessor.getActiveSession();
-
         mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.HOURS.toMillis(1));
         mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
-        assertEquals(1, hitProcessor.sessionCount());
-        assertFalse(hitProcessor.sessionEnded(session1));
+        assertEquals(1, mockSessionMap.size());
+        verify(mockEventProcessor, times(0)).endSession("1");
     }
 
     @Test
@@ -1887,11 +1925,14 @@ public class MediaEventTrackerTests {
         mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
-        assertEquals(1, hitProcessor.sessionCount());
+        assertEquals(1, mockSessionMap.size());
 
         mediaTrackerAPIEventGenertor.trackPlay();
         trackerHandleAPI();
 
-        assertEquals(2, hitProcessor.sessionCount());
+        // verify session "1" was ended when resuming after idleTimeout
+        verify(mockEventProcessor).endSession("1");
+
+        assertEquals(2, mockSessionMap.size());
     }
 }

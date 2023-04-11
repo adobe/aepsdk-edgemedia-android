@@ -33,7 +33,7 @@ internal class MediaXDMEventGenerator(
     private val SOURCE_TAG = "MediaExperienceEventGenerator"
     private var lastReportedQoe: XDMQoeDataDetails? = null
     private var isTracking: Boolean = false
-    private var currentPlaybackState: MediaPlaybackState? = null
+    private var currentPlaybackState: MediaPlaybackState = MediaPlaybackState.Init
     private var currentPlaybackStateStartRefTS: Long = refTS
     private val allowedAdPingIntervalRangeInSeconds = 1..10
     private val allowedMainPingIntervalRangeInSeconds = 10..50

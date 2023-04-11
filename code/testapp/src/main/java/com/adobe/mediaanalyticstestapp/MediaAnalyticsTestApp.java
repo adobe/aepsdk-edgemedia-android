@@ -13,16 +13,15 @@ package com.adobe.mediaanalyticstestapp;
 
 import android.app.Application;
 import com.adobe.marketing.mobile.AdobeCallback;
-import com.adobe.marketing.mobile.Analytics;
 import com.adobe.marketing.mobile.Assurance;
-import com.adobe.marketing.mobile.Identity;
+import com.adobe.marketing.mobile.Edge;
 import com.adobe.marketing.mobile.LoggingMode;
 import com.adobe.marketing.mobile.MobileCore;
+import com.adobe.marketing.mobile.edge.identity.Identity;
 import com.adobe.marketing.mobile.edge.media.Media;
 import java.util.Arrays;
 
 public class MediaAnalyticsTestApp extends Application {
-    // Insert Launch App id
     private static final String LAUNCH_ENVIRONMENT_FILE_ID = "";
 
     @Override
@@ -33,10 +32,7 @@ public class MediaAnalyticsTestApp extends Application {
 
         MobileCore.registerExtensions(
                 Arrays.asList(
-                        Assurance.EXTENSION,
-                        Identity.EXTENSION,
-                        Analytics.EXTENSION,
-                        Media.EXTENSION),
+                        Assurance.EXTENSION, Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION),
                 (AdobeCallback) o -> MobileCore.configureWithAppID(LAUNCH_ENVIRONMENT_FILE_ID));
     }
 }

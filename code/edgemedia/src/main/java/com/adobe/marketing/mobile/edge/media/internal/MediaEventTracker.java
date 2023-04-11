@@ -32,17 +32,17 @@ class MediaEventTracker implements MediaEventTracking {
     private static final int INVALID_NUMERIC_VALUE = -1;
     private MediaContext mediaContext;
     private final MediaRuleEngine ruleEngine;
-    private MediaHitProcessor hitProcessor;
-    private MediaCollectionHitGenerator hitGenerator;
+    private MediaEventProcessor eventProcessor;
+    private MediaXDMEventGenerator xdmEventGenerator;
     private Map<String, Object> trackerConfig;
 
     // Idle Detection
-    private static final long IDLE_TIMEOUT = 1800000; // 30mins
+    private static final long IDLE_TIMEOUT = 1800000; // 30 minutes
     private static final long CONTENT_START_DURATION = 1000;
     private boolean isTrackerIdle, isMediaIdle;
     private long mediaIdleStartTS = 0;
 
-    private static final int INVALID_TIMESTAMP = -1; // Indicates uninitialize value of timestamp.
+    private static final int INVALID_TIMESTAMP = -1; // Indicates uninitialized value of timestamp.
     // Session Timeout
     private static final long SESSION_TIMEOUT_IN_MILLIS =
             TimeUnit.DAYS.toMillis(1); // Restart session after 24 hrs.
@@ -55,10 +55,10 @@ class MediaEventTracker implements MediaEventTracking {
     private boolean contentStarted;
     private long contentStartRefTs;
 
-    MediaEventTracker(final MediaHitProcessor hitProcessor, final Map<String, Object> config) {
+    MediaEventTracker(final MediaEventProcessor eventProcessor, final Map<String, Object> config) {
         reset();
 
-        this.hitProcessor = hitProcessor;
+        this.eventProcessor = eventProcessor;
         trackerConfig = config;
 
         ruleEngine = new MediaRuleEngine();
@@ -68,7 +68,7 @@ class MediaEventTracker implements MediaEventTracking {
     }
 
     void reset() {
-        hitGenerator = null;
+        xdmEventGenerator = null;
         mediaContext = null;
 
         isTrackerIdle = false;
@@ -214,69 +214,69 @@ class MediaEventTracker implements MediaEventTracking {
     }
 
     // Predicates
-    IMediaRuleCallback isInMedia = (rule, context) -> mediaContext != null;
+    final IMediaRuleCallback isInMedia = (rule, context) -> mediaContext != null;
 
-    IMediaRuleCallback isInAdBreak = (rule, context) -> mediaContext.isInAdBreak();
+    final IMediaRuleCallback isInAdBreak = (rule, context) -> mediaContext.isInAdBreak();
 
-    IMediaRuleCallback isInAd = (rule, context) -> mediaContext.isInAd();
+    final IMediaRuleCallback isInAd = (rule, context) -> mediaContext.isInAd();
 
-    IMediaRuleCallback isInChapter = (rule, context) -> mediaContext.isInChapter();
+    final IMediaRuleCallback isInChapter = (rule, context) -> mediaContext.isInChapter();
 
-    IMediaRuleCallback isInBuffering =
+    final IMediaRuleCallback isInBuffering =
             (rule, context) -> mediaContext.isInState(MediaPlaybackState.Buffer);
 
-    IMediaRuleCallback isInSeeking =
+    final IMediaRuleCallback isInSeeking =
             (rule, context) -> mediaContext.isInState(MediaPlaybackState.Seek);
 
-    IMediaRuleCallback isValidMediaInfo =
+    final IMediaRuleCallback isValidMediaInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && MediaInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidAdBreakInfo =
+    final IMediaRuleCallback isValidAdBreakInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && AdBreakInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidAdInfo =
+    final IMediaRuleCallback isValidAdInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && AdInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidChapterInfo =
+    final IMediaRuleCallback isValidChapterInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && ChapterInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidQoEInfo =
+    final IMediaRuleCallback isValidQoEInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && QoEInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidStateInfo =
+    final IMediaRuleCallback isValidStateInfo =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 return info != null && StateInfo.fromObjectMap(info) != null;
             };
 
-    IMediaRuleCallback isValidErrorInfo =
+    final IMediaRuleCallback isValidErrorInfo =
             (rule, context) -> {
                 String errorId = getError(context);
                 return errorId != null && !errorId.isEmpty();
             };
 
-    IMediaRuleCallback isDifferentAdBreakInfo =
+    final IMediaRuleCallback isDifferentAdBreakInfo =
             (rule, context) -> {
                 if (!mediaContext.isInAdBreak()) {
                     return true;
@@ -291,7 +291,7 @@ class MediaEventTracker implements MediaEventTracking {
                 return !(currentAdBreakInfo.equals(newAdBreakInfo));
             };
 
-    IMediaRuleCallback isDifferentAdInfo =
+    final IMediaRuleCallback isDifferentAdInfo =
             (rule, context) -> {
                 if (!mediaContext.isInAd()) {
                     return true;
@@ -305,7 +305,7 @@ class MediaEventTracker implements MediaEventTracking {
                 return !(currentAdInfo.equals(newAdInfo));
             };
 
-    IMediaRuleCallback isDifferentChapterInfo =
+    final IMediaRuleCallback isDifferentChapterInfo =
             (rule, context) -> {
                 if (!mediaContext.isInChapter()) {
                     return true;
@@ -319,14 +319,14 @@ class MediaEventTracker implements MediaEventTracking {
                 return !(currentChapterInfo.equals(newChapterInfo));
             };
 
-    IMediaRuleCallback allowPlaybackStateChange =
+    final IMediaRuleCallback allowPlaybackStateChange =
             (rule, context) -> {
                 // Allow player state change only if we are in main content or if we are inside an
                 // ad.
                 return !mediaContext.isInAdBreak() || mediaContext.isInAd();
             };
 
-    IMediaRuleCallback isInTrackedState =
+    final IMediaRuleCallback isInTrackedState =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
@@ -334,7 +334,7 @@ class MediaEventTracker implements MediaEventTracking {
                 return mediaContext.isInPlayerState(stateInfo);
             };
 
-    IMediaRuleCallback allowStateTrack =
+    final IMediaRuleCallback allowStateTrack =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
@@ -344,7 +344,7 @@ class MediaEventTracker implements MediaEventTracking {
             };
 
     // Actions
-    IMediaRuleCallback cmdIdleDetection =
+    final IMediaRuleCallback cmdIdleDetection =
             (rule, context) -> {
                 if (mediaContext.isIdle()) {
 
@@ -354,7 +354,7 @@ class MediaEventTracker implements MediaEventTracking {
                     if (isMediaIdle
                             && (!isTrackerIdle && (refTS - mediaIdleStartTS) >= IDLE_TIMEOUT)) {
                         // We stop tracking if media has been idle for 30 mins.
-                        hitGenerator.processSessionAbort();
+                        xdmEventGenerator.processSessionAbort();
                         isTrackerIdle = true;
                     } else if (!isMediaIdle) {
                         // Set the media in Idle state and store the TS
@@ -365,7 +365,7 @@ class MediaEventTracker implements MediaEventTracking {
                     // Media is not currently idle
                     if (isTrackerIdle) {
                         // We resume tracking if we have stopped tracking.
-                        hitGenerator.processSessionRestart();
+                        xdmEventGenerator.processSessionRestart();
                         isTrackerIdle = false;
 
                         sessionRefTs = getRefTS(context);
@@ -380,7 +380,7 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdContentStartDetection =
+    final IMediaRuleCallback cmdContentStartDetection =
             (rule, context) -> {
                 if (mediaContext.isIdle() || contentStarted) {
                     return true;
@@ -400,7 +400,7 @@ class MediaEventTracker implements MediaEventTracking {
                 long refTS = getRefTS(context);
 
                 if ((refTS - contentStartRefTs) >= CONTENT_START_DURATION) {
-                    hitGenerator.processPlayback(true);
+                    xdmEventGenerator.processPlayback(true);
                     contentStarted = true;
                 }
 
@@ -411,7 +411,7 @@ class MediaEventTracker implements MediaEventTracking {
      * Callback for determining If session has been running for {@link #SESSION_TIMEOUT_IN_MILLIS}.
      * If yes, restart the session.
      */
-    IMediaRuleCallback cmdSessionTimeoutDetection =
+    final IMediaRuleCallback cmdSessionTimeoutDetection =
             (rule, context) -> {
                 final long refTs = getRefTS(context);
 
@@ -419,8 +419,8 @@ class MediaEventTracker implements MediaEventTracking {
                         && refTs - sessionRefTs
                                 >= SESSION_TIMEOUT_IN_MILLIS) { // Session is playing for more than
                     // 24hrs. Restart session.
-                    hitGenerator.processSessionAbort();
-                    hitGenerator.processSessionRestart();
+                    xdmEventGenerator.processSessionAbort();
+                    xdmEventGenerator.processSessionRestart();
                     sessionRefTs = refTs;
                     contentStarted = false;
                     contentStartRefTs = INVALID_TIMESTAMP;
@@ -428,18 +428,18 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdEnterAction =
+    final IMediaRuleCallback cmdEnterAction =
             (rule, context) -> {
                 long refTS = getRefTS(context);
 
-                if (hitGenerator != null && getRefTS(context) != -1) {
-                    hitGenerator.setRefTS(refTS);
+                if (xdmEventGenerator != null && getRefTS(context) != -1) {
+                    xdmEventGenerator.setRefTS(refTS);
                 }
 
                 return true;
             };
 
-    IMediaRuleCallback cmdExitAction =
+    final IMediaRuleCallback cmdExitAction =
             (rule, context) -> {
                 if (mediaContext == null) {
                     return false;
@@ -478,12 +478,12 @@ class MediaEventTracker implements MediaEventTracking {
                 boolean flushState =
                         (rule.getName() == MediaRuleName.AdStart.ordinal())
                                 || (rule.getName() == MediaRuleName.AdBreakComplete.ordinal());
-                hitGenerator.processPlayback(flushState);
+                xdmEventGenerator.processPlayback(flushState);
 
                 return true;
             };
 
-    IMediaRuleCallback cmdMediaStart =
+    final IMediaRuleCallback cmdMediaStart =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
@@ -492,15 +492,13 @@ class MediaEventTracker implements MediaEventTracking {
                 long refTS = getRefTS(context);
                 Map<String, String> metadata = getMetadata(context);
 
-                String refSessionId = getSessionId(context);
-
                 mediaContext = new MediaContext(mediaInfo, metadata);
 
-                hitGenerator =
-                        new MediaCollectionHitGenerator(
-                                mediaContext, hitProcessor, trackerConfig, refTS, refSessionId);
+                xdmEventGenerator =
+                        new MediaXDMEventGenerator(
+                                mediaContext, eventProcessor, trackerConfig, refTS);
 
-                hitGenerator.processMediaStart();
+                xdmEventGenerator.processSessionStart(false);
                 sessionRefTs = refTS;
 
                 inPrerollInterval = mediaInfo.getPrerollWaitTime() > 0;
@@ -509,134 +507,134 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdMediaComplete =
+    final IMediaRuleCallback cmdMediaComplete =
             (rule, context) -> {
-                hitGenerator.processMediaComplete();
+                xdmEventGenerator.processSessionComplete();
 
-                hitGenerator = null;
+                xdmEventGenerator = null;
                 mediaContext = null;
 
                 return true;
             };
 
-    IMediaRuleCallback cmdMediaSkip =
+    final IMediaRuleCallback cmdMediaSkip =
             (rule, context) -> {
-                hitGenerator.processMediaSkip();
+                xdmEventGenerator.processSessionEnd();
 
-                hitGenerator = null;
+                xdmEventGenerator = null;
                 mediaContext = null;
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdBreakStart =
+    final IMediaRuleCallback cmdAdBreakStart =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(info);
                 mediaContext.setAdBreakInfo(adBreakInfo);
-                hitGenerator.processAdBreakStart();
+                xdmEventGenerator.processAdBreakStart();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdBreakComplete =
+    final IMediaRuleCallback cmdAdBreakComplete =
             (rule, context) -> {
-                hitGenerator.processAdBreakComplete();
+                xdmEventGenerator.processAdBreakComplete();
                 mediaContext.clearAdBreakInfo();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdBreakSkip =
+    final IMediaRuleCallback cmdAdBreakSkip =
             (rule, context) -> {
                 if (mediaContext.isInAdBreak()) {
-                    hitGenerator.processAdBreakSkip();
+                    xdmEventGenerator.processAdBreakSkip();
                     mediaContext.clearAdBreakInfo();
                 }
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdStart =
+    final IMediaRuleCallback cmdAdStart =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 AdInfo adInfo = AdInfo.fromObjectMap(info);
                 Map<String, String> metadata = getMetadata(context);
                 mediaContext.setAdInfo(adInfo, metadata);
-                hitGenerator.processAdStart();
+                xdmEventGenerator.processAdStart();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdComplete =
+    final IMediaRuleCallback cmdAdComplete =
             (rule, context) -> {
-                hitGenerator.processAdComplete();
+                xdmEventGenerator.processAdComplete();
                 mediaContext.clearAdInfo();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdAdSkip =
+    final IMediaRuleCallback cmdAdSkip =
             (rule, context) -> {
                 if (mediaContext.isInAd()) {
-                    hitGenerator.processAdSkip();
+                    xdmEventGenerator.processAdSkip();
                     mediaContext.clearAdInfo();
                 }
 
                 return true;
             };
 
-    IMediaRuleCallback cmdChapterStart =
+    final IMediaRuleCallback cmdChapterStart =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(info);
                 Map<String, String> metadata = getMetadata(context);
                 mediaContext.setChapterInfo(chapterInfo, metadata);
-                hitGenerator.processChapterStart();
+                xdmEventGenerator.processChapterStart();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdChapterComplete =
+    final IMediaRuleCallback cmdChapterComplete =
             (rule, context) -> {
-                hitGenerator.processChapterComplete();
+                xdmEventGenerator.processChapterComplete();
                 mediaContext.clearChapterInfo();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdChapterSkip =
+    final IMediaRuleCallback cmdChapterSkip =
             (rule, context) -> {
                 if (mediaContext.isInChapter()) {
-                    hitGenerator.processChapterSkip();
+                    xdmEventGenerator.processChapterSkip();
                     mediaContext.clearChapterInfo();
                 }
 
                 return true;
             };
 
-    IMediaRuleCallback cmdPlay =
+    final IMediaRuleCallback cmdPlay =
             (rule, context) -> {
                 mediaContext.enterState(MediaPlaybackState.Play);
                 return true;
             };
 
-    IMediaRuleCallback cmdPause =
+    final IMediaRuleCallback cmdPause =
             (rule, context) -> {
                 mediaContext.enterState(MediaPlaybackState.Pause);
                 return true;
             };
 
-    IMediaRuleCallback cmdBufferStart =
+    final IMediaRuleCallback cmdBufferStart =
             (rule, context) -> {
                 mediaContext.enterState(MediaPlaybackState.Buffer);
                 return true;
             };
 
-    IMediaRuleCallback cmdBufferComplete =
+    final IMediaRuleCallback cmdBufferComplete =
             (rule, context) -> {
                 if (mediaContext.isInState(MediaPlaybackState.Buffer)) {
                     mediaContext.exitState(MediaPlaybackState.Buffer);
@@ -645,13 +643,13 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdSeekStart =
+    final IMediaRuleCallback cmdSeekStart =
             (rule, context) -> {
                 mediaContext.enterState(MediaPlaybackState.Seek);
                 return true;
             };
 
-    IMediaRuleCallback cmdSeekComplete =
+    final IMediaRuleCallback cmdSeekComplete =
             (rule, context) -> {
                 if (mediaContext.isInState(MediaPlaybackState.Seek)) {
                     mediaContext.exitState(MediaPlaybackState.Seek);
@@ -660,25 +658,25 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdError =
+    final IMediaRuleCallback cmdError =
             (rule, context) -> {
                 String errorId = getError(context);
 
                 if (errorId != null) {
-                    hitGenerator.processError(errorId);
+                    xdmEventGenerator.processError(errorId);
                 }
 
                 return true;
             };
 
-    IMediaRuleCallback cmdBitrateChange =
+    final IMediaRuleCallback cmdBitrateChange =
             (rule, context) -> {
-                hitGenerator.processBitrateChange();
+                xdmEventGenerator.processBitrateChange();
 
                 return true;
             };
 
-    IMediaRuleCallback cmdQoEUpdate =
+    final IMediaRuleCallback cmdQoEUpdate =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
@@ -688,27 +686,27 @@ class MediaEventTracker implements MediaEventTracking {
                 return true;
             };
 
-    IMediaRuleCallback cmdStateStart =
+    final IMediaRuleCallback cmdStateStart =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 StateInfo stateInfo = StateInfo.fromObjectMap(info);
                 mediaContext.startState(stateInfo);
-                hitGenerator.processStateStart(stateInfo);
+                xdmEventGenerator.processStateStart(stateInfo);
                 return true;
             };
 
-    IMediaRuleCallback cmdStateEnd =
+    final IMediaRuleCallback cmdStateEnd =
             (rule, context) -> {
                 Map<String, Object> info =
                         DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
                 StateInfo stateInfo = StateInfo.fromObjectMap(info);
                 mediaContext.endState(stateInfo);
-                hitGenerator.processStateEnd(stateInfo);
+                xdmEventGenerator.processStateEnd(stateInfo);
                 return true;
             };
 
-    IMediaRuleCallback cmdPlayheadUpdate =
+    final IMediaRuleCallback cmdPlayheadUpdate =
             (rule, context) -> {
                 double playhead = getPlayhead(context);
 
@@ -1092,7 +1090,7 @@ class MediaEventTracker implements MediaEventTracking {
             }
         }
 
-        // We drop any play rule before adbreak start.
+        // We drop any play rule before adBreak start.
         boolean dropPlay = adBreakStartPosition > -1;
 
         for (PrerollQueuedRule eventRule : rules) {
@@ -1111,7 +1109,7 @@ class MediaEventTracker implements MediaEventTracking {
     }
 
     @VisibleForTesting
-    MediaHitProcessor getHitProcessor() {
-        return hitProcessor;
+    MediaEventProcessor getEventProcessor() {
+        return eventProcessor;
     }
 }

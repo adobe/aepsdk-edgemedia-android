@@ -194,8 +194,7 @@ public class MediaExtension extends Extension {
                         + " %s.",
                 trackerId);
 
-        // TODO create MediaEventTracker
-        // trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
+        trackers.put(trackerId, new MediaEventTracker(mediaEventProcessor, trackerConfig));
     }
 
     /**
