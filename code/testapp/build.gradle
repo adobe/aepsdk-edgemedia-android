@@ -52,7 +52,7 @@ dependencies {
 
     implementation project(':edgemedia')
     implementation 'com.adobe.marketing.mobile:core:2.+'
-    implementation 'com.adobe.marketing.mobile:edge:2.+'
+    implementation 'com.adobe.marketing.mobile:edge:2.1.0'
     implementation 'com.adobe.marketing.mobile:edgeidentity:2.+'
     implementation 'com.adobe.marketing.mobile:assurance:2.+'
 }

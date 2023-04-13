@@ -12,6 +12,7 @@
 package com.adobe.mediaanalyticstestapp;
 
 public class Configuration {
+
     public static final String VIDEO_ID = "android-video-id";
     public static final String VIDEO_NAME = "sample-video";
 

@@ -15,7 +15,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import com.adobe.mediaanalyticstestapp.analytics.VideoAnalyticsProvider;
+import com.adobe.mediaanalyticstestapp.analytics.MediaAnalyticsProvider;
 import com.adobe.mediaanalyticstestapp.player.PlayerEvent;
 import com.adobe.mediaanalyticstestapp.player.VideoPlayer;
 import java.util.Observable;
@@ -23,7 +23,7 @@ import java.util.Observer;
 
 public class MediaActivity extends Activity implements Observer {
     private VideoPlayer _player;
-    private VideoAnalyticsProvider _analyticsProvider;
+    private MediaAnalyticsProvider _analyticsProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,9 @@ public class MediaActivity extends Activity implements Observer {
 
         _player.addObserver(this);
 
-        // Create the VideoAnalyticsProvider instance and
+        // Create the MediaAnalyticsProvider instance and
         // attach it to the VideoPlayer instance.
-        _analyticsProvider = new VideoAnalyticsProvider(_player);
+        _analyticsProvider = new MediaAnalyticsProvider(_player);
 
         // Load the main video content.
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video);
