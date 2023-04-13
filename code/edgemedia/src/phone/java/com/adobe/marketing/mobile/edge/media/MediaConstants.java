@@ -14,13 +14,6 @@ package com.adobe.marketing.mobile.edge.media;
 public class MediaConstants {
 
     private MediaConstants() {}
-
-    public static final class Config {
-        public static final String CHANNEL = "config.channel";
-        public static final String DOWNLOADED_CONTENT = "config.downloadedcontent";
-
-        private Config() {}
-    }
     /**
      * These constant strings define the stream type of the main content that is currently tracked.
      */
