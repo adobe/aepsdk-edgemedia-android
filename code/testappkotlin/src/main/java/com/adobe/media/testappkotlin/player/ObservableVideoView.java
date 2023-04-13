@@ -17,7 +17,7 @@ import android.util.Log;
 import android.widget.VideoView;
 
 public class ObservableVideoView extends VideoView {
-    private static final String LOG_TAG = "[Sample]::ObservableVideoView";
+    private static final String LOG_TAG = "ObservableVideoView";
 
     private VideoPlayer _player;
 

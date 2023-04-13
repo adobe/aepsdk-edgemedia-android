@@ -1,3 +1,14 @@
+/*
+  Copyright 2023 Adobe. All rights reserved.
+  This file is licensed to you under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License. You may obtain a copy
+  of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed under
+  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+  OF ANY KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License.
+*/
+
 package com.adobe.media.testappkotlin
 
 import android.app.Activity
@@ -10,53 +21,48 @@ import com.adobe.media.testappkotlin.player.VideoPlayer
 import java.util.*
 
 class MediaPlayerActivity: Activity(), Observer{
-    var _player:VideoPlayer? = null
-    var _analyticsProvider:MediaAnalyticsProvider? = null
-
+    var player:VideoPlayer? = null
+    var analyticsProvider:MediaAnalyticsProvider? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activitymedia)
 
         // Create the VideoPlayer instance.
-        _player = VideoPlayer(this)
-        _player?.addObserver(this)
+        val player = VideoPlayer(this)
+        player.addObserver(this)
 
         // Create the MediaAnalyticsProvider instance and
         // attach it to the VideoPlayer instance.
-        _analyticsProvider = MediaAnalyticsProvider(_player)
+        analyticsProvider = MediaAnalyticsProvider(player)
 
         // Load the main video content.
         val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.video)
-        _player?.loadContent(uri)
+        player.loadContent(uri)
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        val playerEvent = arg as? PlayerEvent
-
-        when (playerEvent) {
-            PlayerEvent.AD_START -> _onEnterAd()
-            PlayerEvent.AD_COMPLETE -> _onExitAd()
-            PlayerEvent.SEEK_COMPLETE -> if (_player?.getAdInfo() == null) {
+        when (arg as? PlayerEvent) {
+            PlayerEvent.AD_START -> onEnterAd()
+            PlayerEvent.AD_COMPLETE -> onExitAd()
+            PlayerEvent.SEEK_COMPLETE -> if (player?.adInfo == null) {
                 // The user seek outside the ad.
-                _onExitAd()
+                onExitAd()
             }
             else -> return
         }
     }
 
     override fun onDestroy() {
-        _analyticsProvider?.destroy()
-        _analyticsProvider = null
-        _player = null
+        analyticsProvider?.destroy()
         super.onDestroy()
     }
-    private fun _onEnterAd() {
+    private fun onEnterAd() {
         runOnUiThread {
             findViewById<View>(R.id.adOverlayView).visibility = View.VISIBLE
         }
     }
 
-    private fun _onExitAd() {
+    private fun onExitAd() {
         runOnUiThread {
             findViewById<View>(R.id.adOverlayView).visibility = View.INVISIBLE
         }

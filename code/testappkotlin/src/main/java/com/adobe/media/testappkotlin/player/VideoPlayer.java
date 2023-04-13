@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Observable;
 
 public class VideoPlayer extends Observable {
-    private static final String LOG_TAG = "[Sample]::VideoPlayer";
+    private static final String LOG_TAG = "VideoPlayer";
 
     // This sample VideoPlayer simulates a mid-roll ad at time 15:
     private static final Double AD_START_POS = 15D;
