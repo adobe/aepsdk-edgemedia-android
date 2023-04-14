@@ -1,7 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.diffplug.spotless'
 }
+
+apply from: '../codeformat.gradle'
 
 android {
     namespace 'com.adobe.media.testappkotlin'
@@ -34,13 +37,12 @@ android {
 
 dependencies {
     implementation project(':edgemedia')
-
     implementation 'com.adobe.marketing.mobile:core:2.+'
     implementation 'com.adobe.marketing.mobile:edgeidentity:2.+'
-    implementation 'com.adobe.marketing.mobile:edge:2.1.0'
+    implementation 'com.adobe.marketing.mobile:edge:2.+'
     implementation 'com.adobe.marketing.mobile:assurance:2.+'
 
-    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
 }

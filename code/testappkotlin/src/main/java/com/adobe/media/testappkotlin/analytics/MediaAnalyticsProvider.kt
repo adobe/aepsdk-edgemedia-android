@@ -11,7 +11,7 @@ import java.util.*
 
 class MediaAnalyticsProvider(player: VideoPlayer): Observer {
     private val LOG_TAG = "MediaAnalyticsProvider"
-    private var player: VideoPlayer? = player
+    private var player: VideoPlayer = player
     private var tracker: MediaTracker? = null
 
     init {
@@ -20,13 +20,13 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
         //config[MediaConstants.TrackerConfig.MAIN_PING_INTERVAL] = 30 // Overwrites main content ping interval to 30 seconds.
 
         tracker = Media.createTracker(config)
-        player?.addObserver(this)
+        player.addObserver(this)
     }
 
     fun destroy() {
         tracker?.trackSessionEnd()
-        player?.destroy()
-        player?.deleteObserver(this)
+        player.destroy()
+        player.deleteObserver(this)
     }
 
     @Deprecated("Deprecated in Java")
