@@ -27,7 +27,7 @@ import java.util.Date
 internal class MediaXDMEventGenerator(
     private val mediaContext: MediaContext,
     private val mediaEventProcessor: MediaEventProcessor,
-    private val trackerConfig: Map<String, Any>,
+    private val trackerConfig: Map<String, Any>?,
     private var refTS: Long
 ) {
     private val SOURCE_TAG = "MediaExperienceEventGenerator"

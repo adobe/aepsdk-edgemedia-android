@@ -40,6 +40,14 @@ public class MediaPublicTracker implements MediaTracker {
     private Map<String, Object> lastPlayheadParams;
 
     @VisibleForTesting
+    interface TimestampSupplier {
+        long getCurrentTimestamp();
+    }
+
+    @VisibleForTesting
+    TimestampSupplier currentTimestamp = () -> Calendar.getInstance().getTimeInMillis();
+
+    @VisibleForTesting
     MediaPublicTracker(final String trackerId, final AdobeCallback<Event> eventConsumer) {
         this.eventConsumer = eventConsumer;
         this.trackerId = trackerId;
@@ -216,7 +224,7 @@ public class MediaPublicTracker implements MediaTracker {
     }
 
     long getCurrentTimestamp() {
-        return Calendar.getInstance().getTimeInMillis();
+        return currentTimestamp.getCurrentTimestamp();
     }
 
     protected synchronized void tick() {
