@@ -58,7 +58,6 @@ android {
 dependencies {
     //noinspection GradleDependency
     implementation "com.adobe.marketing.mobile:core:$mavenCoreVersion"
-    implementation "com.adobe.marketing.mobile:edge:$mavenEdgeVersion"
     implementation "androidx.annotation:annotation:$androidxAnnotationVersion"
 
     testImplementation 'junit:junit:4.13.2'
