@@ -14,24 +14,13 @@ package com.adobe.marketing.mobile.edge.media.internal
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants.StreamType
-import com.adobe.marketing.mobile.edge.media.internal.MediaPublicTracker.TimestampSupplier
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class TrackerScenarioSimplePlaybackTests {
-    private var dispatchedEvents: MutableList<Event> = mutableListOf()
-    private val dispatcher: (Event) -> Unit = { event -> dispatchedEvents.add(event) }
-    private lateinit var mediaState: MediaState
-    private lateinit var mediaEventProcessor: MediaEventProcessor
-    private lateinit var mediaEventTracker: MediaEventTracker
-    private lateinit var mediaTracker: MediaPublicTracker
+class TrackerScenarioSimplePlaybackTests : TrackerScenarioTestBase() {
 
     private val backendSessionId = "backendSessionId"
-
-    private var currentTimestampMillis: Long = 0L
-    private var currentPlayhead: Double = 0.0
 
     private val mediaSharedState = mutableMapOf(
         "edgemedia.channel" to "test_channel",
@@ -53,17 +42,8 @@ class TrackerScenarioSimplePlaybackTests {
     )
 
     @Before
-    fun setup() {
-        dispatchedEvents.clear()
-        mediaState = MediaState()
-        mediaEventProcessor = MediaEventProcessor(mediaState, dispatcher)
-        mediaEventTracker = MediaEventTracker(mediaEventProcessor, null)
-        mediaTracker = MediaPublicTracker("Simple Playback Tracker") { event ->
-            mediaEventTracker.track(event)
-        }
-
-        currentTimestampMillis = 0L // Calendar.getInstance().timeInMillis
-        mediaTracker.currentTimestamp = TimestampSupplier { currentTimestampMillis }
+    override fun setup() {
+        super.setup()
 
         // Set Media State
         mediaEventProcessor.updateMediaState(mediaSharedState)
@@ -176,27 +156,5 @@ class TrackerScenarioSimplePlaybackTests {
         )
 
         assertEqualEvents(expected, dispatchedEvents)
-    }
-
-    private fun incrementTrackerTime(seconds: Int, updatePlayhead: Boolean) {
-        for (i in 1..seconds) {
-            currentTimestampMillis += 1000
-            if (updatePlayhead) currentPlayhead += 1
-            mediaTracker.updateCurrentPlayhead(currentPlayhead)
-        }
-    }
-
-    private fun assertEqualEvents(expectedEvents: List<Event>, actualEvents: List<Event>) {
-        assertEquals("Number of dispatched events must be equal.", expectedEvents.size, actualEvents.size)
-
-        for (i in 1 until expectedEvents.size) {
-            val expected = expectedEvents[i]
-            val actual = actualEvents[i]
-
-            assertEquals("Event name must match.", expected.name, actual.name)
-            assertEquals("Event type must match.", expected.type, actual.type)
-            assertEquals("Event source must match.", expected.source, actual.source)
-            assertEquals("Event data must match.", expected.eventData, actual.eventData)
-        }
     }
 }
