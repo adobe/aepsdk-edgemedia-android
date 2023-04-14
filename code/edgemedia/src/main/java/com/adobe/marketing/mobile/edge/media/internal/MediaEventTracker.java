@@ -445,12 +445,11 @@ class MediaEventTracker implements MediaEventTracking {
                     return false;
                 }
 
-                // Additional hacks based on how the api processing backend works.
+                // Additional logic based on how the serverside media api processing works.
 
-                // Force the state to play when we receive adstart before any play/pause.
+                // Force the state to play when we receive adStart before any play/pause.
                 // Happens usually for preroll ad. We manually switch our state to play as the
-                // backend
-                // automatically swithces state to play after adstart.
+                // backend automatically switches state to play after adStart.
                 int ruleName = rule.getName();
 
                 if (ruleName == MediaRuleName.AdStart.ordinal()) {
