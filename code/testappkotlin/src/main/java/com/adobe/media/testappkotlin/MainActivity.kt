@@ -19,7 +19,7 @@ import android.widget.EditText
 import androidx.activity.ComponentActivity
 import com.adobe.marketing.mobile.Assurance
 
-class MainActivity: ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

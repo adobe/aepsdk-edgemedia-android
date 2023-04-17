@@ -21,11 +21,9 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.MediaController;
-
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import com.adobe.media.testappkotlin.Configuration;
 import com.adobe.media.testappkotlin.R;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;

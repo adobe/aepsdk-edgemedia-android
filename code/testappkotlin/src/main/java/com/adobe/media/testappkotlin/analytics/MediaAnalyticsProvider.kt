@@ -1,3 +1,14 @@
+/*
+  Copyright 2023 Adobe. All rights reserved.
+  This file is licensed to you under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License. You may obtain a copy
+  of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed under
+  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+  OF ANY KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License.
+*/
+
 package com.adobe.media.testappkotlin.analytics
 
 import android.util.Log
@@ -9,15 +20,15 @@ import com.adobe.media.testappkotlin.player.PlayerEvent
 import com.adobe.media.testappkotlin.player.VideoPlayer
 import java.util.*
 
-class MediaAnalyticsProvider(player: VideoPlayer): Observer {
+class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
     private val LOG_TAG = "MediaAnalyticsProvider"
     private var player: VideoPlayer = player
     private var tracker: MediaTracker? = null
 
     init {
         val config = mutableMapOf<String, Any>(MediaConstants.TrackerConfig.CHANNEL to "android_kotlin_sample") // Overwrites channel configured from remote configuration
-        //config[MediaConstants.TrackerConfig.AD_PING_INTERVAL] = 1  // Overwrites ad content ping interval to 1 second
-        //config[MediaConstants.TrackerConfig.MAIN_PING_INTERVAL] = 30 // Overwrites main content ping interval to 30 seconds.
+        // config[MediaConstants.TrackerConfig.AD_PING_INTERVAL] = 1  // Overwrites ad content ping interval to 1 second
+        // config[MediaConstants.TrackerConfig.MAIN_PING_INTERVAL] = 30 // Overwrites main content ping interval to 30 seconds.
 
         tracker = Media.createTracker(config)
         player.addObserver(this)
@@ -34,9 +45,11 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
         when (data as PlayerEvent) {
             PlayerEvent.VIDEO_LOAD -> {
                 Log.d(LOG_TAG, "Video loaded.")
-                val videoMetadata = mutableMapOf("isUserLoggedIn" to "false",
-                                    "tvStation" to "Sample TV Station",
-                                    "programmer" to "Sample programmer")
+                val videoMetadata = mutableMapOf(
+                    "isUserLoggedIn" to "false",
+                    "tvStation" to "Sample TV Station",
+                    "programmer" to "Sample programmer"
+                )
 
                 // Set Standard Video Metadata as context data
                 videoMetadata[MediaConstants.VideoMetadataKeys.EPISODE] = "Sample Episode"
@@ -97,7 +110,9 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
                 val position = adBreakData["position"] as Long?
                 val startTime = adBreakData["startTime"] as Double?
                 val adBreakInfo = Media.createAdBreakObject(
-                    name!!, position!!, startTime!!
+                    name!!,
+                    position!!,
+                    startTime!!
                 )
 
                 // Ad Info
@@ -107,7 +122,10 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
                 val adPosition = adData["position"] as Long?
                 val adLength = adData["length"] as Double?
                 val adInfo = Media.createAdObject(
-                    adName!!, adId!!, adPosition!!, adLength!!
+                    adName!!,
+                    adId!!,
+                    adPosition!!,
+                    adLength!!
                 )
                 tracker?.trackEvent(Media.Event.AdBreakStart, adBreakInfo, null)
                 tracker?.trackEvent(Media.Event.AdStart, adInfo, adMetadata)
@@ -129,7 +147,10 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
                 val chapterLength = chapterData["length"] as Double?
                 val chapterStartTime = chapterData["startTime"] as Double?
                 val chapterDataInfo = Media.createChapterObject(
-                    chapterName!!, chapterPosition!!, chapterLength!!, chapterStartTime!!
+                    chapterName!!,
+                    chapterPosition!!,
+                    chapterLength!!,
+                    chapterStartTime!!
                 )
                 tracker?.trackEvent(Media.Event.ChapterStart, chapterDataInfo, chapterMetadata)
             }
@@ -141,7 +162,7 @@ class MediaAnalyticsProvider(player: VideoPlayer): Observer {
                 Log.d(LOG_TAG, "Playback completed.")
                 tracker?.trackComplete()
             }
-            PlayerEvent.PLAYHEAD_UPDATE ->                 // Log.d(LOG_TAG, "Playhead update.");
+            PlayerEvent.PLAYHEAD_UPDATE -> // Log.d(LOG_TAG, "Playhead update.");
                 tracker?.updateCurrentPlayhead(player!!.currentPlaybackTime)
             PlayerEvent.PLAYER_STATE_MUTE_START -> {
                 Log.d(LOG_TAG, "Player State(Mute).")

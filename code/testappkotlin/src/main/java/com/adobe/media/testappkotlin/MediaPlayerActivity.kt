@@ -20,9 +20,9 @@ import com.adobe.media.testappkotlin.player.PlayerEvent
 import com.adobe.media.testappkotlin.player.VideoPlayer
 import java.util.*
 
-class MediaPlayerActivity: Activity(), Observer{
-    var player:VideoPlayer? = null
-    var analyticsProvider:MediaAnalyticsProvider? = null
+class MediaPlayerActivity : Activity(), Observer {
+    var player: VideoPlayer? = null
+    var analyticsProvider: MediaAnalyticsProvider? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activitymedia)
