@@ -1,5 +1,6 @@
 EXTENSION-LIBRARY-FOLDER-NAME = edgemedia
 TEST-APP-FOLDER-NAME = testapp
+KOTLIN-TEST-APP-FOLDER-NAME = testappkotlin
 
 BUILD-ASSEMBLE-LOCATION = ./ci/assemble
 ROOT_DIR=$(shell git rev-parse --show-toplevel)
@@ -24,10 +25,12 @@ checkstyle:
 checkformat:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessCheck)
 	(./code/gradlew -p code/$(TEST-APP-FOLDER-NAME) spotlessCheck)
+	(./code/gradlew -p code/$(KOTLIN-TEST-APP-FOLDER-NAME) spotlessCheck)
 
 format:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) spotlessApply)
 	(./code/gradlew -p code/$(TEST-APP-FOLDER-NAME) spotlessApply)
+	(./code/gradlew -p code/$(KOTLIN-TEST-APP-FOLDER-NAME) spotlessApply)
 
 unit-test:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) testPhoneDebugUnitTest)
