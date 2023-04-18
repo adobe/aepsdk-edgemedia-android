@@ -30,7 +30,6 @@ open class TrackerScenarioTestBase {
 
     internal lateinit var mediaState: MediaState
     internal lateinit var mediaEventProcessor: MediaEventProcessor
-    internal lateinit var mediaEventTracker: MediaEventTracker
     internal lateinit var mediaTracker: MediaPublicTracker
 
     @Before
@@ -38,7 +37,12 @@ open class TrackerScenarioTestBase {
         dispatchedEvents.clear()
         mediaState = MediaState()
         mediaEventProcessor = MediaEventProcessor(mediaState, dispatcher)
-        mediaEventTracker = MediaEventTracker(mediaEventProcessor, null)
+
+        createTracker()
+    }
+
+    fun createTracker(trackerConfig: Map<String, Any>? = null) {
+        val mediaEventTracker = MediaEventTracker(mediaEventProcessor, trackerConfig)
         mediaTracker = MediaPublicTracker("Scenario Test Tracker") { event ->
             mediaEventTracker.track(event)
         }
@@ -59,6 +63,17 @@ open class TrackerScenarioTestBase {
             if (updatePlayhead) currentPlayhead += 1
             mediaTracker.updateCurrentPlayhead(currentPlayhead)
         }
+    }
+
+    fun incrementTrackerTimestamp(seconds: Int) {
+        currentTimestampMillis += seconds * 1000
+    }
+
+    fun incrementTrackerPlayhead(seconds: Int, updatePlayhead: Boolean = true) {
+        if (updatePlayhead) {
+            currentPlayhead += seconds
+        }
+        mediaTracker.updateCurrentPlayhead(currentPlayhead)
     }
 
     /**
