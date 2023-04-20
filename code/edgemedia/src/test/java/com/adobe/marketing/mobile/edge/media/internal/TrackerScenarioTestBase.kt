@@ -59,9 +59,8 @@ open class TrackerScenarioTestBase {
      */
     fun incrementTrackerTime(seconds: Int, updatePlayhead: Boolean) {
         for (i in 1..seconds) {
-            currentTimestampMillis += 1000
-            if (updatePlayhead) currentPlayhead += 1
-            mediaTracker.updateCurrentPlayhead(currentPlayhead)
+            incrementTrackerTimestamp(1)
+            incrementTrackerPlayhead(1, updatePlayhead)
         }
     }
 
