@@ -213,7 +213,6 @@ public class MediaPublicTracker implements MediaTracker {
                                 MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
                         .setEventData(eventData)
                         .build();
-        eventConsumer.call(event);
 
         lastEventTS = ts;
 
@@ -221,6 +220,8 @@ public class MediaPublicTracker implements MediaTracker {
                 && params != null) {
             lastPlayheadParams = new HashMap<>(params);
         }
+
+        eventConsumer.call(event);
     }
 
     long getCurrentTimestamp() {
