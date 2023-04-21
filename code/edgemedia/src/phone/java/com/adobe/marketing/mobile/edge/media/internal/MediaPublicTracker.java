@@ -29,8 +29,8 @@ import java.util.UUID;
 public class MediaPublicTracker implements MediaTracker {
     private static final String SOURCE_TAG = "MediaTrackerEventGenerator";
 
-    private static final int TICK_INTERVAL_MS = 750;
-    private static final int EVENT_TIMEOUT_MS = 500;
+    private static final int TICK_INTERVAL_MS = 510;
+    private static final int EVENT_TIMEOUT_MS = 1000;
     private final AdobeCallback<Event> eventConsumer;
     private final String trackerId;
     private String sessionId;
@@ -231,7 +231,7 @@ public class MediaPublicTracker implements MediaTracker {
         long currentTS = getCurrentTimestamp();
 
         if ((currentTS - lastEventTS) > EVENT_TIMEOUT_MS) {
-            // We have not got any public api call for 500 ms.
+            // We have not got any public api call for 1 second.
             // We manually send an event to keep our internal processing alive (idle tracking / ping
             // processing).
             trackInternal(
