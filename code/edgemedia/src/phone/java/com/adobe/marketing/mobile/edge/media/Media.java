@@ -17,7 +17,7 @@ import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.media.internal.MediaExtension;
 import com.adobe.marketing.mobile.edge.media.internal.MediaObject;
-import com.adobe.marketing.mobile.edge.media.internal.MediaPublicTracker;
+import com.adobe.marketing.mobile.edge.media.internal.MediaTrackerEventGenerator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class Media {
      * @return A media tracker instance based on configuration
      */
     public static @NonNull MediaTracker createTracker(@Nullable final Map<String, Object> config) {
-        return MediaPublicTracker.create(config, MobileCore::dispatchEvent);
+        return MediaTrackerEventGenerator.create(config, MobileCore::dispatchEvent);
     }
 
     /**

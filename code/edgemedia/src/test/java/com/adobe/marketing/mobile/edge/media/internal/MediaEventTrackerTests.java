@@ -47,7 +47,7 @@ public class MediaEventTrackerTests {
     QoEInfo qoeInfo;
     StateInfo state1;
     Map<String, String> metadata;
-    TestMediaPublicTracker mediaTrackerAPIEventGenertor;
+    TestMediaTrackerEventGenerator mediaTrackerAPIEventGenertor;
     MediaEventTracker tracker;
     Map<String, String> denylistMetadata;
     Map<String, String> cleanedMetadata;
@@ -122,7 +122,7 @@ public class MediaEventTrackerTests {
 
         Map<String, Object> config = new HashMap<>();
 
-        mediaTrackerAPIEventGenertor = TestMediaPublicTracker.create("tracker0", true);
+        mediaTrackerAPIEventGenertor = TestMediaTrackerEventGenerator.create("tracker0", true);
 
         mockEventProcessor = Mockito.mock(MediaEventProcessor.class);
         mockSessionMap = new HashMap<>();

@@ -89,7 +89,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
     }
 
     /**
-     * Create a single [MediaSession] in the [MediaPublicTracker] and track the session start event.
+     * Create a single [MediaSession] in the [MediaTrackerEventGenerator] and track the session start event.
      */
     private fun setupSessionAndStart(mediaMediaInfo: MediaInfo) {
         // Set Media State

@@ -30,7 +30,7 @@ open class TrackerScenarioTestBase {
 
     internal lateinit var mediaState: MediaState
     internal lateinit var mediaEventProcessor: MediaEventProcessor
-    internal lateinit var mediaTracker: MediaPublicTracker
+    internal lateinit var mediaTracker: MediaTrackerEventGenerator
 
     @Before
     open fun setup() {
@@ -43,17 +43,20 @@ open class TrackerScenarioTestBase {
 
     fun createTracker(trackerConfig: Map<String, Any>? = null) {
         val mediaEventTracker = MediaEventTracker(mediaEventProcessor, trackerConfig)
-        mediaTracker = MediaPublicTracker("Scenario Test Tracker") { event ->
-            mediaEventTracker.track(event)
-        }
+        mediaTracker =
+            MediaTrackerEventGenerator(
+                "Scenario Test Tracker"
+            ) { event ->
+                mediaEventTracker.track(event)
+            }
 
         currentTimestampMillis = 0L
         mediaTracker.currentTimestamp =
-            MediaPublicTracker.TimestampSupplier { currentTimestampMillis }
+            MediaTrackerEventGenerator.TimestampSupplier { currentTimestampMillis }
     }
 
     /**
-     * Increment the timestamp and playhead of the [MediaPublicTracker] under test.
+     * Increment the timestamp and playhead of the [MediaTrackerEventGenerator] under test.
      * @param seconds number of seconds to increment timestamp and playhead
      * @param updatePlayhead if true, the playhead is also incremented by `seconds`
      */

@@ -33,17 +33,18 @@ class EventCollector implements AdobeCallback<Event> {
     }
 }
 
-public class TestMediaPublicTracker extends MediaPublicTracker {
+public class TestMediaTrackerEventGenerator extends MediaTrackerEventGenerator {
     private long userTS = 0;
     private boolean useUserTS;
     EventCollector eventCollector;
 
-    public static TestMediaPublicTracker create(final String trackerID, final boolean doUseUserTS) {
+    public static TestMediaTrackerEventGenerator create(
+            final String trackerID, final boolean doUseUserTS) {
 
-        return new TestMediaPublicTracker(trackerID, doUseUserTS, new EventCollector());
+        return new TestMediaTrackerEventGenerator(trackerID, doUseUserTS, new EventCollector());
     }
 
-    TestMediaPublicTracker(
+    TestMediaTrackerEventGenerator(
             String trackerId, final boolean useUserTS, EventCollector eventCollector) {
         super(trackerId, eventCollector);
         this.eventCollector = eventCollector;
