@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,7 +48,8 @@ public class MediaEventTrackerTests {
     QoEInfo qoeInfo;
     StateInfo state1;
     Map<String, String> metadata;
-    TestMediaTrackerEventGenerator mediaTrackerAPIEventGenertor;
+    TestableMediaTrackerEventGenerator testableMediaTrackerEventGenerator;
+    private final List<Event> generatedMediaEvents = new ArrayList<>();
     MediaEventTracker tracker;
     Map<String, String> denylistMetadata;
     Map<String, String> cleanedMetadata;
@@ -122,8 +124,12 @@ public class MediaEventTrackerTests {
 
         Map<String, Object> config = new HashMap<>();
 
-        mediaTrackerAPIEventGenertor = TestMediaTrackerEventGenerator.create("tracker0", true);
-
+        testableMediaTrackerEventGenerator =
+                new TestableMediaTrackerEventGenerator(
+                        "tracker0",
+                        (Event event) -> {
+                            generatedMediaEvents.add(event);
+                        });
         mockEventProcessor = Mockito.mock(MediaEventProcessor.class);
         mockSessionMap = new HashMap<>();
         tracker = new MediaEventTracker(mockEventProcessor, config);
@@ -162,7 +168,7 @@ public class MediaEventTrackerTests {
     }
 
     boolean trackerHandleAPI() {
-        return tracker.track(mediaTrackerAPIEventGenertor.getEvent());
+        return tracker.track(getLastGeneratedEvent());
     }
 
     boolean trackerHandleAPI(Event event) {
@@ -236,10 +242,19 @@ public class MediaEventTrackerTests {
         return context;
     }
 
+    private Event getLastGeneratedEvent() {
+        return generatedMediaEvents.stream().reduce((first, second) -> second).orElse(null);
+    }
+
+    @Before
+    public void setup() {
+        generatedMediaEvents.clear();
+    }
+
     @Test
     public void test_trackEvent_handleAbsentEventName() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
-        Event event = mediaTrackerAPIEventGenertor.getEvent();
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        Event event = getLastGeneratedEvent();
 
         Event modifiedEvent =
                 createEventWithModifiedData(
@@ -251,8 +266,8 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackEvent_handleIncorrectEventName() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
-        Event event = mediaTrackerAPIEventGenertor.getEvent();
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        Event event = getLastGeneratedEvent();
 
         Event modifiedEvent =
                 createEventWithModifiedData(
@@ -272,8 +287,8 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackEvent_handleAbsentTimeStamp() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
-        Event event = mediaTrackerAPIEventGenertor.getEvent();
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        Event event = getLastGeneratedEvent();
 
         Event modifiedEvent =
                 createEventWithModifiedData(
@@ -286,41 +301,42 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackSessionStart_FailOtherAPIsBeforeStart() {
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError("error-id");
+        testableMediaTrackerEventGenerator.trackError("error-id");
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(qoeInfo.toObjectMap());
+        testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionStart_withdenylistMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), denylistMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), denylistMetadata);
         assertTrue(trackerHandleAPI());
 
         Map<String, String> ret = tracker.cleanMetadata(denylistMetadata);
@@ -329,520 +345,562 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackSessionStart_failIfAlreadyInSession() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionStart_FailInvalidMediaInfo() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionStart(null, null);
+        testableMediaTrackerEventGenerator.trackSessionStart(null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionStart_nullMediaInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(null, null);
+        testableMediaTrackerEventGenerator.trackSessionStart(null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionEnd_Pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackSessionEnd_failOtherAPIsAfterEnd() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError("errorid");
+        testableMediaTrackerEventGenerator.trackError("errorid");
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(qoeInfo.toObjectMap());
+        testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackComplete_failOtherAPIsAfterComplete() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError("errorid");
+        testableMediaTrackerEventGenerator.trackError("errorid");
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(qoeInfo.toObjectMap());
+        testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackError_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError("error_id");
+        testableMediaTrackerEventGenerator.trackError("error_id");
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackError_withNullErrorID_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError(null);
+        testableMediaTrackerEventGenerator.trackError(null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackError_withEmptyID_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackError("");
+        testableMediaTrackerEventGenerator.trackError("");
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPlay_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPlay_pass_whileBuffering() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPlay_pass_whileSeeking() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPause_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPause_fail_whileBuffering() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackPause_fail_whileSeeking() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBitrateChange_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.BitrateChange, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.BitrateChange, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBufferStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBufferStart_fail_whileBuffering() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBufferStart_fail_whileSeeking() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBufferComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.BufferStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.BufferStart, null, null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.BufferComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.BufferComplete, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventBufferComplete_notInBuffering_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventSeekStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventSeekStart_fail_whileBuffering() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.BufferStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventSeekStart_fail_whileSeeking() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventSeekComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.SeekComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.SeekStart, null, null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.SeekComplete, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventSeekComplete_notInSeeking_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.SeekComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakStart_invalidInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdBreakStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdBreakStart, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakStart_duplicateInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakStart_replaceAdBreakOutsideAd() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo2.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakStart_replaceAdBreaksInsideAd() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo2.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdBreakComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdBreakComplete, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakComplete_withoutAdBreakStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakComplete_invalidInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdBreakStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdBreakStart, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdBreakComplete_inAd_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_nullMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdStart, adInfo1.toObjectMap(), null);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdStart, adInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_withdenylistMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), denylistMetadata);
         assertTrue(trackerHandleAPI());
 
@@ -852,253 +910,281 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackEventAdStart_withoutAdBreakStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_withInvalidAdInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdStart, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_withDuplicateAdInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdStart_replaceAd_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo2.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdComplete_withoutAdBreakStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdComplete, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdComplete_withoutAdStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdComplete, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdComplete, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdComplete_nullInfoMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdStart, adInfo1.toObjectMap(), null);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdStart, adInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdComplete, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdSkip_withoutAdBreakStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdSkip, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdSkip, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdSkip_withoutAdStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdSkip, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdSkip, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdSkip_afterAdComplete_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdComplete, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdSkip, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdSkip, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdSkip_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdStart, adInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdSkip, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdSkip, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventAdSkip_nullInfoMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdStart, adInfo1.toObjectMap(), null);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.AdStart, adInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.AdSkip, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.AdSkip, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterStart_withInvalidInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterStart, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterStart_withDuplicateInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterStart_replaceChapter() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo2.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterStart_withdenylistMetadata_Pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), denylistMetadata);
         assertTrue(trackerHandleAPI());
 
@@ -1108,186 +1194,200 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackEventChapterComplete_withoutChapterStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterComplete, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterComplete_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterComplete_nullParamMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterComplete, null, null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterComplete, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterComplete, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterSkip_withoutChapterStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterSkip, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterSkip_afterChapterComplete_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterComplete, emptyParams, emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterSkip, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterSkip_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterSkip, emptyParams, emptyMetadata);
 
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterSkip, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterSkip, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackEventChapterSkip_nullParamMetadata_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterSkip, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterSkip, null, null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.ChapterStart, chapterInfo1.toObjectMap(), null);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.ChapterSkip, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.ChapterSkip, null, null);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_updatePlayhead_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(12);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(12);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_updateQoEInfo_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(qoeInfo.toObjectMap());
+        testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_updateQoEInfo_withInvalidInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(emptyParams);
+        testableMediaTrackerEventGenerator.updateQoEObject(emptyParams);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.updateQoEObject(null);
+        testableMediaTrackerEventGenerator.updateQoEObject(null);
         assertFalse(trackerHandleAPI());
     }
 
     @Test
     public void test_trackStateStart_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackStateStart_withInvalidStateInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.StateStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.StateStart, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.StateStart, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.StateStart, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     // Attempt to track same state name twice
     @Test
     public void test_trackStateStart_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
 
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
 
         assertFalse(trackerHandleAPI());
@@ -1296,19 +1396,20 @@ public class MediaEventTrackerTests {
     // Attempt to track an 11th state, should fail
     @Test
     public void test_trackStateStart_reachLimit() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateStart, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
         }
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
 
         assertFalse(trackerHandleAPI());
@@ -1317,19 +1418,20 @@ public class MediaEventTrackerTests {
     // Track 10 states, track 11th fail, end all 10 states, start all 10 states again
     @Test
     public void test_trackState_ReachLimit_And_Retrack() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateStart, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
         }
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
 
         assertFalse(trackerHandleAPI());
@@ -1337,12 +1439,12 @@ public class MediaEventTrackerTests {
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateEnd, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateStart, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
@@ -1351,14 +1453,15 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackStateEnd_pass() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateEnd, state1.toObjectMap(), emptyMetadata);
 
         assertTrue(trackerHandleAPI());
@@ -1366,27 +1469,30 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackStateEnd_withInvalidStateInfo_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateEnd, adBreakInfo1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.StateEnd, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.StateEnd, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.StateEnd, null, null);
+        testableMediaTrackerEventGenerator.trackEvent(Media.Event.StateEnd, null, null);
         assertFalse(trackerHandleAPI());
     }
 
     // Attempt to end state without a corresponding start
     @Test
     public void test_trackStateEnd_fail() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateEnd, state1.toObjectMap(), emptyMetadata);
 
         assertFalse(trackerHandleAPI());
@@ -1395,54 +1501,57 @@ public class MediaEventTrackerTests {
     // toggle a state on and off
     @Test
     public void test_trackState_toggle() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateEnd, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateEnd, state1.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
     }
 
     @Test
     public void test_trackState_newSession() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create(Integer.toString(i));
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateStart, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
         }
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         assertTrue(trackerHandleAPI());
 
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         assertTrue(trackerHandleAPI());
 
         for (int i = 0; i < MediaTestConstants.EventDataKeys.StateInfo.STATE_LIMIT; i++) {
             StateInfo stateInfo = StateInfo.create("state" + i);
 
-            mediaTrackerAPIEventGenertor.trackEvent(
+            testableMediaTrackerEventGenerator.trackEvent(
                     Media.Event.StateStart, stateInfo.toObjectMap(), emptyMetadata);
 
             assertTrue(trackerHandleAPI());
@@ -1451,26 +1560,28 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_trackState_idleExitReTrackStates() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), emptyMetadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(
+                mediaInfo.toObjectMap(), emptyMetadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.StateStart, state1.toObjectMap(), emptyMetadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(31 * 60 * 1000);
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(31 * 60 * 1000);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
         assertTrue(tracker.isTrackerIdle());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.SeekComplete, emptyParams, emptyMetadata);
         trackerHandleAPI();
 
@@ -1484,7 +1595,7 @@ public class MediaEventTrackerTests {
     // Preroll tests
     @Test
     public void test_preroll_disabled() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());
@@ -1492,7 +1603,7 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_enabled_defaultInterval() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
@@ -1501,7 +1612,7 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_enabled_customInterval() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoCustomPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
@@ -1510,18 +1621,18 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_exceedDefaultInterval() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertTrue(tracker.isInPrerollInterval());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(200);
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0.2);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(200);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0.2);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(200);
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0.4);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(200);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0.4);
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());
@@ -1529,18 +1640,18 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_exceedCustomInterval() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertTrue(tracker.isInPrerollInterval());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(2000);
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(2);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(2000);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(2);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(5001);
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(5);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(5001);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(5);
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());
@@ -1548,13 +1659,13 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_gotSessionEnd() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertTrue(tracker.isInPrerollInterval());
 
-        mediaTrackerAPIEventGenertor.trackSessionEnd();
+        testableMediaTrackerEventGenerator.trackSessionEnd();
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());
@@ -1562,13 +1673,13 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_gotComplete() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertTrue(tracker.isInPrerollInterval());
 
-        mediaTrackerAPIEventGenertor.trackComplete();
+        testableMediaTrackerEventGenerator.trackComplete();
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());
@@ -1576,13 +1687,13 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_preroll_gotAdBreakStart() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(
+        testableMediaTrackerEventGenerator.trackSessionStart(
                 mediaInfoDefaultPreroll.toObjectMap(), metadata);
         trackerHandleAPI();
 
         assertTrue(tracker.isInPrerollInterval());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.AdBreakStart, adBreakInfo1.toObjectMap(), emptyMetadata);
         trackerHandleAPI();
 
@@ -1660,19 +1771,19 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_idleEnter() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         trackerHandleAPI();
 
         assertFalse(tracker.isTrackerIdle());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp((20 * 60 * 1000));
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp((20 * 60 * 1000));
         assertFalse(tracker.isTrackerIdle());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp((11 * 60 * 1000));
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp((11 * 60 * 1000));
+        testableMediaTrackerEventGenerator.trackPause();
         trackerHandleAPI();
 
         assertTrue(tracker.isTrackerIdle());
@@ -1680,24 +1791,25 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_idleExit() {
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackEvent(Media.Event.SeekStart, emptyParams, emptyMetadata);
+        testableMediaTrackerEventGenerator.trackEvent(
+                Media.Event.SeekStart, emptyParams, emptyMetadata);
         trackerHandleAPI();
 
         assertFalse(tracker.isTrackerIdle());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp((31 * 60 * 1000));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp((31 * 60 * 1000));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
         assertTrue(tracker.isTrackerIdle());
 
-        mediaTrackerAPIEventGenertor.trackEvent(
+        testableMediaTrackerEventGenerator.trackEvent(
                 Media.Event.SeekComplete, emptyParams, emptyMetadata);
         trackerHandleAPI();
 
@@ -1825,17 +1937,17 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_doesNotRestartIdleSession_after24hrTimeout() {
-        mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.setCurrentTimestamp(System.currentTimeMillis());
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         trackerHandleAPI();
         // sessionStart, pause (sessionId = "1")
         assertEquals(2, mockSessionMap.get("1").size());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.DAYS.toMillis(1));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(TimeUnit.DAYS.toMillis(1));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
         // Assertions
@@ -1846,19 +1958,19 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_restartActiveSession_after24hrTimeout() {
-        mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.setCurrentTimestamp(System.currentTimeMillis());
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         trackerHandleAPI();
 
         // sessionStart, play (sessionId = "1")
         assertNotNull(mockSessionMap.get("1"));
         assertEquals(2, mockSessionMap.get("1").size());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.DAYS.toMillis(1));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(0);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(TimeUnit.DAYS.toMillis(1));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0);
         trackerHandleAPI();
 
         // verify sessionEnd was called for session "1"
@@ -1875,19 +1987,19 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_closeIdleSession_after30mins() {
-        mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.setCurrentTimestamp(System.currentTimeMillis());
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         trackerHandleAPI();
 
         // sessionStart, pause (sessionId = "1")
         assertNotNull(mockSessionMap.get("1"));
         assertEquals(2, mockSessionMap.get("1").size());
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.MINUTES.toMillis(30));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(TimeUnit.MINUTES.toMillis(30));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
         assertEquals(1, mockSessionMap.size()); // session count
@@ -1897,15 +2009,15 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_doesNotCloseActiveSession_after30mins() {
-        mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.setCurrentTimestamp(System.currentTimeMillis());
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.HOURS.toMillis(1));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(TimeUnit.HOURS.toMillis(1));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
         assertEquals(1, mockSessionMap.size());
@@ -1914,20 +2026,20 @@ public class MediaEventTrackerTests {
 
     @Test
     public void test_newSession_onResumingIdleTracker() {
-        mediaTrackerAPIEventGenertor.setCurrentTimeStamp(System.currentTimeMillis());
-        mediaTrackerAPIEventGenertor.trackSessionStart(mediaInfo.toObjectMap(), metadata);
+        testableMediaTrackerEventGenerator.setCurrentTimestamp(System.currentTimeMillis());
+        testableMediaTrackerEventGenerator.trackSessionStart(mediaInfo.toObjectMap(), metadata);
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.trackPause();
+        testableMediaTrackerEventGenerator.trackPause();
         trackerHandleAPI();
 
-        mediaTrackerAPIEventGenertor.incrementCurrentTimeStamp(TimeUnit.HOURS.toMillis(1));
-        mediaTrackerAPIEventGenertor.updateCurrentPlayhead(10);
+        testableMediaTrackerEventGenerator.incrementCurrentTimestamp(TimeUnit.HOURS.toMillis(1));
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(10);
         trackerHandleAPI();
 
         assertEquals(1, mockSessionMap.size());
 
-        mediaTrackerAPIEventGenertor.trackPlay();
+        testableMediaTrackerEventGenerator.trackPlay();
         trackerHandleAPI();
 
         // verify session "1" was ended when resuming after idleTimeout
