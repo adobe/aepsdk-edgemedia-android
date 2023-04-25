@@ -132,7 +132,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testSessionStartErrorResponse_shouldNotSendAnyOtherNetworkRequests() {
-        val responseConnection = createNetworkResponse(ERROR_RESPONSE_STRING, 200)
+        val responseConnection = createNetworkResponse(ERROR_RESPONSE_STRING, 400)
         setNetworkResponseFor(
             SESSION_START_URL,
             HttpMethod.POST,

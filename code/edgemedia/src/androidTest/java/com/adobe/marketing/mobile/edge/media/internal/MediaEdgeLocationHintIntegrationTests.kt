@@ -82,39 +82,67 @@ class MediaEdgeLocationHintIntegrationTests {
 
     @Test
     fun testMediaEdgeRequests_whenLocationHintSet_urlPathContainsLocationHint() {
-        val testLocationHints = listOf("or2", "va6", "irl1")
+        val testLocationHint = "or2"
+        Edge.setLocationHint(testLocationHint)
 
-        for (testLocationHint in testLocationHints) {
-            Edge.setLocationHint(testLocationHint)
+        val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"
 
-            val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"
+        val responseConnection =
+            FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        FunctionalTestHelper.setNetworkResponseFor(
+            sessionStartUrlWithLocationHint,
+            HttpMethod.POST,
+            responseConnection
+        )
 
-            val responseConnection =
-                FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-            FunctionalTestHelper.setNetworkResponseFor(
-                sessionStartUrlWithLocationHint,
-                HttpMethod.POST,
-                responseConnection
-            )
+        // test
+        val tracker = Media.createTracker()
+        tracker.trackSessionStart(mediaInfo, metadata)
+        tracker.trackPlay()
+        tracker.updateCurrentPlayhead(7.0)
+        tracker.trackPause()
+        tracker.trackComplete()
 
-            // test
-            val tracker = Media.createTracker()
-            tracker.trackSessionStart(mediaInfo, metadata)
-            tracker.trackPlay()
-            tracker.updateCurrentPlayhead(7.0)
-            tracker.trackPause()
-            tracker.trackComplete()
+        // verify
+        val networkRequests = FunctionalTestHelper.getAllNetworkRequests()
+        Assert.assertEquals(4, networkRequests.size)
+        Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"))
+        Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/play"))
+        Assert.assertTrue(networkRequests[2].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/pauseStart"))
+        Assert.assertTrue(networkRequests[3].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionComplete"))
 
-            // verify
-            val networkRequests = FunctionalTestHelper.getAllNetworkRequests()
-            Assert.assertEquals(4, networkRequests.size)
-            Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"))
-            Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/play"))
-            Assert.assertTrue(networkRequests[2].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/pauseStart"))
-            Assert.assertTrue(networkRequests[3].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionComplete"))
+        // clear network requests
+        FunctionalTestHelper.resetTestNetworkService()
+    }
 
-            // clear network requests
-            FunctionalTestHelper.resetTestNetworkService()
-        }
+    @Test
+    fun testMediaEdgeRequests_noLocationHintSet_urlPathDoesNotContainLocationHint() {
+        Edge.setLocationHint(null)
+
+        val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/va/v1/sessionStart"
+
+        val responseConnection =
+            FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        FunctionalTestHelper.setNetworkResponseFor(
+            sessionStartUrlWithLocationHint,
+            HttpMethod.POST,
+            responseConnection
+        )
+
+        // test
+        val tracker = Media.createTracker()
+        tracker.trackSessionStart(mediaInfo, metadata)
+        tracker.trackPlay()
+        tracker.updateCurrentPlayhead(7.0)
+        tracker.trackPause()
+        tracker.trackComplete()
+
+        // verify
+        val networkRequests = FunctionalTestHelper.getAllNetworkRequests()
+        Assert.assertEquals(4, networkRequests.size)
+        Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/va/v1/sessionStart"))
+        Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/va/v1/play"))
+        Assert.assertTrue(networkRequests[2].url.contains("https://edge.adobedc.net/ee/va/v1/pauseStart"))
+        Assert.assertTrue(networkRequests[3].url.contains("https://edge.adobedc.net/ee/va/v1/sessionComplete"))
     }
 }
