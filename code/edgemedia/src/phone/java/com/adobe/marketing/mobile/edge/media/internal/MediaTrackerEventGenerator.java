@@ -203,7 +203,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
             eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_METADATA, metadata);
         }
 
-        long ts = getTimestampSupplier();
+        long ts = getCurrentTimestamp();
         eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_TIMESTAMP, ts);
 
         Event event =
@@ -224,12 +224,12 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         eventConsumer.call(event);
     }
 
-    long getTimestampSupplier() {
+    long getCurrentTimestamp() {
         return timestampSupplier.getCurrentTimestamp();
     }
 
     protected synchronized void tick() {
-        long currentTS = getTimestampSupplier();
+        long currentTS = getCurrentTimestamp();
 
         if ((currentTS - lastEventTS) > EVENT_TIMEOUT_MS) {
             // We have not got any public api call for 500 ms.
