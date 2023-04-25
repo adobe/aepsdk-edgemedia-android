@@ -27,10 +27,10 @@ class TestableMediaTrackerEventGenerator(
 
     init {
         // Override timestamp supplier
-        this.currentTimestamp = TimestampSupplier { currentTimestampMillis }
+        this.timestampSupplier = TimestampSupplier { currentTimestampMillis }
     }
 
-    override fun getCurrentTimestamp(): Long {
+    override fun getTimestampSupplier(): Long {
         return currentTimestampMillis
     }
 

@@ -45,7 +45,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
     }
 
     @VisibleForTesting
-    TimestampSupplier currentTimestamp = () -> Calendar.getInstance().getTimeInMillis();
+    TimestampSupplier timestampSupplier = () -> Calendar.getInstance().getTimeInMillis();
 
     @VisibleForTesting
     MediaTrackerEventGenerator(final String trackerId, final AdobeCallback<Event> eventConsumer) {
@@ -203,7 +203,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
             eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_METADATA, metadata);
         }
 
-        long ts = getCurrentTimestamp();
+        long ts = getTimestampSupplier();
         eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_TIMESTAMP, ts);
 
         Event event =
@@ -224,12 +224,12 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         eventConsumer.call(event);
     }
 
-    long getCurrentTimestamp() {
-        return currentTimestamp.getCurrentTimestamp();
+    long getTimestampSupplier() {
+        return timestampSupplier.getCurrentTimestamp();
     }
 
     protected synchronized void tick() {
-        long currentTS = getCurrentTimestamp();
+        long currentTS = getTimestampSupplier();
 
         if ((currentTS - lastEventTS) > EVENT_TIMEOUT_MS) {
             // We have not got any public api call for 500 ms.
