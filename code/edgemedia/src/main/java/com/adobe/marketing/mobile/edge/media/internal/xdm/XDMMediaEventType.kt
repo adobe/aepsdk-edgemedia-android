@@ -35,5 +35,6 @@ internal enum class XDMMediaEventType(val value: String) {
         fun getTypeString(type: XDMMediaEventType): String {
             return "media.${type.value}"
         }
+        fun getByValue(value: String) = XDMMediaEventType.values().find { it.value == value }
     }
 }
