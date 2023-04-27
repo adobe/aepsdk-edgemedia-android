@@ -34,7 +34,6 @@ import com.adobe.marketing.mobile.services.FunctionalTestNetworkService;
 import com.adobe.marketing.mobile.services.HttpConnecting;
 import com.adobe.marketing.mobile.services.HttpMethod;
 import com.adobe.marketing.mobile.services.Log;
-import com.adobe.marketing.mobile.services.NetworkRequest;
 import com.adobe.marketing.mobile.services.Networking;
 import com.adobe.marketing.mobile.services.ServiceProvider;
 import com.adobe.marketing.mobile.services.ServiceProviderHelper;
@@ -655,112 +654,6 @@ public class FunctionalTestHelper {
                 new TestableNetworkRequest(url, method), responseConnection);
     }
 
-    /**
-     * Set a network request expectation.
-     *
-     * @param url the url string for which to set the expectation
-     * @param method the HTTP method for which to set the expectation
-     * @param expectedCount how many times a request with this {@code url} and {@code method} is
-     *     expected to be sent
-     */
-    public static void setExpectationNetworkRequest(
-            final String url, final HttpMethod method, final int expectedCount) {
-        testNetworkService.setExpectedNetworkRequest(
-                new TestableNetworkRequest(url, method), expectedCount);
-    }
-
-    /**
-     * Asserts that the correct number of network requests were being sent, based on the previously
-     * set expectations.
-     *
-     * @throws InterruptedException
-     * @see #setExpectationNetworkRequest(String, HttpMethod, int)
-     */
-    public static void assertNetworkRequestCount() throws InterruptedException {
-        waitForThreads(2000); // allow for some extra time for threads to finish before asserts
-        Map<TestableNetworkRequest, ADBCountDownLatch> expectedNetworkRequests =
-                testNetworkService.getExpectedNetworkRequests();
-
-        if (expectedNetworkRequests.isEmpty()) {
-            fail(
-                    "There are no network request expectations set, use this API after calling"
-                            + " setExpectationNetworkRequest");
-            return;
-        }
-
-        for (Map.Entry<TestableNetworkRequest, ADBCountDownLatch> expectedRequest :
-                expectedNetworkRequests.entrySet()) {
-            boolean awaitResult = expectedRequest.getValue().await(5, TimeUnit.SECONDS);
-            assertTrue(
-                    "Time out waiting for network request with URL '"
-                            + expectedRequest.getKey().getUrl()
-                            + "' and method '"
-                            + expectedRequest.getKey().getMethod().name()
-                            + "'",
-                    awaitResult);
-            int expectedCount = expectedRequest.getValue().getInitialCount();
-            int receivedCount = expectedRequest.getValue().getCurrentCount();
-            String message =
-                    String.format(
-                            "Expected %d network requests for URL %s (%s), but received %d",
-                            expectedCount,
-                            expectedRequest.getKey().getUrl(),
-                            expectedRequest.getKey().getMethod(),
-                            receivedCount);
-            assertEquals(message, expectedCount, receivedCount);
-        }
-    }
-
-    /**
-     * Returns the {@link TestableNetworkRequest}(s) sent through the Core NetworkService, or empty
-     * if none was found. Use this API after calling {@link #setExpectationNetworkRequest(String,
-     * HttpMethod, int)} to wait 2 seconds for each request.
-     *
-     * @param url The url string for which to retrieved the network requests sent
-     * @param method the HTTP method for which to retrieve the network requests
-     * @return list of network requests with the provided {@code url} and {@code method}, or empty
-     *     if none was dispatched
-     * @throws InterruptedException
-     */
-    public static List<TestableNetworkRequest> getNetworkRequestsWith(
-            final String url, final HttpMethod method) throws InterruptedException {
-        return getNetworkRequestsWith(
-                url, method, FunctionalTestConstants.Defaults.WAIT_NETWORK_REQUEST_TIMEOUT_MS);
-    }
-
-    /**
-     * Returns the {@link TestableNetworkRequest}(s) sent through the Core NetworkService, or empty
-     * if none was found. Use this API after calling {@link #setExpectationNetworkRequest(String,
-     * HttpMethod, int)} to wait for each request.
-     *
-     * @param url The url string for which to retrieved the network requests sent
-     * @param method the HTTP method for which to retrieve the network requests
-     * @param timeoutMillis how long should this method wait for the expected network requests, in
-     *     milliseconds
-     * @return list of network requests with the provided {@code url} and {@code command}, or empty
-     *     if none was dispatched
-     * @throws InterruptedException
-     */
-    public static List<TestableNetworkRequest> getNetworkRequestsWith(
-            final String url, final HttpMethod method, final int timeoutMillis)
-            throws InterruptedException {
-        TestableNetworkRequest networkRequest = new TestableNetworkRequest(url, method);
-
-        if (testNetworkService.isNetworkRequestExpected(networkRequest)) {
-            assertTrue(
-                    "Time out waiting for network request(s) with URL '"
-                            + networkRequest.getUrl()
-                            + "' and method '"
-                            + networkRequest.getMethod().name()
-                            + "'",
-                    testNetworkService.awaitFor(networkRequest, timeoutMillis));
-        } else {
-            sleep(timeoutMillis);
-        }
-
-        return testNetworkService.getReceivedNetworkRequestsMatching(networkRequest);
-    }
-
     public static List<TestableNetworkRequest> getAllNetworkRequests() {
         sleep(FunctionalTestConstants.Defaults.WAIT_TIMEOUT_MS);
 
@@ -872,18 +765,6 @@ public class FunctionalTestHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Use this API for JSON formatted {@code NetworkRequest} body in order to retrieve a flattened
-     * map containing its data.
-     *
-     * @param networkRequest the {@link NetworkRequest} to parse
-     * @return The JSON request body represented as a flatten map
-     */
-    public static Map<String, String> getFlattenedNetworkRequestBody(
-            final NetworkRequest networkRequest) {
-        return FunctionalTestUtils.flattenBytes(networkRequest.getBody());
     }
 
     /** Dummy Application for the test instrumentation */

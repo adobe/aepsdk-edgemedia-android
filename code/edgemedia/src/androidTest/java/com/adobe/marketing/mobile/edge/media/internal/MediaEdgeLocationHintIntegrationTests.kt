@@ -119,12 +119,12 @@ class MediaEdgeLocationHintIntegrationTests {
     fun testMediaEdgeRequests_noLocationHintSet_urlPathDoesNotContainLocationHint() {
         Edge.setLocationHint(null)
 
-        val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/va/v1/sessionStart"
+        val sessionStartUrlWithoutLocationHint = "https://edge.adobedc.net/ee/va/v1/sessionStart"
 
         val responseConnection =
             FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         FunctionalTestHelper.setNetworkResponseFor(
-            sessionStartUrlWithLocationHint,
+            sessionStartUrlWithoutLocationHint,
             HttpMethod.POST,
             responseConnection
         )
