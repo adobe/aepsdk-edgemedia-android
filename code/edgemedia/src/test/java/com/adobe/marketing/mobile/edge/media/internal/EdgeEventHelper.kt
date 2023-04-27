@@ -23,7 +23,7 @@ internal class EdgeEventHelper {
     companion object {
         fun generateEdgeEvent(
             eventType: XDMMediaEventType,
-            playhead: Long,
+            playhead: Int,
             timestamp: Long,
             backendSessionId: String? = null,
             info: Map<String, Any>? = null,
@@ -65,7 +65,7 @@ internal class EdgeEventHelper {
 
         private fun generateMediaCollection(
             eventType: XDMMediaEventType,
-            playhead: Long,
+            playhead: Int,
             backendSessionId: String?,
             info: Map<String, Any>?,
             metadata: Map<String, Any>?,
@@ -228,9 +228,9 @@ internal class EdgeEventHelper {
         private fun getChapterDetails(info: Map<String, Any>?): Map<String, Any> {
             return mapOf(
                 "friendlyName" to (info?.get("chapter.name") ?: ""),
-                "index" to ((info?.get("chapter.position") as? Long) ?: -1).toLong(),
-                "offset" to ((info?.get("chapter.starttime") as? Double) ?: -1).toLong(),
-                "length" to ((info?.get("chapter.length") as? Double) ?: -1).toLong()
+                "index" to ((info?.get("chapter.position") as? Int) ?: -1),
+                "offset" to ((info?.get("chapter.starttime") as? Int) ?: -1),
+                "length" to ((info?.get("chapter.length") as? Int) ?: -1)
             )
         }
 

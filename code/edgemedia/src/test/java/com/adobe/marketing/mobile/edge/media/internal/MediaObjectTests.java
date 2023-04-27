@@ -822,7 +822,7 @@ public class MediaObjectTests {
     public void ChapterInfo_create_pass_isValidChapterInfoObject() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo expectedChapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo expectedChapterInfo = ChapterInfo.create("name", 2, 30, 60);
 
         assertEquals(expectedChapterInfo, chapterInfo);
     }
@@ -847,7 +847,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentName_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("diff-name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("diff-name", 2, 30, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -855,7 +855,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentPosition_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 4, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 4, 30, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -863,7 +863,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentStartTime_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 300.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 300, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -871,7 +871,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentLength_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30.0, 6000.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30, 6000);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -879,26 +879,20 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_sameParameters_pass() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30, 60);
         assertEquals(chapterInfo, chapterInfo2);
     }
 
     @Test
     public void ChapterInfo_toObjectMap() {
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30, 60);
         Map<String, Object> chapterInfoMap = chapterInfo.toObjectMap();
 
         assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.NAME), "name");
-        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.POSITION), 2L);
+        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.POSITION), 2);
+        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH), 60);
         assertEquals(
-                (double) chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH),
-                60.0,
-                0);
-        assertEquals(
-                (double)
-                        chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME),
-                30.0,
-                0);
+                chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME), 30);
     }
 
     @Test
@@ -914,12 +908,12 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " startTime: "
-                        + 30.0
+                        + 30
                         + " length: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30, 60);
         String actual = chapterInfo.toString();
 
         assertEquals(expected, actual);

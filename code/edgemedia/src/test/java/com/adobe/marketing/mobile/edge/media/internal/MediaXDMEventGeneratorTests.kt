@@ -37,7 +37,7 @@ class MediaXDMEventGeneratorTests {
     private lateinit var eventGenerator: MediaXDMEventGenerator
     private var currSessionId = 0
     private var mockTimestamp = 0L
-    private var mockPlayhead = 0L
+    private var mockPlayhead = 0
 
     @Captor
     private lateinit var eventCaptor: ArgumentCaptor<XDMMediaEvent>
@@ -323,7 +323,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessChapterStart() {
         // setup
-        val chapterInfo = ChapterInfo.create("chapter", 1, 15.0, 30.0)
+        val chapterInfo = ChapterInfo.create("chapter", 1, 15, 30)
         val metadata = mapOf("k1" to "v1")
         mediaContext.setChapterInfo(chapterInfo, metadata)
 
@@ -429,7 +429,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessSessionRestart_withinChapterRestartsChapter() {
         // setup
-        val chapterInfo = ChapterInfo.create("chapter", 1, 15.0, 30.0)
+        val chapterInfo = ChapterInfo.create("chapter", 1, 15, 30)
         val metadata = mapOf("k1" to "v1")
         mediaContext.setChapterInfo(chapterInfo, metadata)
         val chapterDetails = MediaXDMEventHelper.generateChapterDetails(chapterInfo)
@@ -1026,14 +1026,14 @@ class MediaXDMEventGeneratorTests {
         mockTimestamp += interval
         if (updatePlayhead) {
             mockPlayhead += (interval / 1000)
-            mediaContext.playhead = mockPlayhead.toDouble()
+            mediaContext.playhead = mockPlayhead
         }
 
-        mediaContext.playhead = mockPlayhead.toDouble()
+        mediaContext.playhead = mockPlayhead
         eventGenerator.setRefTS(mockTimestamp)
     }
 
-    private fun getPlayhead(): Long {
-        return mediaContext.playhead.toLong()
+    private fun getPlayhead(): Int {
+        return mediaContext.playhead
     }
 }

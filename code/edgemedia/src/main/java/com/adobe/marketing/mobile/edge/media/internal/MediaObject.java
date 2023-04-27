@@ -80,10 +80,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createChapterInfo(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         ChapterInfo chapterInfo = ChapterInfo.create(name, position, startTime, length);
 
         if (chapterInfo == null) {
@@ -700,15 +697,12 @@ class AdBreakInfo {
 class ChapterInfo {
     private static final String LOG_TAG = "ChapterInfo";
     private final String name;
-    private final long position;
-    private final double startTime;
-    private final double length;
+    private final int position;
+    private final int startTime;
+    private final int length;
 
     private ChapterInfo(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
@@ -719,15 +713,15 @@ class ChapterInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -780,10 +774,7 @@ class ChapterInfo {
     }
 
     public static ChapterInfo create(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -828,16 +819,16 @@ class ChapterInfo {
                 DataReader.optString(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(
+        int position =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.POSITION, -1);
 
-        double startTime =
-                DataReader.optDouble(
+        int startTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.START_TIME, -1);
 
-        double length =
-                DataReader.optDouble(
+        int length =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.LENGTH, -1);
 
         return create(name, position, startTime, length);

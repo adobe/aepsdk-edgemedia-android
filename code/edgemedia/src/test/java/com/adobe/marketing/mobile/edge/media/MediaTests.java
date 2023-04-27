@@ -163,21 +163,21 @@ public class MediaTests {
 
     @Test
     public void test_chapterObject() {
-        Map<String, Object> actualObject = Media.createChapterObject("name", 1, 60.0, 30.0);
+        Map<String, Object> actualObject = Media.createChapterObject("name", 1, 60, 30);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("chapter.name", "name");
-                expectedObject.put("chapter.position", 1L);
-                expectedObject.put("chapter.length", 60.0);
-                expectedObject.put("chapter.starttime", 30.0);
+                expectedObject.put("chapter.position", 1);
+                expectedObject.put("chapter.length", 60);
+                expectedObject.put("chapter.starttime", 30);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createChapterObject(null, 1, 60.0, 30.0);
+        Map<String, Object> invalidObject = Media.createChapterObject(null, 1, 60, 30);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 

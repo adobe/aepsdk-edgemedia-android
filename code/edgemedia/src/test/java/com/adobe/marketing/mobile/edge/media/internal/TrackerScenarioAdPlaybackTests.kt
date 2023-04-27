@@ -69,14 +69,14 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "key3" to "мểŧẳđαţả"
     )
 
-    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1.1, 30.5)
+    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1, 30)
     private val chapterMetadata = mapOf(
         "media.artist" to "sampleArtist",
         "key1" to "value1",
         "key2" to "мểŧẳđαţả"
     )
 
-    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2.2, 40.5)
+    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2, 40)
     private val chapterMetadata2 = mapOf(
         "media.artist" to "sampleArtist2",
         "key2" to "value2",

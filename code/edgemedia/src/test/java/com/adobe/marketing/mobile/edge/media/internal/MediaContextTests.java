@@ -99,7 +99,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInChapter());
 
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 1, 1.0, 30.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 1, 1, 30);
 
         mediaContext.setChapterInfo(chapterInfo, metadata);
 
@@ -134,11 +134,11 @@ public class MediaContextTests {
 
     @Test
     public void test_Playhead_setOnMediaContext() {
-        assertEquals(0, mediaContext.getPlayhead(), 0.0);
+        assertEquals(0, mediaContext.getPlayhead());
 
-        mediaContext.setPlayhead(11.1);
+        mediaContext.setPlayhead(11);
 
-        assertEquals(11.1, mediaContext.getPlayhead(), 0.0);
+        assertEquals(11, mediaContext.getPlayhead());
     }
 
     @Test

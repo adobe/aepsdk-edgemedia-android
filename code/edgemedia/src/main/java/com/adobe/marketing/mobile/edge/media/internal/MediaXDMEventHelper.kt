@@ -193,8 +193,8 @@ internal class MediaXDMEventHelper {
             return XDMChapterDetails(
                 chapterInfo.name,
                 chapterInfo.position,
-                chapterInfo.length.toLong(),
-                chapterInfo.startTime.toLong()
+                chapterInfo.length,
+                chapterInfo.startTime
             )
         }
 

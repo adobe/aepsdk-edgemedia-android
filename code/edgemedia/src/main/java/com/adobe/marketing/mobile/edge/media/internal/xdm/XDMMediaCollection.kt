@@ -17,7 +17,7 @@ internal data class XDMMediaCollection(
     var chapterDetails: XDMChapterDetails? = null,
     var customMetadata: List<XDMCustomMetadata>? = null,
     var errorDetails: XDMErrorDetails? = null,
-    var playhead: Long? = null,
+    var playhead: Int? = null,
     var qoeDataDetails: XDMQoeDataDetails? = null,
     var sessionDetails: XDMSessionDetails? = null,
     var sessionID: String? = null,

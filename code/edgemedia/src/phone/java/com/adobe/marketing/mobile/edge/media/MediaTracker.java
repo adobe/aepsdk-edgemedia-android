@@ -78,5 +78,5 @@ public interface MediaTracker {
      *     beginning of the media item. For live streaming, return playhead position if available or
      *     the current UTC time in seconds otherwise.
      */
-    void updateCurrentPlayhead(double time);
+    void updateCurrentPlayhead(int time);
 }

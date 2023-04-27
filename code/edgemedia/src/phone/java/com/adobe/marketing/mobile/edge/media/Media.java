@@ -117,10 +117,7 @@ public class Media {
      * @return A MediaObject instance representing the Chapter.
      */
     @NonNull public static HashMap<String, Object> createChapterObject(
-            @NonNull final String name,
-            final long position,
-            final double length,
-            final double startTime) {
+            @NonNull final String name, final int position, final int length, final int startTime) {
         return MediaObject.createChapterInfo(name, position, startTime, length);
     }
 
