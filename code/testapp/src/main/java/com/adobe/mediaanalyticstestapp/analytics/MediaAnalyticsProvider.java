@@ -163,9 +163,9 @@ public class MediaAnalyticsProvider implements Observer {
                 // Chapter Info
                 Map<String, Object> chapterData = _player.getChapterInfo();
                 String chapterName = (String) chapterData.get("name");
-                Long chapterPosition = (Long) chapterData.get("position");
-                Double chapterLength = (Double) chapterData.get("length");
-                Double chapterStartTime = (Double) chapterData.get("startTime");
+                Integer chapterPosition = (Integer) chapterData.get("position");
+                Integer chapterLength = (Integer) chapterData.get("length");
+                Integer chapterStartTime = (Integer) chapterData.get("startTime");
 
                 HashMap<String, Object> chapterDataInfo =
                         Media.createChapterObject(
