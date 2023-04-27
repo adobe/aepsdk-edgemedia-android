@@ -38,7 +38,6 @@ public class FunctionalTestConstants {
     public static class Defaults {
 
         public static final int WAIT_TIMEOUT_MS = 2000;
-        public static final int WAIT_NETWORK_REQUEST_TIMEOUT_MS = 2000;
         public static final int WAIT_EVENT_TIMEOUT_MS = 2000;
 
         private Defaults() {}
