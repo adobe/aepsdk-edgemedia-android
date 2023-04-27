@@ -71,7 +71,7 @@ public class Media {
     @NonNull public static HashMap<String, Object> createMediaObject(
             @NonNull final String name,
             @NonNull final String mediaId,
-            final double length,
+            final int length,
             @NonNull final String streamType,
             @NonNull final MediaType mediaType) {
         return MediaObject.createMediaInfo(mediaId, name, streamType, mediaType, length);

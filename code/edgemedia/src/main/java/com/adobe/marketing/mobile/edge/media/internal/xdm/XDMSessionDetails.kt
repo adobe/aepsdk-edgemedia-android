@@ -16,7 +16,7 @@ internal data class XDMSessionDetails(
     var contentType: String? = null,
     var friendlyName: String? = null,
     var hasResume: Boolean? = null,
-    var length: Long? = null,
+    var length: Int? = null,
     var name: String? = null,
     var streamType: XDMStreamType? = null,
 

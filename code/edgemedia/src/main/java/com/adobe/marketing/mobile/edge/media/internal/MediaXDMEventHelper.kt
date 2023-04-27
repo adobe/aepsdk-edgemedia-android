@@ -68,7 +68,7 @@ internal class MediaXDMEventHelper {
             val sessionDetails = XDMSessionDetails()
             sessionDetails.name = mediaInfo.id
             sessionDetails.friendlyName = mediaInfo.name
-            sessionDetails.length = mediaInfo.length.toLong()
+            sessionDetails.length = mediaInfo.length
             sessionDetails.streamType = if (mediaInfo.mediaType == MediaType.Audio) XDMStreamType.AUDIO else XDMStreamType.VIDEO
             sessionDetails.contentType = mediaInfo.streamType
             sessionDetails.hasResume = forceResume || mediaInfo.isResumed // To also handle the internally triggered resume by the SDK for long running sessions >= 24 hours

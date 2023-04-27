@@ -100,13 +100,13 @@ public class MediaTests {
     @Test
     public void test_mediaObject() {
         Map<String, Object> actualObject =
-                Media.createMediaObject("name", "id", 60.0, "vod", Media.MediaType.Video);
+                Media.createMediaObject("name", "id", 60, "vod", Media.MediaType.Video);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("media.name", "name");
                 expectedObject.put("media.id", "id");
-                expectedObject.put("media.length", 60.0);
+                expectedObject.put("media.length", 60);
                 expectedObject.put("media.streamtype", "vod");
                 expectedObject.put("media.type", "video");
                 expectedObject.put("media.resumed", false);
@@ -118,7 +118,7 @@ public class MediaTests {
 
         // invalid params
         Map<String, Object> invalidObject =
-                Media.createMediaObject(null, "id", 60.0, "vod", Media.MediaType.Audio);
+                Media.createMediaObject(null, "id", 60, "vod", Media.MediaType.Audio);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 

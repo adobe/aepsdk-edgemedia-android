@@ -33,7 +33,7 @@ public class MediaObject {
             @NonNull final String name,
             @NonNull final String streamType,
             final Media.MediaType mediaType,
-            final double length) {
+            final int length) {
         MediaType mType = (mediaType == Media.MediaType.Video) ? MediaType.Video : MediaType.Audio;
 
         MediaInfo mediaInfo = MediaInfo.create(id, name, streamType, mType, length);
@@ -146,7 +146,7 @@ class MediaInfo {
     private final String name;
     private final String streamType;
     private final MediaType mediaType;
-    private final double length;
+    private final int length;
     private final boolean resumed;
     private final long prerollWaitTime;
     private final boolean isGranularAdTrackingEnabled;
@@ -156,7 +156,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed,
             final long prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {
@@ -190,7 +190,7 @@ class MediaInfo {
         return mediaType == MediaType.Video ? MediaInfo.MEDIATYPEVIDEO : MediaInfo.MEDIATYPEAUDIO;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -322,9 +322,8 @@ class MediaInfo {
             return null;
         }
 
-        double length =
-                DataReader.optDouble(
-                        info, MediaInternalConstants.EventDataKeys.MediaInfo.LENGTH, -1);
+        int length =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.MediaInfo.LENGTH, -1);
 
         boolean resumed =
                 DataReader.optBoolean(
@@ -359,7 +358,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length) {
+            final int length) {
         return create(
                 id,
                 name,
@@ -376,7 +375,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed) {
         return create(
                 id,
@@ -394,7 +393,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed,
             final long prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {

@@ -254,7 +254,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo expectedMediaInfo =
-                MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
 
         assertEquals(expectedMediaInfo, mediaInfo);
     }
@@ -278,7 +278,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo mediaInfo2 =
-                MediaInfo.create("diff-id", "name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("diff-id", "name", "vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -287,7 +287,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo mediaInfo2 =
-                MediaInfo.create("id", "diff-name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("id", "diff-name", "vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -295,8 +295,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentStreamType_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 =
-                MediaInfo.create("id", "name", "not-vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "not-vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -304,7 +303,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentLength_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 6000.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 6000, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -312,7 +311,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentResumedFlag_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, false);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, false);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -320,7 +319,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentMediaType_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Audio, 60.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Audio, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -366,15 +365,13 @@ public class MediaObjectTests {
 
     @Test
     public void MediaInfo_toObjectMap() {
-        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
         Map<String, Object> mediaInfoMap = mediaInfo.toObjectMap();
 
         assertEquals(mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.NAME), "name");
         assertEquals(mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.ID), "id");
         assertEquals(
-                (double) mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH),
-                60.0,
-                0);
+                (int) mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH), 60, 0);
         assertEquals(
                 mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.STREAM_TYPE), "vod");
         assertEquals(
@@ -402,7 +399,7 @@ public class MediaObjectTests {
                         + "name"
                         + "\""
                         + " length: "
-                        + 60.0
+                        + 60
                         + " streamType: "
                         + "\""
                         + "vod"
@@ -417,7 +414,7 @@ public class MediaObjectTests {
                         + 250
                         + "}";
 
-        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
         String actual = mediaInfo.toString();
 
         assertEquals(expected, actual);

@@ -32,7 +32,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.AOD,
         MediaType.Audio,
-        30.5,
+        30,
         false,
         0,
         false
@@ -43,7 +43,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.AOD,
         MediaType.Audio,
-        30.5
+        30
     )
 
     private val mediaMetadata = mapOf(

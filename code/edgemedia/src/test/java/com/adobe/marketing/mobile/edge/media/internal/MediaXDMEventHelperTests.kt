@@ -61,7 +61,7 @@ class MediaXDMEventHelperTests {
         MediaConstants.AdMetadataKeys.SITE_ID to "siteID"
     )
 
-    private val mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 10.0)
+    private val mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 10)
     private val adBreakInfo = AdBreakInfo.create("name", 1, 2.3)
     private val adInfo = AdInfo.create("id", "name", 1, 10.0)
     private val chapterInfo = ChapterInfo.create("name", 1, 2.3, 10.0)
@@ -76,7 +76,7 @@ class MediaXDMEventHelperTests {
         val expectedSessionDetails = XDMSessionDetails()
         expectedSessionDetails.name = "id"
         expectedSessionDetails.friendlyName = "name"
-        expectedSessionDetails.length = 10L
+        expectedSessionDetails.length = 10
         expectedSessionDetails.streamType = XDMStreamType.VIDEO
         expectedSessionDetails.contentType = "vod"
         expectedSessionDetails.hasResume = false

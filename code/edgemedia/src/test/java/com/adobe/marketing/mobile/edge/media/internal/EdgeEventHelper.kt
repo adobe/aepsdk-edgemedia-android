@@ -132,7 +132,7 @@ internal class EdgeEventHelper {
             val details: MutableMap<String, Any> = mutableMapOf(
                 "name" to (info?.get("media.id") ?: ""),
                 "friendlyName" to (info?.get("media.name") ?: ""),
-                "length" to ((info?.get("media.length") as? Double) ?: -1).toLong(),
+                "length" to ((info?.get("media.length") as? Int) ?: -1),
                 "streamType" to (info?.get("media.type") ?: ""),
                 "contentType" to (info?.get("media.streamtype") ?: ""),
                 "hasResume" to (info?.get("media.resumed") ?: "")

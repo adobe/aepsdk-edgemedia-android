@@ -50,7 +50,7 @@ class MediaXDMEventGeneratorTests {
 
     @Before
     fun setup() {
-        mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0)
+        mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60)
         metadata = mapOf("k1" to "v1", MediaConstants.VideoMetadataKeys.SHOW to "show")
         mediaContext = MediaContext(mediaInfo, metadata)
 

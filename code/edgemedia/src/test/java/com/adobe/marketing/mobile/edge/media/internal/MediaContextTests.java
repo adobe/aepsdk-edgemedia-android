@@ -26,7 +26,7 @@ public class MediaContextTests {
     String mediaName = "name";
     String mediaStreamType = "vod";
     MediaType mediaType = MediaType.Video;
-    double mediaLength = 30.0;
+    int mediaLength = 30;
     MediaContext mediaContext;
 
     public MediaContextTests() {
