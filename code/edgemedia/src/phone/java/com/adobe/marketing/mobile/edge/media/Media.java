@@ -134,10 +134,7 @@ public class Media {
      * @return A MediaObject instance representing the QoSObject.
      */
     @NonNull public static HashMap<String, Object> createQoEObject(
-            final long bitrate,
-            final double startupTime,
-            final double fps,
-            final long droppedFrames) {
+            final int bitrate, final int startupTime, final int fps, final int droppedFrames) {
         return MediaObject.createQoEInfo(bitrate, droppedFrames, fps, startupTime);
     }
 

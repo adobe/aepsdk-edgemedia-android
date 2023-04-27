@@ -118,7 +118,7 @@ public class MediaEventTrackerTests {
         chapterInfo1 = ChapterInfo.create("chapter1", 1, 10.0, 30.0);
         chapterInfo2 = ChapterInfo.create("chapter2", 2, 10.0, 30.0);
 
-        qoeInfo = QoEInfo.create(1.1, 2.2, 3.3, 4.4);
+        qoeInfo = QoEInfo.create(1, 2, 3, 4);
 
         state1 = StateInfo.create("mute");
 

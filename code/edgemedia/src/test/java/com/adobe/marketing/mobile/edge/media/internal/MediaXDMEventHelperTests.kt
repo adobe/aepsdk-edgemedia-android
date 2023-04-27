@@ -65,7 +65,7 @@ class MediaXDMEventHelperTests {
     private val adBreakInfo = AdBreakInfo.create("name", 1, 2)
     private val adInfo = AdInfo.create("id", "name", 1, 10)
     private val chapterInfo = ChapterInfo.create("name", 1, 2.3, 10.0)
-    private val qoeInfo = QoEInfo.create(1.1, 2.2, 3.3, 4.4)
+    private val qoeInfo = QoEInfo.create(1, 2, 3, 4)
     private val muteStateInfo = StateInfo.create(MediaConstants.PlayerState.MUTE)
     private val testStateInfo = StateInfo.create("testStateName")
 

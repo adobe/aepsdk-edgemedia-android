@@ -251,10 +251,10 @@ internal class EdgeEventHelper {
 
         private fun getQoeDetails(info: Map<String, Any>?): Map<String, Any> {
             return mapOf(
-                "bitrate" to ((info?.get("qoe.bitrate") as? Double) ?: -1).toLong(),
-                "droppedFrames" to ((info?.get("qoe.droppedframes") as? Double) ?: -1).toLong(),
-                "framesPerSecond" to ((info?.get("qoe.fps") as? Double) ?: -1).toLong(),
-                "timeToStart" to ((info?.get("qoe.startuptime") as? Double) ?: -1).toLong()
+                "bitrate" to ((info?.get("qoe.bitrate") as? Int) ?: -1),
+                "droppedFrames" to ((info?.get("qoe.droppedframes") as? Int) ?: -1),
+                "framesPerSecond" to ((info?.get("qoe.fps") as? Int) ?: -1),
+                "timeToStart" to ((info?.get("qoe.startuptime") as? Int) ?: -1)
             )
         }
     }

@@ -559,7 +559,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessBitrateChange() {
         // setup
-        val qoeInfo = QoEInfo.create(1234.5, 12.3, 123.4, 1.2)
+        val qoeInfo = QoEInfo.create(1234, 12, 123, 1)
         mediaContext.qoEInfo = qoeInfo
 
         val qoeDetails = MediaXDMEventHelper.generateQoEDataDetails(qoeInfo)

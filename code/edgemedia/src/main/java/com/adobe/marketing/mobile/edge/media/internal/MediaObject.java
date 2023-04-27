@@ -98,10 +98,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createQoEInfo(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startUpTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startUpTime) {
         QoEInfo qoeInfo = QoEInfo.create(bitrate, droppedFrames, fps, startUpTime);
 
         if (qoeInfo == null) {
@@ -849,35 +846,32 @@ class ChapterInfo {
 
 class QoEInfo {
     private static final String LOG_TAG = "QoEInfo";
-    private final double bitrate;
-    private final double droppedFrames;
-    private final double fps;
-    private final double startupTime;
+    private final int bitrate;
+    private final int droppedFrames;
+    private final int fps;
+    private final int startupTime;
 
     private QoEInfo(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startupTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startupTime) {
         this.bitrate = bitrate;
         this.droppedFrames = droppedFrames;
         this.fps = fps;
         this.startupTime = startupTime;
     }
 
-    public double getBitrate() {
+    public int getBitrate() {
         return bitrate;
     }
 
-    public double getDroppedFrames() {
+    public int getDroppedFrames() {
         return droppedFrames;
     }
 
-    public double getFPS() {
+    public int getFPS() {
         return fps;
     }
 
-    public double getStartupTime() {
+    public int getStartupTime() {
         return startupTime;
     }
 
@@ -929,10 +923,7 @@ class QoEInfo {
     }
 
     public static QoEInfo create(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startupTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startupTime) {
         if (bitrate < 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -973,19 +964,17 @@ class QoEInfo {
             return null;
         }
 
-        double bitrate =
-                DataReader.optDouble(
-                        info, MediaInternalConstants.EventDataKeys.QoEInfo.BITRATE, -1);
+        int bitrate =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.QoEInfo.BITRATE, -1);
 
-        double droppedFrames =
-                DataReader.optDouble(
+        int droppedFrames =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES, -1);
 
-        double fps =
-                DataReader.optDouble(info, MediaInternalConstants.EventDataKeys.QoEInfo.FPS, -1);
+        int fps = DataReader.optInt(info, MediaInternalConstants.EventDataKeys.QoEInfo.FPS, -1);
 
-        double startupTime =
-                DataReader.optDouble(
+        int startupTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.QoEInfo.STARTUP_TIME, -1);
 
         return create(bitrate, droppedFrames, fps, startupTime);

@@ -210,10 +210,10 @@ class XDMPropertyTests {
 
         val xdm = qoeDataDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
-            "bitrate" to 128L,
-            "droppedFrames" to 10L,
-            "framesPerSecond" to 59L,
-            "timeToStart" to 5L
+            "bitrate" to 128,
+            "droppedFrames" to 10,
+            "framesPerSecond" to 59,
+            "timeToStart" to 5
         )
 
         assertEquals(expected, xdm)
@@ -800,10 +800,10 @@ class XDMPropertyTests {
         qoeDataDetails.timeToStart = 5
 
         val expected = mapOf<String, Any>(
-            "bitrate" to 128L,
-            "droppedFrames" to 10L,
-            "framesPerSecond" to 59L,
-            "timeToStart" to 5L
+            "bitrate" to 128,
+            "droppedFrames" to 10,
+            "framesPerSecond" to 59,
+            "timeToStart" to 5
         )
 
         return qoeDataDetails to expected

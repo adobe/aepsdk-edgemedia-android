@@ -217,10 +217,10 @@ internal class MediaXDMEventHelper {
             }
 
             return XDMQoeDataDetails(
-                qoeInfo.bitrate.toLong(),
-                qoeInfo.droppedFrames.toLong(),
-                qoeInfo.fps.toLong(),
-                qoeInfo.startupTime.toLong()
+                qoeInfo.bitrate,
+                qoeInfo.droppedFrames,
+                qoeInfo.fps,
+                qoeInfo.startupTime
             )
         }
 

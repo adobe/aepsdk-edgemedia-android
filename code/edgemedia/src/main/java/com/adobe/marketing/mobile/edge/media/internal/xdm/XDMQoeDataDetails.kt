@@ -12,10 +12,10 @@
 package com.adobe.marketing.mobile.edge.media.internal.xdm
 
 internal data class XDMQoeDataDetails(
-    var bitrate: Long? = null,
-    var droppedFrames: Long? = null,
-    var framesPerSecond: Long? = null,
-    var timeToStart: Long? = null
+    var bitrate: Int? = null,
+    var droppedFrames: Int? = null,
+    var framesPerSecond: Int? = null,
+    var timeToStart: Int? = null
 ) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {

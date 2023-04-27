@@ -187,10 +187,10 @@ public class MediaTests {
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
-                expectedObject.put("qoe.bitrate", 1.0);
-                expectedObject.put("qoe.startuptime", 2.0);
-                expectedObject.put("qoe.fps", 3.0);
-                expectedObject.put("qoe.droppedframes", 4.0);
+                expectedObject.put("qoe.bitrate", 1);
+                expectedObject.put("qoe.startuptime", 2);
+                expectedObject.put("qoe.fps", 3);
+                expectedObject.put("qoe.droppedframes", 4);
             }
         }
         ;

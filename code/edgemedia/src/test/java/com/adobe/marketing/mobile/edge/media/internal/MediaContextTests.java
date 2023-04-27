@@ -123,7 +123,7 @@ public class MediaContextTests {
 
         assertNull(mediaContext.getQoEInfo());
 
-        QoEInfo qoeInfo = QoEInfo.create(1.1, 2.2, 3.3, 4.4);
+        QoEInfo qoeInfo = QoEInfo.create(1, 2, 3, 4);
         mediaContext.setQoEInfo(qoeInfo);
         assertNotNull(mediaContext.getQoEInfo());
         assertEquals(qoeInfo, mediaContext.getQoEInfo());
