@@ -55,7 +55,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInAdBreak());
 
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 1, 20.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 1, 20);
 
         mediaContext.setAdBreakInfo(adBreakInfo);
 
@@ -76,7 +76,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInAd());
 
-        AdInfo adInfo = AdInfo.create("id", "name", 1, 15.0);
+        AdInfo adInfo = AdInfo.create("id", "name", 1, 15);
 
         mediaContext.setAdInfo(adInfo, metadata);
 

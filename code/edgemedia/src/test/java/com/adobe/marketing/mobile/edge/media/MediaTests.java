@@ -124,40 +124,40 @@ public class MediaTests {
 
     @Test
     public void test_adbreakObject() {
-        Map<String, Object> actualObject = Media.createAdBreakObject("name", 1, 60.0);
+        Map<String, Object> actualObject = Media.createAdBreakObject("name", 1, 60);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("adbreak.name", "name");
-                expectedObject.put("adbreak.position", 1L);
-                expectedObject.put("adbreak.starttime", 60.0);
+                expectedObject.put("adbreak.position", 1);
+                expectedObject.put("adbreak.starttime", 60);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createAdBreakObject(null, 1, 60.0);
+        Map<String, Object> invalidObject = Media.createAdBreakObject(null, 1, 60);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 
     @Test
     public void test_adObject() {
-        Map<String, Object> actualObject = Media.createAdObject("name", "id", 1, 60.0);
+        Map<String, Object> actualObject = Media.createAdObject("name", "id", 1, 60);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("ad.name", "name");
                 expectedObject.put("ad.id", "id");
-                expectedObject.put("ad.position", 1L);
-                expectedObject.put("ad.length", 60.0);
+                expectedObject.put("ad.position", 1);
+                expectedObject.put("ad.length", 60);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createAdObject(null, "id", 1, 60.0);
+        Map<String, Object> invalidObject = Media.createAdObject(null, "id", 1, 60);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 

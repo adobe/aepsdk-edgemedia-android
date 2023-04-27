@@ -130,8 +130,8 @@ public class MediaAnalyticsProvider implements Observer {
                 // Ad Break Info
                 Map<String, Object> adBreakData = _player.getAdBreakInfo();
                 String name = (String) adBreakData.get("name");
-                Long position = (Long) adBreakData.get("position");
-                Double startTime = (Double) adBreakData.get("startTime");
+                Integer position = (Integer) adBreakData.get("position");
+                Integer startTime = (Integer) adBreakData.get("startTime");
 
                 HashMap<String, Object> adBreakInfo =
                         Media.createAdBreakObject(name, position, startTime);
@@ -140,8 +140,8 @@ public class MediaAnalyticsProvider implements Observer {
                 Map<String, Object> adData = _player.getAdInfo();
                 String adName = (String) adData.get("name");
                 String adId = (String) adData.get("id");
-                Long adPosition = (Long) adData.get("position");
-                Double adLength = (Double) adData.get("length");
+                Integer adPosition = (Integer) adData.get("position");
+                Integer adLength = (Integer) adData.get("length");
 
                 HashMap<String, Object> adInfo =
                         Media.createAdObject(adName, adId, adPosition, adLength);

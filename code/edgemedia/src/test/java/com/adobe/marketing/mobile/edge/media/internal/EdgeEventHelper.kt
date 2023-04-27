@@ -195,8 +195,8 @@ internal class EdgeEventHelper {
             val details: MutableMap<String, Any> = mutableMapOf(
                 "name" to (info?.get("ad.id") ?: ""),
                 "friendlyName" to (info?.get("ad.name") ?: ""),
-                "podPosition" to ((info?.get("ad.position") as? Long) ?: -1).toLong(),
-                "length" to ((info?.get("ad.length") as? Double) ?: -1).toLong()
+                "podPosition" to ((info?.get("ad.position") as? Int) ?: -1),
+                "length" to ((info?.get("ad.length") as? Int) ?: -1)
             )
 
             metadata?.forEach { (key, value) ->
@@ -220,8 +220,8 @@ internal class EdgeEventHelper {
         private fun getAdvertisingPodDetails(info: Map<String, Any>?): Map<String, Any> {
             return mapOf(
                 "friendlyName" to (info?.get("adbreak.name") ?: ""),
-                "index" to ((info?.get("adbreak.position") as? Long) ?: -1).toLong(),
-                "offset" to ((info?.get("adbreak.starttime") as? Double) ?: -1).toLong()
+                "index" to ((info?.get("adbreak.position") as? Int) ?: -1),
+                "offset" to ((info?.get("adbreak.starttime") as? Int) ?: -1)
             )
         }
 

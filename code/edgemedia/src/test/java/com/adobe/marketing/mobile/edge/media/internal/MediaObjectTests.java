@@ -486,7 +486,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_create_pass_isValidAdBreakInfoObject() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo expectedAdBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo expectedAdBreakInfo = AdBreakInfo.create("name", 2, 60);
 
         assertEquals(expectedAdBreakInfo, adBreakInfo);
     }
@@ -510,7 +510,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals_differentName_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("diff-name", 2, 60.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("diff-name", 2, 60);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -518,7 +518,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals__differentPosition_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 0, 60.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 0, 60);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -526,7 +526,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals_differentStartTime_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 2, 6000.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 2, 6000);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -544,16 +544,13 @@ public class MediaObjectTests {
 
     @Test
     public void AdBreakInfo_toObjectMap() {
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60);
         Map<String, Object> adBreakInfoMap = adBreakInfo.toObjectMap();
 
         assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.NAME), "name");
-        assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.POSITION), 2L);
+        assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.POSITION), 2);
         assertEquals(
-                (double)
-                        adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME),
-                60.0,
-                0);
+                adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME), 60);
     }
 
     @Test
@@ -569,10 +566,10 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " startTime: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60);
         String actual = adBreakInfo.toString();
 
         assertEquals(expected, actual);
@@ -591,7 +588,7 @@ public class MediaObjectTests {
         assertEquals("id", adInfo.getId());
         assertEquals("name", adInfo.getName());
         assertEquals(2, adInfo.getPosition());
-        assertEquals(60.0, adInfo.getLength(), 0);
+        assertEquals(60, adInfo.getLength(), 0);
     }
 
     @Test
@@ -656,7 +653,7 @@ public class MediaObjectTests {
     public void AdInfo_create_pass_isValidAdInfoObject() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
 
-        AdInfo expectedAdInfo = AdInfo.create("id", "name", 2, 60.0);
+        AdInfo expectedAdInfo = AdInfo.create("id", "name", 2, 60);
 
         assertEquals(expectedAdInfo, adInfo);
     }
@@ -678,28 +675,28 @@ public class MediaObjectTests {
     @Test
     public void AdInfo_equals_differentId_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("diff-id", "name", 2, 60.0);
+        AdInfo adInfo2 = AdInfo.create("diff-id", "name", 2, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentName_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "diff-name", 2, 60.0);
+        AdInfo adInfo2 = AdInfo.create("id", "diff-name", 2, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentPosition_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "name", 12, 60.0);
+        AdInfo adInfo2 = AdInfo.create("id", "name", 12, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentLength_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "name", 2, 121.121);
+        AdInfo adInfo2 = AdInfo.create("id", "name", 2, 121);
         assertNotEquals(adInfo, adInfo2);
     }
 
@@ -718,9 +715,8 @@ public class MediaObjectTests {
         Map<String, Object> adInfoMap = adInfo.toObjectMap();
         assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.NAME), "name");
         assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.ID), "id");
-        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.POSITION), 2L);
-        assertEquals(
-                (double) adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.LENGTH), 60.0, 0);
+        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.POSITION), 2);
+        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.LENGTH), 60);
     }
 
     @Test
@@ -740,10 +736,10 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " length: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        AdInfo adInfo = AdInfo.create("id", "name", 2, 60.0);
+        AdInfo adInfo = AdInfo.create("id", "name", 2, 60);
         String actual = adInfo.toString();
 
         assertEquals(expected, actual);

@@ -201,7 +201,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessAdBreakStart() {
         // setup
-        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2.0)
+        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2)
         mediaContext.adBreakInfo = adBreakInfo
         val adBreakDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(adBreakInfo)
 
@@ -260,7 +260,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessAdStart() {
         // setup
-        val adInfo = AdInfo.create("id", "ad", 1, 15.0)
+        val adInfo = AdInfo.create("id", "ad", 1, 15)
         val metadata = mapOf(MediaConstants.AdMetadataKeys.SITE_ID to "testSiteID", "k1" to "v1")
         mediaContext.setAdInfo(adInfo, metadata)
 
@@ -466,11 +466,11 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessSessionRestart_withinAdBreakAndAdRestartsAdBreakAndAd() {
         // setup
-        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2.0)
+        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2)
         mediaContext.adBreakInfo = adBreakInfo
         val adBreakDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(adBreakInfo)
 
-        val adInfo = AdInfo.create("id", "ad", 1, 15.0)
+        val adInfo = AdInfo.create("id", "ad", 1, 15)
         val metadata = mapOf(MediaConstants.AdMetadataKeys.SITE_ID to "testSiteID", "k1" to "v1")
         mediaContext.setAdInfo(adInfo, metadata)
 
@@ -841,7 +841,7 @@ class MediaXDMEventGeneratorTests {
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(internalMS, reset = true)
             // mock adStart
-            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
@@ -868,7 +868,7 @@ class MediaXDMEventGeneratorTests {
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS, reset = true)
             // mock adStart
-            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
@@ -908,7 +908,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
@@ -944,7 +944,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
@@ -992,7 +992,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS)
 
         mediaCollection.playhead = getPlayhead()

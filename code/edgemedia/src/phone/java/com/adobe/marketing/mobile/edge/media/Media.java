@@ -86,7 +86,7 @@ public class Media {
      * @return A MediaObject instance representing the AdBreak.
      */
     @NonNull public static HashMap<String, Object> createAdBreakObject(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         return MediaObject.createAdBreakInfo(name, position, startTime);
     }
 
@@ -102,8 +102,8 @@ public class Media {
     @NonNull public static HashMap<String, Object> createAdObject(
             @NonNull final String name,
             @NonNull final String adId,
-            final long position,
-            final double length) {
+            final int position,
+            final int length) {
         return MediaObject.createAdInfo(name, adId, position, length);
     }
 

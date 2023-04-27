@@ -127,7 +127,7 @@ internal class MediaXDMEventHelper {
                 return null
             }
 
-            return XDMAdvertisingPodDetails(adBreakInfo.name, adBreakInfo.position, adBreakInfo.startTime.toLong())
+            return XDMAdvertisingPodDetails(adBreakInfo.name, adBreakInfo.position, adBreakInfo.startTime)
         }
 
         @JvmStatic
@@ -140,7 +140,7 @@ internal class MediaXDMEventHelper {
             val advertisingDetails = XDMAdvertisingDetails()
             advertisingDetails.name = adInfo.id
             advertisingDetails.friendlyName = adInfo.name
-            advertisingDetails.length = adInfo.length.toLong()
+            advertisingDetails.length = adInfo.length
             advertisingDetails.podPosition = adInfo.position
 
             // Append standard metadata to advertisingDetails

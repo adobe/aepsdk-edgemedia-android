@@ -109,11 +109,11 @@ public class MediaEventTrackerTests {
         cleanedMetadata.put("vAlid_keY.12", "valid_value.@$%!2");
         cleanedMetadata.put("valid_key", "");
 
-        adBreakInfo1 = AdBreakInfo.create("adbreak1", 1, 10.0);
-        adBreakInfo2 = AdBreakInfo.create("adbreak2", 2, 20.0);
+        adBreakInfo1 = AdBreakInfo.create("adbreak1", 1, 10);
+        adBreakInfo2 = AdBreakInfo.create("adbreak2", 2, 20);
 
-        adInfo1 = AdInfo.create("ad1", "adname1", 1, 15.0);
-        adInfo2 = AdInfo.create("ad2", "adname2", 2, 15.0);
+        adInfo1 = AdInfo.create("ad1", "adname1", 1, 15);
+        adInfo2 = AdInfo.create("ad2", "adname2", 2, 15);
 
         chapterInfo1 = ChapterInfo.create("chapter1", 1, 10.0, 30.0);
         chapterInfo2 = ChapterInfo.create("chapter2", 2, 10.0, 30.0);

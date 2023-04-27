@@ -52,17 +52,17 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "key2" to "мểŧẳđαţả"
     )
 
-    private val adBreakInfo = AdBreakInfo.create("adBreakName", 1, 1.1)
-    private val adBreakInfo2 = AdBreakInfo.create("adBreakName2", 2, 2.2)
+    private val adBreakInfo = AdBreakInfo.create("adBreakName", 1, 1)
+    private val adBreakInfo2 = AdBreakInfo.create("adBreakName2", 2, 2)
 
-    private val adInfo = AdInfo.create("adID", "adName", 1, 15.0)
+    private val adInfo = AdInfo.create("adID", "adName", 1, 15)
     private val adMetadata = mapOf(
         "media.ad.advertiser" to "sampleAdvertiser",
         "key1" to "value1",
         "key2" to "мểŧẳđαţả"
     )
 
-    private val adInfo2 = AdInfo.create("adID2", "adName2", 2, 20.0)
+    private val adInfo2 = AdInfo.create("adID2", "adName2", 2, 20)
     private val adMetadata2 = mapOf(
         "media.ad.advertiser" to "sampleAdvertiser2",
         "key2" to "value2",

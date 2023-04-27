@@ -41,8 +41,8 @@ class XDMPropertyTests {
         val expected = mapOf<String, Any>(
             "name" to "id",
             "friendlyName" to "name",
-            "length" to 10L,
-            "podPosition" to 1L,
+            "length" to 10,
+            "podPosition" to 1,
             "playerName" to "testPlayer",
             "advertiser" to "testAdvertiser",
             "campaignID" to "testCampaignId",
@@ -76,8 +76,8 @@ class XDMPropertyTests {
         val xdm = advertisingPodDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
             "friendlyName" to "name",
-            "index" to 1L,
-            "offset" to 2L
+            "index" to 1,
+            "offset" to 2
         )
 
         assertEquals(expected, xdm)
@@ -710,8 +710,8 @@ class XDMPropertyTests {
         val expected = mapOf<String, Any>(
             "name" to "id",
             "friendlyName" to "name",
-            "length" to 10L,
-            "podPosition" to 1L,
+            "length" to 10,
+            "podPosition" to 1,
             "playerName" to "testPlayer",
             "advertiser" to "testAdvertiser",
             "campaignID" to "testCampaignId",
@@ -732,8 +732,8 @@ class XDMPropertyTests {
 
         val expected = mapOf<String, Any>(
             "friendlyName" to "name",
-            "index" to 1L,
-            "offset" to 2L
+            "index" to 1,
+            "offset" to 2
         )
 
         return advertisingPodDetails to expected

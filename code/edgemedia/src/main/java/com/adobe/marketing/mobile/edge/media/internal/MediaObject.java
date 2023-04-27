@@ -50,7 +50,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdBreakInfo(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         AdBreakInfo adBreakInfo = AdBreakInfo.create(name, position, startTime);
 
         if (adBreakInfo == null) {
@@ -65,7 +65,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdInfo(
-            @NonNull final String name, final String id, final long position, final double length) {
+            @NonNull final String name, final String id, final int position, final int length) {
         AdInfo adInfo = AdInfo.create(id, name, position, length);
 
         if (adInfo == null) {
@@ -445,10 +445,10 @@ class AdInfo {
     private static final String LOG_TAG = "AdInfo";
     private final String id;
     private final String name;
-    private final long position;
-    private final double length;
+    private final int position;
+    private final int length;
 
-    private AdInfo(final String id, final String name, final long position, final double length) {
+    private AdInfo(final String id, final String name, final int position, final int length) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -463,11 +463,11 @@ class AdInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -523,7 +523,7 @@ class AdInfo {
     }
 
     public static AdInfo create(
-            final String id, final String name, final long position, final double length) {
+            final String id, final String name, final int position, final int length) {
 
         if (id == null || id.length() == 0) {
             Log.debug(
@@ -571,11 +571,11 @@ class AdInfo {
         String name =
                 DataReader.optString(info, MediaInternalConstants.EventDataKeys.AdInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(info, MediaInternalConstants.EventDataKeys.AdInfo.POSITION, -1);
+        int position =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.AdInfo.POSITION, -1);
 
-        double length =
-                DataReader.optDouble(info, MediaInternalConstants.EventDataKeys.AdInfo.LENGTH, -1);
+        int length =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.AdInfo.LENGTH, -1);
 
         return create(id, name, position, length);
     }
@@ -584,10 +584,10 @@ class AdInfo {
 class AdBreakInfo {
     private static final String LOG_TAG = "AdBreakInfo";
     private final String name;
-    private final long position;
-    private final double startTime;
+    private final int position;
+    private final int startTime;
 
-    private AdBreakInfo(@NonNull final String name, final long position, final double startTime) {
+    private AdBreakInfo(@NonNull final String name, final int position, final int startTime) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
@@ -597,11 +597,11 @@ class AdBreakInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
@@ -651,7 +651,7 @@ class AdBreakInfo {
     }
 
     public static AdBreakInfo create(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -688,12 +688,12 @@ class AdBreakInfo {
                 DataReader.optString(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(
+        int position =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.POSITION, -1);
 
-        double startTime =
-                DataReader.optDouble(
+        int startTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.START_TIME, -1);
 
         return create(name, position, startTime);

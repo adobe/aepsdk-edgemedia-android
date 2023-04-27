@@ -13,8 +13,8 @@ package com.adobe.marketing.mobile.edge.media.internal.xdm
 
 internal data class XDMAdvertisingPodDetails(
     var friendlyName: String? = null,
-    var index: Long? = null,
-    var offset: Long? = null
+    var index: Int? = null,
+    var offset: Int? = null
 ) : XDMProperty {
 
     override fun serializeToXDM(): Map<String, Any> {
