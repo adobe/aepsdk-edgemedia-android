@@ -52,7 +52,7 @@ class MediaEdgeIntegrationTests {
         private const val SUCCESS_RESPONSE_STRING =
             "\u0000{\"handle\":[{\"payload\":[{\"sessionId\":\"99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d\"}],\"type\":\"media-analytics:new-session\",\"eventIndex\":0}]}"
         private const val ERROR_RESPONSE_STRING =
-            "\u0000{\"errors\" : [{\"type\" : \"https://ns.adobe.com/aep/errors/va-edge-0404-404\", \"status\" : 404,\"title\" : \"Not Found\", \"detail\" : \"The requested resource could not be found but may be available again in the future.\",\"report\" : {\"details\" : \"Error processing request. If the session is longer than 24h, please start a new one. Returning Not Found\"}}]}"
+            "\u0000{\"errors\" : [{\"type\" : \"https://ns.adobe.com/aep/errors/va-edge-0400-400\", \"status\" : 400, \"title\": \"Invalid request\", \"report\":{\"eventIndex\":0,\"details\":[{\"name\":\"\$.xdm.mediaCollection.sessionDetails.name\",\"reason\":\"Missing required field\"}]}}]}"
         private val mediaInfo =
             Media.createMediaObject("testName", "testId", 30.0, "VOD", Media.MediaType.Audio)
         private val adBreakInfo = Media.createAdBreakObject("testName", 1, 1.0)
