@@ -67,14 +67,11 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
     //noinspection GradleDependency
 
-    testImplementation 'org.json:json:20180813'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "com.adobe.marketing.mobile:edge:$mavenEdgeVersion"
     androidTestImplementation "com.adobe.marketing.mobile:edgeidentity:2.+"
-    androidTestImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.7"
     androidTestImplementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
-
 }
 
 tasks.withType(Test) {

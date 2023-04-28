@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Event;
+import com.adobe.marketing.mobile.EventSource;
+import com.adobe.marketing.mobile.EventType;
 import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.edge.media.MediaTracker;
 import com.adobe.marketing.mobile.services.Log;
@@ -84,8 +86,8 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         Event event =
                 new Event.Builder(
                                 "Edge Media CreateTrackerRequest",
-                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
-                                MediaInternalConstants.Media.EVENT_SOURCE_TRACKER_REQUEST)
+                                EventType.EDGE_MEDIA,
+                                EventSource.CREATE_TRACKER)
                         .setEventData(eventData)
                         .build();
 
@@ -209,8 +211,8 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         Event event =
                 new Event.Builder(
                                 "Edge Media TrackMedia",
-                                MediaInternalConstants.Media.EVENT_TYPE_EDGE_MEDIA,
-                                MediaInternalConstants.Media.EVENT_SOURCE_TRACK_MEDIA)
+                                EventType.EDGE_MEDIA,
+                                EventSource.TRACK_MEDIA)
                         .setEventData(eventData)
                         .build();
 
