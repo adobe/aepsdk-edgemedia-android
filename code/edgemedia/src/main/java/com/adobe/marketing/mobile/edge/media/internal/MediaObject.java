@@ -132,7 +132,7 @@ class MediaInfo {
     private static final String LOG_TAG = "MediaInfo";
     private static final String MEDIATYPEVIDEO = "video";
     private static final String MEDIATYPEAUDIO = "audio";
-    private static final long DEFAULTPREROLLWAITTIME = 250;
+    private static final int DEFAULTPREROLLWAITTIME = 250;
     private static final boolean DEFAULT_GRANULAR_AD_TRACKING_ENABLED =
             false; // Default value, if ad tracking ping should be send every 1 sec.
 
@@ -142,7 +142,7 @@ class MediaInfo {
     private final MediaType mediaType;
     private final int length;
     private final boolean resumed;
-    private final long prerollWaitTime;
+    private final int prerollWaitTime;
     private final boolean isGranularAdTrackingEnabled;
 
     private MediaInfo(
@@ -152,7 +152,7 @@ class MediaInfo {
             final MediaType mediaType,
             final int length,
             final boolean resumed,
-            final long prerollWaitTime,
+            final int prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {
         this.id = id;
         this.name = name;
@@ -192,7 +192,7 @@ class MediaInfo {
         return resumed;
     }
 
-    public long getPrerollWaitTime() {
+    public int getPrerollWaitTime() {
         return prerollWaitTime;
     }
 
@@ -323,8 +323,8 @@ class MediaInfo {
                 DataReader.optBoolean(
                         info, MediaInternalConstants.EventDataKeys.MediaInfo.RESUMED, false);
 
-        long prerollWaitTimeVal =
-                DataReader.optLong(
+        int prerollWaitTimeVal =
+                DataReader.optInt(
                         info,
                         MediaInternalConstants.EventDataKeys.MediaInfo
                                 .PREROLL_TRACKING_WAITING_TIME,
@@ -389,7 +389,7 @@ class MediaInfo {
             final MediaType mediaType,
             final int length,
             final boolean resumed,
-            final long prerollWaitTime,
+            final int prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {
         if (id == null || id.length() == 0) {
             Log.debug(
