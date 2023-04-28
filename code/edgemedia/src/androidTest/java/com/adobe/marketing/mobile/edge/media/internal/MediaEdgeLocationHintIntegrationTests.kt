@@ -35,7 +35,7 @@ class MediaEdgeLocationHintIntegrationTests {
         private const val SUCCESS_RESPONSE_STRING =
             "\u0000{\"handle\":[{\"payload\":[{\"sessionId\":\"99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d\"}],\"type\":\"media-analytics:new-session\",\"eventIndex\":0}]}"
         private val mediaInfo =
-            Media.createMediaObject("testName", "testId", 30.0, "VOD", Media.MediaType.Audio)
+            Media.createMediaObject("testName", "testId", 30, "VOD", Media.MediaType.Audio)
         private val metadata = mutableMapOf("testKey" to "testValue")
     }
 
@@ -99,7 +99,7 @@ class MediaEdgeLocationHintIntegrationTests {
         val tracker = Media.createTracker()
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(7.0)
+        tracker.updateCurrentPlayhead(7)
         tracker.trackPause()
         tracker.trackComplete()
 
@@ -133,7 +133,7 @@ class MediaEdgeLocationHintIntegrationTests {
         val tracker = Media.createTracker()
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(7.0)
+        tracker.updateCurrentPlayhead(7)
         tracker.trackPause()
         tracker.trackComplete()
 
