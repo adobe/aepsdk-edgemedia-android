@@ -381,7 +381,7 @@ public class MediaObjectTests {
         assertEquals(
                 mediaInfoMap.get(
                         MediaTestConstants.EventDataKeys.MediaInfo.PREROLL_TRACKING_WAITING_TIME),
-                250L);
+                250);
     }
 
     @Test

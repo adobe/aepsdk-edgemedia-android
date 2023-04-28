@@ -110,7 +110,7 @@ public class MediaTests {
                 expectedObject.put("media.streamtype", "vod");
                 expectedObject.put("media.type", "video");
                 expectedObject.put("media.resumed", false);
-                expectedObject.put("media.prerollwaitingtime", 250L);
+                expectedObject.put("media.prerollwaitingtime", 250);
             }
         }
         ;
