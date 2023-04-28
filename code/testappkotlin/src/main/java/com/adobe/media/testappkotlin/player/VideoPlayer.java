@@ -32,16 +32,16 @@ public class VideoPlayer extends Observable {
     private static final String LOG_TAG = "VideoPlayer";
 
     // This sample VideoPlayer simulates a mid-roll ad at time 15:
-    private static final Double AD_START_POS = 15D;
-    private static final Double AD_END_POS = 30D;
-    private static final Double AD_LENGTH = 15D;
+    private static final Integer AD_START_POS = 15;
+    private static final Integer AD_END_POS = 30;
+    private static final Integer AD_LENGTH = 15;
 
-    private static final Double CHAPTER1_START_POS = 0D;
-    private static final Double CHAPTER1_END_POS = 15D;
-    private static final Double CHAPTER1_LENGTH = 15D;
+    private static final Integer CHAPTER1_START_POS = 0;
+    private static final Integer CHAPTER1_END_POS = 15;
+    private static final Integer CHAPTER1_LENGTH = 15;
 
-    private static final Double CHAPTER2_START_POS = 30D;
-    private static final Double CHAPTER2_LENGTH = 30D;
+    private static final Integer CHAPTER2_START_POS = 30;
+    private static final Integer CHAPTER2_LENGTH = 30;
 
     private static final Long MONITOR_TIMER_INTERVAL = 500L;
 
@@ -92,10 +92,10 @@ public class VideoPlayer extends Observable {
 
         // Build a static/hard-coded QoS info here.
         _qosInfo = new HashMap<String, Object>();
-        _qosInfo.put("bitrate", 50000L);
-        _qosInfo.put("fps", 24D);
-        _qosInfo.put("droppedFrames", 10L);
-        _qosInfo.put("startupTime", 2D);
+        _qosInfo.put("bitrate", 50000);
+        _qosInfo.put("fps", 24);
+        _qosInfo.put("droppedFrames", 10);
+        _qosInfo.put("startupTime", 2);
 
         _clock = null;
     }
@@ -107,9 +107,9 @@ public class VideoPlayer extends Observable {
         }
     }
 
-    public Double getCurrentPlaybackTime() {
-        Double playhead;
-        Double vTime = getPlayhead();
+    public Integer getCurrentPlaybackTime() {
+        Integer playhead;
+        Integer vTime = getPlayhead();
 
         if (vTime > AD_START_POS + AD_LENGTH) {
             playhead = vTime - AD_LENGTH;
@@ -175,12 +175,12 @@ public class VideoPlayer extends Observable {
         notifyObservers(PlayerEvent.SEEK_START);
     }
 
-    private Double getDuration() {
-        return (_videoView.getDuration() / 1000 - AD_LENGTH);
+    private Integer getDuration() {
+        return _videoView.getDuration() / 1000 - AD_LENGTH;
     }
 
-    private Double getPlayhead() {
-        return (double) (_videoView.getCurrentPosition() / 1000);
+    private Integer getPlayhead() {
+        return _videoView.getCurrentPosition() / 1000;
     }
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -319,7 +319,7 @@ public class VideoPlayer extends Observable {
         _chapterInfo = new HashMap<String, Object>();
         _chapterInfo.put("length", CHAPTER1_LENGTH);
         _chapterInfo.put("startTime", CHAPTER1_START_POS);
-        _chapterInfo.put("position", 1L);
+        _chapterInfo.put("position", 1);
         _chapterInfo.put("name", "First chapter");
 
         setChanged();
@@ -331,7 +331,7 @@ public class VideoPlayer extends Observable {
         _chapterInfo = new HashMap<String, Object>();
         _chapterInfo.put("length", CHAPTER2_LENGTH);
         _chapterInfo.put("startTime", CHAPTER2_START_POS);
-        _chapterInfo.put("position", 2L);
+        _chapterInfo.put("position", 2);
         _chapterInfo.put("name", "Second chapter");
 
         setChanged();
@@ -350,7 +350,7 @@ public class VideoPlayer extends Observable {
         // Prepare the ad break info.
         _adBreakInfo = new HashMap<String, Object>();
         _adBreakInfo.put("name", "First Ad-Break");
-        _adBreakInfo.put("position", 1L);
+        _adBreakInfo.put("position", 1);
         _adBreakInfo.put("startTime", AD_START_POS);
 
         // Prepare the ad info.
@@ -358,7 +358,7 @@ public class VideoPlayer extends Observable {
         _adInfo.put("id", "001");
         _adInfo.put("name", "Sample ad");
         _adInfo.put("length", AD_LENGTH);
-        _adInfo.put("position", 1L);
+        _adInfo.put("position", 1);
 
         // Start the ad.
         setChanged();
@@ -376,12 +376,12 @@ public class VideoPlayer extends Observable {
     }
 
     private void _doPostSeekComputations() {
-        Double vTime = getPlayhead();
+        Integer vTime = getPlayhead();
 
         // Seek inside the first chapter.
         if (vTime < CHAPTER1_END_POS) {
             // If we were not inside the first chapter before, trigger a chapter start
-            if (_chapterInfo == null || (Long) _chapterInfo.get("position") != 1) {
+            if (_chapterInfo == null || (Integer) _chapterInfo.get("position") != 1) {
                 _startChapter1();
 
                 // If we were in the ad, clear the ad and ad-break info, but don't send the
@@ -407,7 +407,7 @@ public class VideoPlayer extends Observable {
         // Seek inside the second chapter.
         else {
             // If we were not inside the 2nd chapter before, trigger a chapter start
-            if (_chapterInfo == null || (Long) _chapterInfo.get("position") != 2) {
+            if (_chapterInfo == null || (Integer) _chapterInfo.get("position") != 2) {
                 _startChapter2();
 
                 // If we were in the ad, clear the ad and ad-break info, but don't send the
@@ -439,7 +439,7 @@ public class VideoPlayer extends Observable {
             return;
         }
 
-        Double vTime = getPlayhead();
+        Integer vTime = getPlayhead();
 
         // If we're inside the ad content:
         if (vTime >= AD_START_POS && vTime < AD_END_POS) {
@@ -462,7 +462,7 @@ public class VideoPlayer extends Observable {
             }
 
             if (vTime < CHAPTER1_END_POS) {
-                if (_chapterInfo != null && (Long) _chapterInfo.get("position") != 1) {
+                if (_chapterInfo != null && (Integer) _chapterInfo.get("position") != 1) {
                     // If we were inside another chapter, complete it.
                     _completeChapter();
                 }
@@ -472,7 +472,7 @@ public class VideoPlayer extends Observable {
                     _startChapter1();
                 }
             } else {
-                if (_chapterInfo != null && (Long) _chapterInfo.get("position") != 2) {
+                if (_chapterInfo != null && (Integer) _chapterInfo.get("position") != 2) {
                     // If we were inside another chapter, complete it.
                     _completeChapter();
                 }
