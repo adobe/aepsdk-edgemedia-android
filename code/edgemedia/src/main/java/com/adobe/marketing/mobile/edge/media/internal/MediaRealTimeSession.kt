@@ -139,7 +139,7 @@ internal class MediaRealTimeSession(
      */
     private fun processMediaEvents() {
         if (!state.isValid) {
-            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the required configuration is missing. Verify 'media.channel' and 'media.playerName' are configured.")
+            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the required configuration is missing. Verify 'edgemedia.channel' and 'edgemedia.playerName' are configured.")
             return
         }
 
