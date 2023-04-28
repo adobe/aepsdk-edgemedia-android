@@ -1,5 +1,5 @@
 /*
-  Copyright 2023 Adobe. All rights reserved.
+  Copyright 2022 Adobe. All rights reserved.
   This file is licensed to you under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License. You may obtain a copy
   of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -9,14 +9,13 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.marketing.mobile.services;
+package com.adobe.marketing.mobile;
 
-public class ServiceProviderExtension {
-    public static void setDeviceInfoService(DeviceInforming deviceInfoService) {
-        ServiceProvider.getInstance().setDeviceInfoService(deviceInfoService);
-    }
+/** Helper class for testing to access methods provided in Core */
+public class MobileCoreHelper {
 
-    public static void setAppContextService(AppContextService appContextService) {
-        ServiceProvider.getInstance().setAppContextService(appContextService);
+    /** Wrapper around {@link MobileCore#resetSDK()} */
+    public static void resetSDK() {
+        MobileCore.resetSDK();
     }
 }

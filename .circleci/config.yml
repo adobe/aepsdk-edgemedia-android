@@ -43,6 +43,9 @@ jobs:
           name: Run unit tests
           command: make unit-test-coverage
 
+      - store_artifacts:
+          path: code/edgemedia/build/reports/tests
+
       - store_test_results:
           path: code/edgemedia/build/test-results/testPhoneDebugUnitTest
 
@@ -64,6 +67,12 @@ jobs:
             system-image: system-images;android-29;default;x86
             post-emulator-launch-assemble-command: make assemble-phone
             test-command: make functional-test-coverage
+
+        - store_artifacts:
+            path: code/edgemedia/build/reports/androidTests
+
+        - store_test_results:
+            path: code/edgemedia/build/outputs/androidTest-results
 
         - run:
             name: Download Codecov Uploader
