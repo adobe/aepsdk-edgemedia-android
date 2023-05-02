@@ -100,17 +100,17 @@ public class MediaTests {
     @Test
     public void test_mediaObject() {
         Map<String, Object> actualObject =
-                Media.createMediaObject("name", "id", 60.0, "vod", Media.MediaType.Video);
+                Media.createMediaObject("name", "id", 60, "vod", Media.MediaType.Video);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("media.name", "name");
                 expectedObject.put("media.id", "id");
-                expectedObject.put("media.length", 60.0);
+                expectedObject.put("media.length", 60);
                 expectedObject.put("media.streamtype", "vod");
                 expectedObject.put("media.type", "video");
                 expectedObject.put("media.resumed", false);
-                expectedObject.put("media.prerollwaitingtime", 250L);
+                expectedObject.put("media.prerollwaitingtime", 250);
             }
         }
         ;
@@ -118,66 +118,66 @@ public class MediaTests {
 
         // invalid params
         Map<String, Object> invalidObject =
-                Media.createMediaObject(null, "id", 60.0, "vod", Media.MediaType.Audio);
+                Media.createMediaObject(null, "id", 60, "vod", Media.MediaType.Audio);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 
     @Test
     public void test_adbreakObject() {
-        Map<String, Object> actualObject = Media.createAdBreakObject("name", 1, 60.0);
+        Map<String, Object> actualObject = Media.createAdBreakObject("name", 1, 60);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("adbreak.name", "name");
-                expectedObject.put("adbreak.position", 1L);
-                expectedObject.put("adbreak.starttime", 60.0);
+                expectedObject.put("adbreak.position", 1);
+                expectedObject.put("adbreak.starttime", 60);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createAdBreakObject(null, 1, 60.0);
+        Map<String, Object> invalidObject = Media.createAdBreakObject(null, 1, 60);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 
     @Test
     public void test_adObject() {
-        Map<String, Object> actualObject = Media.createAdObject("name", "id", 1, 60.0);
+        Map<String, Object> actualObject = Media.createAdObject("name", "id", 1, 60);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("ad.name", "name");
                 expectedObject.put("ad.id", "id");
-                expectedObject.put("ad.position", 1L);
-                expectedObject.put("ad.length", 60.0);
+                expectedObject.put("ad.position", 1);
+                expectedObject.put("ad.length", 60);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createAdObject(null, "id", 1, 60.0);
+        Map<String, Object> invalidObject = Media.createAdObject(null, "id", 1, 60);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 
     @Test
     public void test_chapterObject() {
-        Map<String, Object> actualObject = Media.createChapterObject("name", 1, 60.0, 30.0);
+        Map<String, Object> actualObject = Media.createChapterObject("name", 1, 60, 30);
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
                 expectedObject.put("chapter.name", "name");
-                expectedObject.put("chapter.position", 1L);
-                expectedObject.put("chapter.length", 60.0);
-                expectedObject.put("chapter.starttime", 30.0);
+                expectedObject.put("chapter.position", 1);
+                expectedObject.put("chapter.length", 60);
+                expectedObject.put("chapter.starttime", 30);
             }
         }
         ;
         assertEquals(expectedObject, actualObject);
 
         // invalid params
-        Map<String, Object> invalidObject = Media.createChapterObject(null, 1, 60.0, 30.0);
+        Map<String, Object> invalidObject = Media.createChapterObject(null, 1, 60, 30);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
 
@@ -187,10 +187,10 @@ public class MediaTests {
         Map<String, Object> expectedObject = new HashMap<>();
         {
             {
-                expectedObject.put("qoe.bitrate", 1.0);
-                expectedObject.put("qoe.startuptime", 2.0);
-                expectedObject.put("qoe.fps", 3.0);
-                expectedObject.put("qoe.droppedframes", 4.0);
+                expectedObject.put("qoe.bitrate", 1);
+                expectedObject.put("qoe.startuptime", 2);
+                expectedObject.put("qoe.fps", 3);
+                expectedObject.put("qoe.droppedframes", 4);
             }
         }
         ;

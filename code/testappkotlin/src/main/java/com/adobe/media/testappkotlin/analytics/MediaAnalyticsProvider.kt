@@ -58,7 +58,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 val mediaInfo = Media.createMediaObject(
                     Configuration.VIDEO_NAME,
                     Configuration.VIDEO_ID,
-                    Configuration.VIDEO_LENGTH.toDouble(),
+                    Configuration.VIDEO_LENGTH,
                     MediaConstants.StreamType.VOD,
                     Media.MediaType.Video
                 )
@@ -107,8 +107,8 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 // Ad Break Info
                 val adBreakData = player!!.adBreakInfo
                 val name = adBreakData["name"] as String?
-                val position = adBreakData["position"] as Long?
-                val startTime = adBreakData["startTime"] as Double?
+                val position = adBreakData["position"] as Int?
+                val startTime = adBreakData["startTime"] as Int?
                 val adBreakInfo = Media.createAdBreakObject(
                     name!!,
                     position!!,
@@ -119,8 +119,8 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 val adData = player!!.adInfo
                 val adName = adData["name"] as String?
                 val adId = adData["id"] as String?
-                val adPosition = adData["position"] as Long?
-                val adLength = adData["length"] as Double?
+                val adPosition = adData["position"] as Int?
+                val adLength = adData["length"] as Int?
                 val adInfo = Media.createAdObject(
                     adName!!,
                     adId!!,
@@ -143,9 +143,9 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 // Chapter Info
                 val chapterData = player!!.chapterInfo
                 val chapterName = chapterData["name"] as String?
-                val chapterPosition = chapterData["position"] as Long?
-                val chapterLength = chapterData["length"] as Double?
-                val chapterStartTime = chapterData["startTime"] as Double?
+                val chapterPosition = chapterData["position"] as Int?
+                val chapterLength = chapterData["length"] as Int?
+                val chapterStartTime = chapterData["startTime"] as Int?
                 val chapterDataInfo = Media.createChapterObject(
                     chapterName!!,
                     chapterPosition!!,

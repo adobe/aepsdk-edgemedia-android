@@ -47,7 +47,7 @@ public class MediaObjectTests {
         validMediaInfo = new HashMap<>();
         validMediaInfo.put(MediaTestConstants.EventDataKeys.MediaInfo.NAME, "name");
         validMediaInfo.put(MediaTestConstants.EventDataKeys.MediaInfo.ID, "id");
-        validMediaInfo.put(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH, 60.0);
+        validMediaInfo.put(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH, 60);
         validMediaInfo.put(MediaTestConstants.EventDataKeys.MediaInfo.STREAM_TYPE, "vod");
         validMediaInfo.put(
                 MediaTestConstants.EventDataKeys.MediaInfo.MEDIA_TYPE,
@@ -58,25 +58,25 @@ public class MediaObjectTests {
         validAdBreakInfo = new HashMap<>();
         validAdBreakInfo.put(MediaTestConstants.EventDataKeys.AdBreakInfo.NAME, "name");
         validAdBreakInfo.put(MediaTestConstants.EventDataKeys.AdBreakInfo.POSITION, 2);
-        validAdBreakInfo.put(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME, 60.0);
+        validAdBreakInfo.put(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME, 60);
 
         validAdInfo = new HashMap<>();
         validAdInfo.put(MediaTestConstants.EventDataKeys.AdInfo.NAME, "name");
         validAdInfo.put(MediaTestConstants.EventDataKeys.AdInfo.ID, "id");
         validAdInfo.put(MediaTestConstants.EventDataKeys.AdInfo.POSITION, 2);
-        validAdInfo.put(MediaTestConstants.EventDataKeys.AdInfo.LENGTH, 60.0);
+        validAdInfo.put(MediaTestConstants.EventDataKeys.AdInfo.LENGTH, 60);
 
         validChapterInfo = new HashMap<>();
         validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.NAME, "name");
         validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.POSITION, 2);
-        validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH, 60.0);
-        validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME, 30.0);
+        validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH, 60);
+        validChapterInfo.put(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME, 30);
 
         validQoEInfo = new HashMap<>();
-        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.BITRATE, 1234567890.0);
-        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.FPS, 23.5);
-        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES, 9876543210.0);
-        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.STARTUP_TIME, 1.5);
+        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.BITRATE, 1234567890);
+        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.FPS, 23);
+        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES, 987654321);
+        validQoEInfo.put(MediaTestConstants.EventDataKeys.QoEInfo.STARTUP_TIME, 1);
 
         validStateInfo = new HashMap<>();
         validStateInfo.put(MediaTestConstants.EventDataKeys.StateInfo.STATE_NAME_KEY, "fullscreen");
@@ -254,7 +254,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo expectedMediaInfo =
-                MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
 
         assertEquals(expectedMediaInfo, mediaInfo);
     }
@@ -278,7 +278,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo mediaInfo2 =
-                MediaInfo.create("diff-id", "name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("diff-id", "name", "vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -287,7 +287,7 @@ public class MediaObjectTests {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
         MediaInfo mediaInfo2 =
-                MediaInfo.create("id", "diff-name", "vod", MediaType.Video, 60.0, true);
+                MediaInfo.create("id", "diff-name", "vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -295,8 +295,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentStreamType_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 =
-                MediaInfo.create("id", "name", "not-vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "not-vod", MediaType.Video, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -304,7 +303,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentLength_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 6000.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 6000, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -312,7 +311,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentResumedFlag_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, false);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, false);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -320,7 +319,7 @@ public class MediaObjectTests {
     public void MediaInfo_equals_differentMediaType_fail() {
         MediaInfo mediaInfo = MediaInfo.fromObjectMap(validMediaInfo);
 
-        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Audio, 60.0, true);
+        MediaInfo mediaInfo2 = MediaInfo.create("id", "name", "vod", MediaType.Audio, 60, true);
         assertNotEquals(mediaInfo, mediaInfo2);
     }
 
@@ -366,15 +365,13 @@ public class MediaObjectTests {
 
     @Test
     public void MediaInfo_toObjectMap() {
-        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
         Map<String, Object> mediaInfoMap = mediaInfo.toObjectMap();
 
         assertEquals(mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.NAME), "name");
         assertEquals(mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.ID), "id");
         assertEquals(
-                (double) mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH),
-                60.0,
-                0);
+                (int) mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.LENGTH), 60, 0);
         assertEquals(
                 mediaInfoMap.get(MediaTestConstants.EventDataKeys.MediaInfo.STREAM_TYPE), "vod");
         assertEquals(
@@ -384,7 +381,7 @@ public class MediaObjectTests {
         assertEquals(
                 mediaInfoMap.get(
                         MediaTestConstants.EventDataKeys.MediaInfo.PREROLL_TRACKING_WAITING_TIME),
-                250L);
+                250);
     }
 
     @Test
@@ -402,7 +399,7 @@ public class MediaObjectTests {
                         + "name"
                         + "\""
                         + " length: "
-                        + 60.0
+                        + 60
                         + " streamType: "
                         + "\""
                         + "vod"
@@ -417,7 +414,7 @@ public class MediaObjectTests {
                         + 250
                         + "}";
 
-        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0, true);
+        MediaInfo mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60, true);
         String actual = mediaInfo.toString();
 
         assertEquals(expected, actual);
@@ -489,7 +486,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_create_pass_isValidAdBreakInfoObject() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo expectedAdBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo expectedAdBreakInfo = AdBreakInfo.create("name", 2, 60);
 
         assertEquals(expectedAdBreakInfo, adBreakInfo);
     }
@@ -513,7 +510,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals_differentName_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("diff-name", 2, 60.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("diff-name", 2, 60);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -521,7 +518,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals__differentPosition_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 0, 60.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 0, 60);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -529,7 +526,7 @@ public class MediaObjectTests {
     public void AdBreakInfo_equals_differentStartTime_fail() {
         AdBreakInfo adBreakInfo = AdBreakInfo.fromObjectMap(validAdBreakInfo);
 
-        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 2, 6000.0);
+        AdBreakInfo adBreakInfo2 = AdBreakInfo.create("name", 2, 6000);
         assertNotEquals(adBreakInfo, adBreakInfo2);
     }
 
@@ -547,16 +544,13 @@ public class MediaObjectTests {
 
     @Test
     public void AdBreakInfo_toObjectMap() {
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60);
         Map<String, Object> adBreakInfoMap = adBreakInfo.toObjectMap();
 
         assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.NAME), "name");
-        assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.POSITION), 2L);
+        assertEquals(adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.POSITION), 2);
         assertEquals(
-                (double)
-                        adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME),
-                60.0,
-                0);
+                adBreakInfoMap.get(MediaTestConstants.EventDataKeys.AdBreakInfo.START_TIME), 60);
     }
 
     @Test
@@ -572,10 +566,10 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " startTime: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 2, 60);
         String actual = adBreakInfo.toString();
 
         assertEquals(expected, actual);
@@ -594,7 +588,7 @@ public class MediaObjectTests {
         assertEquals("id", adInfo.getId());
         assertEquals("name", adInfo.getName());
         assertEquals(2, adInfo.getPosition());
-        assertEquals(60.0, adInfo.getLength(), 0);
+        assertEquals(60, adInfo.getLength(), 0);
     }
 
     @Test
@@ -659,7 +653,7 @@ public class MediaObjectTests {
     public void AdInfo_create_pass_isValidAdInfoObject() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
 
-        AdInfo expectedAdInfo = AdInfo.create("id", "name", 2, 60.0);
+        AdInfo expectedAdInfo = AdInfo.create("id", "name", 2, 60);
 
         assertEquals(expectedAdInfo, adInfo);
     }
@@ -681,28 +675,28 @@ public class MediaObjectTests {
     @Test
     public void AdInfo_equals_differentId_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("diff-id", "name", 2, 60.0);
+        AdInfo adInfo2 = AdInfo.create("diff-id", "name", 2, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentName_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "diff-name", 2, 60.0);
+        AdInfo adInfo2 = AdInfo.create("id", "diff-name", 2, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentPosition_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "name", 12, 60.0);
+        AdInfo adInfo2 = AdInfo.create("id", "name", 12, 60);
         assertNotEquals(adInfo, adInfo2);
     }
 
     @Test
     public void AdInfo_equals_differentLength_fail() {
         AdInfo adInfo = AdInfo.fromObjectMap(validAdInfo);
-        AdInfo adInfo2 = AdInfo.create("id", "name", 2, 121.121);
+        AdInfo adInfo2 = AdInfo.create("id", "name", 2, 121);
         assertNotEquals(adInfo, adInfo2);
     }
 
@@ -721,9 +715,8 @@ public class MediaObjectTests {
         Map<String, Object> adInfoMap = adInfo.toObjectMap();
         assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.NAME), "name");
         assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.ID), "id");
-        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.POSITION), 2L);
-        assertEquals(
-                (double) adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.LENGTH), 60.0, 0);
+        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.POSITION), 2);
+        assertEquals(adInfoMap.get(MediaTestConstants.EventDataKeys.AdInfo.LENGTH), 60);
     }
 
     @Test
@@ -743,10 +736,10 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " length: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        AdInfo adInfo = AdInfo.create("id", "name", 2, 60.0);
+        AdInfo adInfo = AdInfo.create("id", "name", 2, 60);
         String actual = adInfo.toString();
 
         assertEquals(expected, actual);
@@ -829,7 +822,7 @@ public class MediaObjectTests {
     public void ChapterInfo_create_pass_isValidChapterInfoObject() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo expectedChapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo expectedChapterInfo = ChapterInfo.create("name", 2, 30, 60);
 
         assertEquals(expectedChapterInfo, chapterInfo);
     }
@@ -854,7 +847,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentName_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("diff-name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("diff-name", 2, 30, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -862,7 +855,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentPosition_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 4, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 4, 30, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -870,7 +863,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentStartTime_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 300.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 300, 60);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -878,7 +871,7 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_differentLength_fail() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30.0, 6000.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30, 6000);
         assertNotEquals(chapterInfo, chapterInfo2);
     }
 
@@ -886,26 +879,20 @@ public class MediaObjectTests {
     public void ChapterInfo_equals_sameParameters_pass() {
         ChapterInfo chapterInfo = ChapterInfo.fromObjectMap(validChapterInfo);
 
-        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo2 = ChapterInfo.create("name", 2, 30, 60);
         assertEquals(chapterInfo, chapterInfo2);
     }
 
     @Test
     public void ChapterInfo_toObjectMap() {
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30, 60);
         Map<String, Object> chapterInfoMap = chapterInfo.toObjectMap();
 
         assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.NAME), "name");
-        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.POSITION), 2L);
+        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.POSITION), 2);
+        assertEquals(chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH), 60);
         assertEquals(
-                (double) chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.LENGTH),
-                60.0,
-                0);
-        assertEquals(
-                (double)
-                        chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME),
-                30.0,
-                0);
+                chapterInfoMap.get(MediaTestConstants.EventDataKeys.ChapterInfo.START_TIME), 30);
     }
 
     @Test
@@ -921,12 +908,12 @@ public class MediaObjectTests {
                         + " position: "
                         + 2
                         + " startTime: "
-                        + 30.0
+                        + 30
                         + " length: "
-                        + 60.0
+                        + 60
                         + "}";
 
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30.0, 60.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 2, 30, 60);
         String actual = chapterInfo.toString();
 
         assertEquals(expected, actual);
@@ -942,10 +929,10 @@ public class MediaObjectTests {
     public void QoEInfo_create_pass_withValidInfo() {
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        assertEquals(1234567890.0, qoEInfo.getBitrate(), 0);
-        assertEquals(9876543210.0, qoEInfo.getDroppedFrames(), 0);
-        assertEquals(23.5, qoEInfo.getFPS(), 0);
-        assertEquals(1.5, qoEInfo.getStartupTime(), 0);
+        assertEquals(1234567890, qoEInfo.getBitrate(), 0);
+        assertEquals(987654321, qoEInfo.getDroppedFrames(), 0);
+        assertEquals(23, qoEInfo.getFPS(), 0);
+        assertEquals(1, qoEInfo.getStartupTime(), 0);
     }
 
     @Test
@@ -1026,7 +1013,7 @@ public class MediaObjectTests {
     public void QoEInfo_create_pass_isValidQoEInfoObject() {
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        QoEInfo expectedQoEInfo = QoEInfo.create(1234567890, 9876543210.0, 23.5, 1.5);
+        QoEInfo expectedQoEInfo = QoEInfo.create(1234567890, 987654321, 23, 1);
 
         assertEquals(expectedQoEInfo, qoEInfo);
     }
@@ -1051,7 +1038,7 @@ public class MediaObjectTests {
     public void QoEInfo_equals_differentBitrate_fail() {
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        QoEInfo qoEInfo2 = QoEInfo.create(111111, 9876543210.0, 23.5, 1.5);
+        QoEInfo qoEInfo2 = QoEInfo.create(111111, 987654321, 23, 1);
         assertNotEquals(qoEInfo, qoEInfo2);
     }
 
@@ -1060,7 +1047,7 @@ public class MediaObjectTests {
 
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 9.0, 23.5, 1.5);
+        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 9, 23, 1);
         assertNotEquals(qoEInfo, qoEInfo2);
     }
 
@@ -1069,7 +1056,7 @@ public class MediaObjectTests {
 
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 9876543210.0, 2.15, 1.5);
+        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 987654321, 2, 1);
         assertNotEquals(qoEInfo, qoEInfo2);
     }
 
@@ -1078,7 +1065,7 @@ public class MediaObjectTests {
 
         QoEInfo qoEInfo = QoEInfo.fromObjectMap(validQoEInfo);
 
-        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 9876543210.0, 23.5, 111);
+        QoEInfo qoEInfo2 = QoEInfo.create(1234567890, 987654321, 23, 111);
         assertNotEquals(qoEInfo, qoEInfo2);
     }
 
@@ -1097,22 +1084,13 @@ public class MediaObjectTests {
 
     @Test
     public void QoeInfo_toObjectMap() {
-        QoEInfo qoeInfo = QoEInfo.create(1234567890, 9876543210.0, 23.5, 1.5);
+        QoEInfo qoeInfo = QoEInfo.create(1234567890, 987654321, 23, 1);
         Map<String, Object> qoEInfoMap = qoeInfo.toObjectMap();
+        assertEquals(qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.BITRATE), 1234567890);
+        assertEquals(qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.FPS), 23);
         assertEquals(
-                (double) qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.BITRATE),
-                1234567890.0,
-                0);
-        assertEquals(
-                (double) qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.FPS), 23.5, 0);
-        assertEquals(
-                (double) qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES),
-                9876543210.0,
-                0);
-        assertEquals(
-                (double) qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.STARTUP_TIME),
-                1.5,
-                0);
+                qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES), 987654321);
+        assertEquals(qoEInfoMap.get(MediaTestConstants.EventDataKeys.QoEInfo.STARTUP_TIME), 1);
     }
 
     @Test
@@ -1122,16 +1100,16 @@ public class MediaObjectTests {
                 "{"
                         + " class: \"QoEInfo\","
                         + " bitrate: "
-                        + 1234567890.0
+                        + 1234567890
                         + " droppedFrames: "
-                        + 9876543210.0
+                        + 987654321
                         + " fps: "
-                        + 23.5
+                        + 23
                         + " startupTime: "
-                        + 1.5
+                        + 1
                         + "}";
 
-        QoEInfo qoeInfo = QoEInfo.create(1234567890, 9876543210.0, 23.5, 1.5);
+        QoEInfo qoeInfo = QoEInfo.create(1234567890, 987654321, 23, 1);
         String actual = qoeInfo.toString();
 
         assertEquals(expected, actual);

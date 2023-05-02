@@ -68,7 +68,7 @@ internal class MediaXDMEventHelper {
             val sessionDetails = XDMSessionDetails()
             sessionDetails.name = mediaInfo.id
             sessionDetails.friendlyName = mediaInfo.name
-            sessionDetails.length = mediaInfo.length.toLong()
+            sessionDetails.length = mediaInfo.length
             sessionDetails.streamType = if (mediaInfo.mediaType == MediaType.Audio) XDMStreamType.AUDIO else XDMStreamType.VIDEO
             sessionDetails.contentType = mediaInfo.streamType
             sessionDetails.hasResume = forceResume || mediaInfo.isResumed // To also handle the internally triggered resume by the SDK for long running sessions >= 24 hours
@@ -127,7 +127,7 @@ internal class MediaXDMEventHelper {
                 return null
             }
 
-            return XDMAdvertisingPodDetails(adBreakInfo.name, adBreakInfo.position, adBreakInfo.startTime.toLong())
+            return XDMAdvertisingPodDetails(adBreakInfo.name, adBreakInfo.position, adBreakInfo.startTime)
         }
 
         @JvmStatic
@@ -140,7 +140,7 @@ internal class MediaXDMEventHelper {
             val advertisingDetails = XDMAdvertisingDetails()
             advertisingDetails.name = adInfo.id
             advertisingDetails.friendlyName = adInfo.name
-            advertisingDetails.length = adInfo.length.toLong()
+            advertisingDetails.length = adInfo.length
             advertisingDetails.podPosition = adInfo.position
 
             // Append standard metadata to advertisingDetails
@@ -193,8 +193,8 @@ internal class MediaXDMEventHelper {
             return XDMChapterDetails(
                 chapterInfo.name,
                 chapterInfo.position,
-                chapterInfo.length.toLong(),
-                chapterInfo.startTime.toLong()
+                chapterInfo.length,
+                chapterInfo.startTime
             )
         }
 
@@ -217,10 +217,10 @@ internal class MediaXDMEventHelper {
             }
 
             return XDMQoeDataDetails(
-                qoeInfo.bitrate.toLong(),
-                qoeInfo.droppedFrames.toLong(),
-                qoeInfo.fps.toLong(),
-                qoeInfo.startupTime.toLong()
+                qoeInfo.bitrate,
+                qoeInfo.droppedFrames,
+                qoeInfo.fps,
+                qoeInfo.startupTime
             )
         }
 

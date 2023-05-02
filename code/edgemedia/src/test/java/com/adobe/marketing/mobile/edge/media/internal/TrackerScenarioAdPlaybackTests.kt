@@ -32,7 +32,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.AOD,
         MediaType.Audio,
-        30.5,
+        30,
         false,
         0,
         false
@@ -43,7 +43,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.AOD,
         MediaType.Audio,
-        30.5
+        30
     )
 
     private val mediaMetadata = mapOf(
@@ -52,31 +52,31 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         "key2" to "мểŧẳđαţả"
     )
 
-    private val adBreakInfo = AdBreakInfo.create("adBreakName", 1, 1.1)
-    private val adBreakInfo2 = AdBreakInfo.create("adBreakName2", 2, 2.2)
+    private val adBreakInfo = AdBreakInfo.create("adBreakName", 1, 1)
+    private val adBreakInfo2 = AdBreakInfo.create("adBreakName2", 2, 2)
 
-    private val adInfo = AdInfo.create("adID", "adName", 1, 15.0)
+    private val adInfo = AdInfo.create("adID", "adName", 1, 15)
     private val adMetadata = mapOf(
         "media.ad.advertiser" to "sampleAdvertiser",
         "key1" to "value1",
         "key2" to "мểŧẳđαţả"
     )
 
-    private val adInfo2 = AdInfo.create("adID2", "adName2", 2, 20.0)
+    private val adInfo2 = AdInfo.create("adID2", "adName2", 2, 20)
     private val adMetadata2 = mapOf(
         "media.ad.advertiser" to "sampleAdvertiser2",
         "key2" to "value2",
         "key3" to "мểŧẳđαţả"
     )
 
-    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1.1, 30.5)
+    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1, 30)
     private val chapterMetadata = mapOf(
         "media.artist" to "sampleArtist",
         "key1" to "value1",
         "key2" to "мểŧẳđαţả"
     )
 
-    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2.2, 40.5)
+    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2, 40)
     private val chapterMetadata2 = mapOf(
         "media.artist" to "sampleArtist2",
         "key2" to "value2",

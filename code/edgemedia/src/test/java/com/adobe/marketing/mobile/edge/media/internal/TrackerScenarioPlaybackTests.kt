@@ -33,7 +33,7 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.AOD,
         MediaType.Audio,
-        30.5,
+        30,
         false,
         0,
         false
@@ -44,7 +44,7 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         "mediaName",
         MediaConstants.StreamType.VOD, // MediaConstants.StreamType.AOD,
         MediaType.Video, // MediaType.Audio,
-        30.5
+        30
     )
 
     private val mediaMetadata = mapOf(
@@ -53,10 +53,10 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         "key2" to "мểŧẳđαţả"
     )
 
-    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1.1, 30.5)
+    private val chapterInfo = ChapterInfo.create("chapterName", 1, 1, 30)
     private val chapterMetadata = mapOf("media.artist" to "sampleArtist", "key1" to "value1", "key2" to "мểŧẳđαţả")
 
-    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2.2, 40.5)
+    private val chapterInfo2 = ChapterInfo.create("chapterName2", 2, 2, 40)
     private val chapterMetadata2 = mapOf("media.artist" to "sampleArtist2", "key2" to "value2", "key3" to "мểŧẳđαţả")
 
     private val customStateInfo = StateInfo.create("customStateName")
@@ -371,7 +371,7 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
 
         val pingList: MutableList<Event> = mutableListOf()
         for (i in 11..86400 step 10) {
-            pingList.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, i.toLong(), i.toLong(), backendSessionId))
+            pingList.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, i, i.toLong(), backendSessionId))
         }
 
         expected.addAll(pingList)

@@ -182,13 +182,13 @@ class MediaEventTracker implements MediaEventTracking {
         return DataReader.optString(context, KEY_SESSIONID, null);
     }
 
-    double getPlayhead(final Map<String, Object> context) {
+    int getPlayhead(final Map<String, Object> context) {
         Map<String, Object> info = DataReader.optTypedMap(Object.class, context, KEY_INFO, null);
         if (info == null) {
             return INVALID_NUMERIC_VALUE;
         }
 
-        return DataReader.optDouble(
+        return DataReader.optInt(
                 info, MediaInternalConstants.EventDataKeys.Tracker.PLAYHEAD, INVALID_NUMERIC_VALUE);
     }
 
@@ -707,7 +707,7 @@ class MediaEventTracker implements MediaEventTracking {
 
     final IMediaRuleCallback cmdPlayheadUpdate =
             (rule, context) -> {
-                double playhead = getPlayhead(context);
+                int playhead = getPlayhead(context);
 
                 if (playhead >= 0) {
                     mediaContext.setPlayhead(playhead);

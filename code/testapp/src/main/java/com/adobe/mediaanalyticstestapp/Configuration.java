@@ -16,5 +16,5 @@ public class Configuration {
     public static final String VIDEO_ID = "android-video-id";
     public static final String VIDEO_NAME = "sample-video";
 
-    public static final Double VIDEO_LENGTH = 108D;
+    public static final Integer VIDEO_LENGTH = 108;
 }

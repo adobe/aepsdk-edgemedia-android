@@ -37,7 +37,7 @@ class MediaXDMEventGeneratorTests {
     private lateinit var eventGenerator: MediaXDMEventGenerator
     private var currSessionId = 0
     private var mockTimestamp = 0L
-    private var mockPlayhead = 0L
+    private var mockPlayhead = 0
 
     @Captor
     private lateinit var eventCaptor: ArgumentCaptor<XDMMediaEvent>
@@ -50,7 +50,7 @@ class MediaXDMEventGeneratorTests {
 
     @Before
     fun setup() {
-        mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60.0)
+        mediaInfo = MediaInfo.create("id", "name", "vod", MediaType.Video, 60)
         metadata = mapOf("k1" to "v1", MediaConstants.VideoMetadataKeys.SHOW to "show")
         mediaContext = MediaContext(mediaInfo, metadata)
 
@@ -201,7 +201,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessAdBreakStart() {
         // setup
-        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2.0)
+        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2)
         mediaContext.adBreakInfo = adBreakInfo
         val adBreakDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(adBreakInfo)
 
@@ -260,7 +260,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessAdStart() {
         // setup
-        val adInfo = AdInfo.create("id", "ad", 1, 15.0)
+        val adInfo = AdInfo.create("id", "ad", 1, 15)
         val metadata = mapOf(MediaConstants.AdMetadataKeys.SITE_ID to "testSiteID", "k1" to "v1")
         mediaContext.setAdInfo(adInfo, metadata)
 
@@ -323,7 +323,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessChapterStart() {
         // setup
-        val chapterInfo = ChapterInfo.create("chapter", 1, 15.0, 30.0)
+        val chapterInfo = ChapterInfo.create("chapter", 1, 15, 30)
         val metadata = mapOf("k1" to "v1")
         mediaContext.setChapterInfo(chapterInfo, metadata)
 
@@ -429,7 +429,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessSessionRestart_withinChapterRestartsChapter() {
         // setup
-        val chapterInfo = ChapterInfo.create("chapter", 1, 15.0, 30.0)
+        val chapterInfo = ChapterInfo.create("chapter", 1, 15, 30)
         val metadata = mapOf("k1" to "v1")
         mediaContext.setChapterInfo(chapterInfo, metadata)
         val chapterDetails = MediaXDMEventHelper.generateChapterDetails(chapterInfo)
@@ -466,11 +466,11 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessSessionRestart_withinAdBreakAndAdRestartsAdBreakAndAd() {
         // setup
-        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2.0)
+        val adBreakInfo = AdBreakInfo.create("adBreak", 1, 2)
         mediaContext.adBreakInfo = adBreakInfo
         val adBreakDetails = MediaXDMEventHelper.generateAdvertisingPodDetails(adBreakInfo)
 
-        val adInfo = AdInfo.create("id", "ad", 1, 15.0)
+        val adInfo = AdInfo.create("id", "ad", 1, 15)
         val metadata = mapOf(MediaConstants.AdMetadataKeys.SITE_ID to "testSiteID", "k1" to "v1")
         mediaContext.setAdInfo(adInfo, metadata)
 
@@ -559,7 +559,7 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessBitrateChange() {
         // setup
-        val qoeInfo = QoEInfo.create(1234.5, 12.3, 123.4, 1.2)
+        val qoeInfo = QoEInfo.create(1234, 12, 123, 1)
         mediaContext.qoEInfo = qoeInfo
 
         val qoeDetails = MediaXDMEventHelper.generateQoEDataDetails(qoeInfo)
@@ -841,7 +841,7 @@ class MediaXDMEventGeneratorTests {
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(internalMS, reset = true)
             // mock adStart
-            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
@@ -868,7 +868,7 @@ class MediaXDMEventGeneratorTests {
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS, reset = true)
             // mock adStart
-            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+            mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
 
             val mediaCollection = XDMMediaCollection()
             mediaCollection.playhead = getPlayhead()
@@ -908,7 +908,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
@@ -944,7 +944,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(3 * 1000)
 
         mediaCollection.playhead = getPlayhead()
@@ -992,7 +992,7 @@ class MediaXDMEventGeneratorTests {
         assertEquals(expectedEvent, eventCaptor.value)
 
         // mock adStart
-        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15.0), mapOf())
+        mediaContext.setAdInfo(AdInfo.create("id", "ad", 1, 15), mapOf())
         updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS)
 
         mediaCollection.playhead = getPlayhead()
@@ -1026,14 +1026,14 @@ class MediaXDMEventGeneratorTests {
         mockTimestamp += interval
         if (updatePlayhead) {
             mockPlayhead += (interval / 1000)
-            mediaContext.playhead = mockPlayhead.toDouble()
+            mediaContext.playhead = mockPlayhead
         }
 
-        mediaContext.playhead = mockPlayhead.toDouble()
+        mediaContext.playhead = mockPlayhead
         eventGenerator.setRefTS(mockTimestamp)
     }
 
-    private fun getPlayhead(): Long {
-        return mediaContext.playhead.toLong()
+    private fun getPlayhead(): Int {
+        return mediaContext.playhead
     }
 }

@@ -41,8 +41,8 @@ class XDMPropertyTests {
         val expected = mapOf<String, Any>(
             "name" to "id",
             "friendlyName" to "name",
-            "length" to 10L,
-            "podPosition" to 1L,
+            "length" to 10,
+            "podPosition" to 1,
             "playerName" to "testPlayer",
             "advertiser" to "testAdvertiser",
             "campaignID" to "testCampaignId",
@@ -76,8 +76,8 @@ class XDMPropertyTests {
         val xdm = advertisingPodDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
             "friendlyName" to "name",
-            "index" to 1L,
-            "offset" to 2L
+            "index" to 1,
+            "offset" to 2
         )
 
         assertEquals(expected, xdm)
@@ -105,9 +105,9 @@ class XDMPropertyTests {
         val xdm = chapterDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
             "friendlyName" to "test friendly name",
-            "index" to 1L,
-            "length" to 10L,
-            "offset" to 2L
+            "index" to 1,
+            "length" to 10,
+            "offset" to 2
         )
 
         assertEquals(expected, xdm)
@@ -210,10 +210,10 @@ class XDMPropertyTests {
 
         val xdm = qoeDataDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
-            "bitrate" to 128L,
-            "droppedFrames" to 10L,
-            "framesPerSecond" to 59L,
-            "timeToStart" to 5L
+            "bitrate" to 128,
+            "droppedFrames" to 10,
+            "framesPerSecond" to 59,
+            "timeToStart" to 5
         )
 
         assertEquals(expected, xdm)
@@ -326,7 +326,7 @@ class XDMPropertyTests {
             "name" to "id",
             "friendlyName" to "name",
             "hasResume" to false,
-            "length" to 30L,
+            "length" to 30,
             "streamType" to XDMStreamType.VIDEO.value,
             "channel" to "test_channel",
             "playerName" to "test_playerName",
@@ -399,10 +399,10 @@ class XDMPropertyTests {
         val xdm = sessionDetails.serializeToXDM()
         val expected = mapOf<String, Any>(
             "contentType" to "vod",
-            "name" to "id",
             "friendlyName" to "name",
             "hasResume" to false,
-            "length" to 30L,
+            "length" to 30,
+            "name" to "id",
             "streamType" to XDMStreamType.VIDEO.value,
             "channel" to "test_channel",
             "playerName" to "test_playerName",
@@ -458,7 +458,7 @@ class XDMPropertyTests {
             "name" to "id",
             "friendlyName" to "name",
             "hasResume" to false,
-            "length" to 30L,
+            "length" to 30,
             "streamType" to XDMStreamType.AUDIO.value,
             "channel" to "test_channel",
             "playerName" to "test_playerName",
@@ -514,7 +514,7 @@ class XDMPropertyTests {
             "chapterDetails" to expectedChapterDetails,
             "customMetadata" to expectedCustomMetadata,
             "errorDetails" to expectedErrorDetails,
-            "playhead" to 123L,
+            "playhead" to 123,
             "qoeDataDetails" to expectedQoeDataDetails,
             "sessionDetails" to expectedSessionDetails,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
@@ -538,7 +538,7 @@ class XDMPropertyTests {
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
-            "playhead" to 0L,
+            "playhead" to 0,
             "sessionDetails" to expectedSessionDetails,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
@@ -558,7 +558,7 @@ class XDMPropertyTests {
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
             "advertisingPodDetails" to expectedAdvertisingPodDetails,
-            "playhead" to 0L,
+            "playhead" to 0,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -577,7 +577,7 @@ class XDMPropertyTests {
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
             "advertisingDetails" to expectedAdvertisingDetails,
-            "playhead" to 123L,
+            "playhead" to 123,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -596,7 +596,7 @@ class XDMPropertyTests {
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
             "chapterDetails" to expectedChapterDetails,
-            "playhead" to 123L,
+            "playhead" to 123,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d"
         )
 
@@ -614,7 +614,7 @@ class XDMPropertyTests {
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
-            "playhead" to 123L,
+            "playhead" to 123,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesStart" to expectedPlayerStateData
         )
@@ -633,7 +633,7 @@ class XDMPropertyTests {
 
         val xdm = mediaCollection.serializeToXDM()
         val expected = mapOf(
-            "playhead" to 123L,
+            "playhead" to 123,
             "sessionID" to "99cf4e3e7145d8e2b8f4f1e9e1a08cd52518a74091c0b0c611ca97b259e03a4d",
             "statesEnd" to expectedPlayerStateData
         )
@@ -710,8 +710,8 @@ class XDMPropertyTests {
         val expected = mapOf<String, Any>(
             "name" to "id",
             "friendlyName" to "name",
-            "length" to 10L,
-            "podPosition" to 1L,
+            "length" to 10,
+            "podPosition" to 1,
             "playerName" to "testPlayer",
             "advertiser" to "testAdvertiser",
             "campaignID" to "testCampaignId",
@@ -732,8 +732,8 @@ class XDMPropertyTests {
 
         val expected = mapOf<String, Any>(
             "friendlyName" to "name",
-            "index" to 1L,
-            "offset" to 2L
+            "index" to 1,
+            "offset" to 2
         )
 
         return advertisingPodDetails to expected
@@ -748,9 +748,9 @@ class XDMPropertyTests {
 
         val expected = mapOf<String, Any>(
             "friendlyName" to "test friendly name",
-            "index" to 1L,
-            "length" to 10L,
-            "offset" to 2L
+            "index" to 1,
+            "length" to 10,
+            "offset" to 2
         )
 
         return chapterDetails to expected
@@ -800,10 +800,10 @@ class XDMPropertyTests {
         qoeDataDetails.timeToStart = 5
 
         val expected = mapOf<String, Any>(
-            "bitrate" to 128L,
-            "droppedFrames" to 10L,
-            "framesPerSecond" to 59L,
-            "timeToStart" to 5L
+            "bitrate" to 128,
+            "droppedFrames" to 10,
+            "framesPerSecond" to 59,
+            "timeToStart" to 5
         )
 
         return qoeDataDetails to expected
@@ -835,7 +835,7 @@ class XDMPropertyTests {
             "name" to "id",
             "friendlyName" to "name",
             "hasResume" to false,
-            "length" to 30L,
+            "length" to 30,
             "streamType" to XDMStreamType.AUDIO.value,
             "channel" to "test_channel",
             "playerName" to "test_playerName",

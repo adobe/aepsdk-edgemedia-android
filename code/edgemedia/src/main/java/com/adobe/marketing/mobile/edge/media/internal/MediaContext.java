@@ -61,7 +61,7 @@ class MediaContext {
     private Map<String, String> mediaMetadata, adMetadata, chapterMetadata;
     private boolean buffering, seeking;
     private MediaPlaybackState playState;
-    private double playhead;
+    private int playhead;
     private final Map<String, Boolean> states;
 
     MediaContext(final MediaInfo mediaInfo, final Map<String, String> metadata) {
@@ -164,7 +164,7 @@ class MediaContext {
         }
     }
 
-    void setPlayhead(final double playhead) {
+    void setPlayhead(final int playhead) {
         this.playhead = playhead;
     }
 
@@ -200,7 +200,7 @@ class MediaContext {
         return qoeInfo;
     }
 
-    double getPlayhead() {
+    int getPlayhead() {
         return playhead;
     }
 

@@ -71,7 +71,7 @@ public class Media {
     @NonNull public static HashMap<String, Object> createMediaObject(
             @NonNull final String name,
             @NonNull final String mediaId,
-            final double length,
+            final int length,
             @NonNull final String streamType,
             @NonNull final MediaType mediaType) {
         return MediaObject.createMediaInfo(mediaId, name, streamType, mediaType, length);
@@ -86,7 +86,7 @@ public class Media {
      * @return A MediaObject instance representing the AdBreak.
      */
     @NonNull public static HashMap<String, Object> createAdBreakObject(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         return MediaObject.createAdBreakInfo(name, position, startTime);
     }
 
@@ -102,8 +102,8 @@ public class Media {
     @NonNull public static HashMap<String, Object> createAdObject(
             @NonNull final String name,
             @NonNull final String adId,
-            final long position,
-            final double length) {
+            final int position,
+            final int length) {
         return MediaObject.createAdInfo(name, adId, position, length);
     }
 
@@ -117,10 +117,7 @@ public class Media {
      * @return A MediaObject instance representing the Chapter.
      */
     @NonNull public static HashMap<String, Object> createChapterObject(
-            @NonNull final String name,
-            final long position,
-            final double length,
-            final double startTime) {
+            @NonNull final String name, final int position, final int length, final int startTime) {
         return MediaObject.createChapterInfo(name, position, startTime, length);
     }
 
@@ -134,10 +131,7 @@ public class Media {
      * @return A MediaObject instance representing the QoSObject.
      */
     @NonNull public static HashMap<String, Object> createQoEObject(
-            final long bitrate,
-            final double startupTime,
-            final double fps,
-            final long droppedFrames) {
+            final int bitrate, final int startupTime, final int fps, final int droppedFrames) {
         return MediaObject.createQoEInfo(bitrate, droppedFrames, fps, startupTime);
     }
 

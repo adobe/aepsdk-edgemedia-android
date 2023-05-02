@@ -233,7 +233,7 @@ internal class MediaXDMEventGenerator(
         // For bitrate change events and error events, use the qoe data in the current event being generated. For other events check MediaContext QoE object for latest QoE data updates.
         mediaCollection.qoeDataDetails = getQoEForCurrentEvent(mediaCollection.qoeDataDetails)
         // Add playhead details
-        mediaCollection.playhead = mediaContext.playhead.toLong()
+        mediaCollection.playhead = mediaContext.playhead
 
         val timestampAsDate = Date(refTS)
         val xdmEvent = XDMMediaEvent(XDMMediaSchema(eventType, timestampAsDate, mediaCollection))

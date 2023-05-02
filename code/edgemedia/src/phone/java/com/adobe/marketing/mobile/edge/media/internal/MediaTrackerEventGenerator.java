@@ -139,7 +139,7 @@ public class MediaTrackerEventGenerator implements MediaTracker {
         trackInternal(eventToString(event), info, metadata);
     }
 
-    public void updateCurrentPlayhead(final double playheadValue) {
+    public void updateCurrentPlayhead(final int playheadValue) {
         Map<String, Object> params = new HashMap<>();
         params.put(MediaInternalConstants.EventDataKeys.Tracker.PLAYHEAD, playheadValue);
         trackInternal(

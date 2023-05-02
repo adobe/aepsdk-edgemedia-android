@@ -54,11 +54,11 @@ class MediaEdgeIntegrationTests {
         private const val ERROR_RESPONSE_STRING =
             "\u0000{\"errors\" : [{\"type\" : \"https://ns.adobe.com/aep/errors/va-edge-0400-400\", \"status\" : 400, \"title\": \"Invalid request\", \"report\":{\"eventIndex\":0,\"details\":[{\"name\":\"\$.xdm.mediaCollection.sessionDetails.name\",\"reason\":\"Missing required field\"}]}}]}"
         private val mediaInfo =
-            Media.createMediaObject("testName", "testId", 30.0, "VOD", Media.MediaType.Audio)
-        private val adBreakInfo = Media.createAdBreakObject("testName", 1, 1.0)
-        private val adInfo = Media.createAdObject("testName", "testId", 1, 15.0)
-        private val chapterInfo = Media.createChapterObject("testName", 1, 30.0, 2.0)
-        private val qoeInfo = Media.createQoEObject(1, 2.0, 3.0, 4)
+            Media.createMediaObject("testName", "testId", 30, "VOD", Media.MediaType.Audio)
+        private val adBreakInfo = Media.createAdBreakObject("testName", 1, 1)
+        private val adInfo = Media.createAdObject("testName", "testId", 1, 15)
+        private val chapterInfo = Media.createChapterObject("testName", 1, 30, 2)
+        private val qoeInfo = Media.createQoEObject(1, 2, 3, 4)
         private val muteStateInfo = Media.createStateObject(MediaConstants.PlayerState.MUTE)
         private val customStateInfo = Media.createStateObject("testStateName")
         private val metadata = mutableMapOf("testKey" to "testValue")
@@ -116,7 +116,7 @@ class MediaEdgeIntegrationTests {
         val tracker = Media.createTracker()
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(7.0)
+        tracker.updateCurrentPlayhead(7)
         tracker.trackPause()
         tracker.trackComplete()
 
@@ -143,7 +143,7 @@ class MediaEdgeIntegrationTests {
         val tracker = Media.createTracker()
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(7.0)
+        tracker.updateCurrentPlayhead(7)
         tracker.trackPause()
         tracker.trackComplete()
 
@@ -229,17 +229,17 @@ class MediaEdgeIntegrationTests {
         val tracker = Media.createTracker()
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(5.0)
+        tracker.updateCurrentPlayhead(5)
         tracker.trackEvent(Media.Event.BufferStart, null, null)
         tracker.trackEvent(Media.Event.BufferComplete, null, null)
-        tracker.updateCurrentPlayhead(10.5)
+        tracker.updateCurrentPlayhead(10)
         tracker.updateQoEObject(qoeInfo)
         tracker.trackEvent(Media.Event.BitrateChange, qoeInfo, null)
-        tracker.updateCurrentPlayhead(15.0)
+        tracker.updateCurrentPlayhead(15)
         tracker.trackEvent(Media.Event.SeekStart, null, null)
         tracker.trackEvent(Media.Event.SeekComplete, null, null)
         tracker.trackError("testError")
-        tracker.updateCurrentPlayhead(20.0)
+        tracker.updateCurrentPlayhead(20)
         tracker.trackComplete()
 
         // verify
@@ -301,7 +301,7 @@ class MediaEdgeIntegrationTests {
         tracker.trackSessionStart(mediaInfo, metadata)
         tracker.trackEvent(Media.Event.ChapterStart, chapterInfo, metadata)
         tracker.trackPlay()
-        tracker.updateCurrentPlayhead(12.0)
+        tracker.updateCurrentPlayhead(12)
         tracker.trackSessionEnd()
 
         // verify
@@ -331,7 +331,7 @@ class MediaEdgeIntegrationTests {
         tracker.trackPlay()
         tracker.trackEvent(Media.Event.StateStart, muteStateInfo, null)
         tracker.trackEvent(Media.Event.StateStart, customStateInfo, null)
-        tracker.updateCurrentPlayhead(12.0)
+        tracker.updateCurrentPlayhead(12)
         tracker.trackEvent(Media.Event.StateEnd, customStateInfo, null)
         tracker.trackEvent(Media.Event.StateEnd, muteStateInfo, null)
         tracker.trackEvent(Media.Event.ChapterComplete, null, null)
@@ -368,7 +368,7 @@ class MediaEdgeIntegrationTests {
         tracker.trackPlay()
         tracker.trackEvent(Media.Event.StateStart, muteStateInfo, null)
         tracker.trackEvent(Media.Event.StateStart, customStateInfo, null)
-        tracker.updateCurrentPlayhead(12.0)
+        tracker.updateCurrentPlayhead(12)
         tracker.trackSessionEnd()
 
         // verify

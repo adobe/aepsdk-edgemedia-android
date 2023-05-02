@@ -26,7 +26,7 @@ public class MediaContextTests {
     String mediaName = "name";
     String mediaStreamType = "vod";
     MediaType mediaType = MediaType.Video;
-    double mediaLength = 30.0;
+    int mediaLength = 30;
     MediaContext mediaContext;
 
     public MediaContextTests() {
@@ -55,7 +55,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInAdBreak());
 
-        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 1, 20.0);
+        AdBreakInfo adBreakInfo = AdBreakInfo.create("name", 1, 20);
 
         mediaContext.setAdBreakInfo(adBreakInfo);
 
@@ -76,7 +76,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInAd());
 
-        AdInfo adInfo = AdInfo.create("id", "name", 1, 15.0);
+        AdInfo adInfo = AdInfo.create("id", "name", 1, 15);
 
         mediaContext.setAdInfo(adInfo, metadata);
 
@@ -99,7 +99,7 @@ public class MediaContextTests {
 
         assertFalse(mediaContext.isInChapter());
 
-        ChapterInfo chapterInfo = ChapterInfo.create("name", 1, 1.0, 30.0);
+        ChapterInfo chapterInfo = ChapterInfo.create("name", 1, 1, 30);
 
         mediaContext.setChapterInfo(chapterInfo, metadata);
 
@@ -123,7 +123,7 @@ public class MediaContextTests {
 
         assertNull(mediaContext.getQoEInfo());
 
-        QoEInfo qoeInfo = QoEInfo.create(1.1, 2.2, 3.3, 4.4);
+        QoEInfo qoeInfo = QoEInfo.create(1, 2, 3, 4);
         mediaContext.setQoEInfo(qoeInfo);
         assertNotNull(mediaContext.getQoEInfo());
         assertEquals(qoeInfo, mediaContext.getQoEInfo());
@@ -134,11 +134,11 @@ public class MediaContextTests {
 
     @Test
     public void test_Playhead_setOnMediaContext() {
-        assertEquals(0, mediaContext.getPlayhead(), 0.0);
+        assertEquals(0, mediaContext.getPlayhead());
 
-        mediaContext.setPlayhead(11.1);
+        mediaContext.setPlayhead(11);
 
-        assertEquals(11.1, mediaContext.getPlayhead(), 0.0);
+        assertEquals(11, mediaContext.getPlayhead());
     }
 
     @Test

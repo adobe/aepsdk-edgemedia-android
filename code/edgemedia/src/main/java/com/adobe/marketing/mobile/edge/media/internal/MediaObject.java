@@ -33,7 +33,7 @@ public class MediaObject {
             @NonNull final String name,
             @NonNull final String streamType,
             final Media.MediaType mediaType,
-            final double length) {
+            final int length) {
         MediaType mType = (mediaType == Media.MediaType.Video) ? MediaType.Video : MediaType.Audio;
 
         MediaInfo mediaInfo = MediaInfo.create(id, name, streamType, mType, length);
@@ -50,7 +50,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdBreakInfo(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         AdBreakInfo adBreakInfo = AdBreakInfo.create(name, position, startTime);
 
         if (adBreakInfo == null) {
@@ -65,7 +65,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createAdInfo(
-            @NonNull final String name, final String id, final long position, final double length) {
+            @NonNull final String name, final String id, final int position, final int length) {
         AdInfo adInfo = AdInfo.create(id, name, position, length);
 
         if (adInfo == null) {
@@ -80,10 +80,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createChapterInfo(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         ChapterInfo chapterInfo = ChapterInfo.create(name, position, startTime, length);
 
         if (chapterInfo == null) {
@@ -98,10 +95,7 @@ public class MediaObject {
     }
 
     public static HashMap<String, Object> createQoEInfo(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startUpTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startUpTime) {
         QoEInfo qoeInfo = QoEInfo.create(bitrate, droppedFrames, fps, startUpTime);
 
         if (qoeInfo == null) {
@@ -138,7 +132,7 @@ class MediaInfo {
     private static final String LOG_TAG = "MediaInfo";
     private static final String MEDIATYPEVIDEO = "video";
     private static final String MEDIATYPEAUDIO = "audio";
-    private static final long DEFAULTPREROLLWAITTIME = 250;
+    private static final int DEFAULTPREROLLWAITTIME = 250;
     private static final boolean DEFAULT_GRANULAR_AD_TRACKING_ENABLED =
             false; // Default value, if ad tracking ping should be send every 1 sec.
 
@@ -146,9 +140,9 @@ class MediaInfo {
     private final String name;
     private final String streamType;
     private final MediaType mediaType;
-    private final double length;
+    private final int length;
     private final boolean resumed;
-    private final long prerollWaitTime;
+    private final int prerollWaitTime;
     private final boolean isGranularAdTrackingEnabled;
 
     private MediaInfo(
@@ -156,9 +150,9 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed,
-            final long prerollWaitTime,
+            final int prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {
         this.id = id;
         this.name = name;
@@ -190,7 +184,7 @@ class MediaInfo {
         return mediaType == MediaType.Video ? MediaInfo.MEDIATYPEVIDEO : MediaInfo.MEDIATYPEAUDIO;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -198,7 +192,7 @@ class MediaInfo {
         return resumed;
     }
 
-    public long getPrerollWaitTime() {
+    public int getPrerollWaitTime() {
         return prerollWaitTime;
     }
 
@@ -322,16 +316,15 @@ class MediaInfo {
             return null;
         }
 
-        double length =
-                DataReader.optDouble(
-                        info, MediaInternalConstants.EventDataKeys.MediaInfo.LENGTH, -1);
+        int length =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.MediaInfo.LENGTH, -1);
 
         boolean resumed =
                 DataReader.optBoolean(
                         info, MediaInternalConstants.EventDataKeys.MediaInfo.RESUMED, false);
 
-        long prerollWaitTimeVal =
-                DataReader.optLong(
+        int prerollWaitTimeVal =
+                DataReader.optInt(
                         info,
                         MediaInternalConstants.EventDataKeys.MediaInfo
                                 .PREROLL_TRACKING_WAITING_TIME,
@@ -359,7 +352,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length) {
+            final int length) {
         return create(
                 id,
                 name,
@@ -376,7 +369,7 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed) {
         return create(
                 id,
@@ -394,9 +387,9 @@ class MediaInfo {
             final String name,
             final String streamType,
             final MediaType mediaType,
-            final double length,
+            final int length,
             final boolean resumed,
-            final long prerollWaitTime,
+            final int prerollWaitTime,
             final boolean isGranularAdTrackingEnabled) {
         if (id == null || id.length() == 0) {
             Log.debug(
@@ -446,10 +439,10 @@ class AdInfo {
     private static final String LOG_TAG = "AdInfo";
     private final String id;
     private final String name;
-    private final long position;
-    private final double length;
+    private final int position;
+    private final int length;
 
-    private AdInfo(final String id, final String name, final long position, final double length) {
+    private AdInfo(final String id, final String name, final int position, final int length) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -464,11 +457,11 @@ class AdInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -524,7 +517,7 @@ class AdInfo {
     }
 
     public static AdInfo create(
-            final String id, final String name, final long position, final double length) {
+            final String id, final String name, final int position, final int length) {
 
         if (id == null || id.length() == 0) {
             Log.debug(
@@ -572,11 +565,11 @@ class AdInfo {
         String name =
                 DataReader.optString(info, MediaInternalConstants.EventDataKeys.AdInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(info, MediaInternalConstants.EventDataKeys.AdInfo.POSITION, -1);
+        int position =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.AdInfo.POSITION, -1);
 
-        double length =
-                DataReader.optDouble(info, MediaInternalConstants.EventDataKeys.AdInfo.LENGTH, -1);
+        int length =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.AdInfo.LENGTH, -1);
 
         return create(id, name, position, length);
     }
@@ -585,10 +578,10 @@ class AdInfo {
 class AdBreakInfo {
     private static final String LOG_TAG = "AdBreakInfo";
     private final String name;
-    private final long position;
-    private final double startTime;
+    private final int position;
+    private final int startTime;
 
-    private AdBreakInfo(@NonNull final String name, final long position, final double startTime) {
+    private AdBreakInfo(@NonNull final String name, final int position, final int startTime) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
@@ -598,11 +591,11 @@ class AdBreakInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
@@ -652,7 +645,7 @@ class AdBreakInfo {
     }
 
     public static AdBreakInfo create(
-            @NonNull final String name, final long position, final double startTime) {
+            @NonNull final String name, final int position, final int startTime) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -689,12 +682,12 @@ class AdBreakInfo {
                 DataReader.optString(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(
+        int position =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.POSITION, -1);
 
-        double startTime =
-                DataReader.optDouble(
+        int startTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.AdBreakInfo.START_TIME, -1);
 
         return create(name, position, startTime);
@@ -704,15 +697,12 @@ class AdBreakInfo {
 class ChapterInfo {
     private static final String LOG_TAG = "ChapterInfo";
     private final String name;
-    private final long position;
-    private final double startTime;
-    private final double length;
+    private final int position;
+    private final int startTime;
+    private final int length;
 
     private ChapterInfo(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         this.name = name;
         this.position = position;
         this.startTime = startTime;
@@ -723,15 +713,15 @@ class ChapterInfo {
         return name;
     }
 
-    public long getPosition() {
+    public int getPosition() {
         return position;
     }
 
-    public double getStartTime() {
+    public int getStartTime() {
         return startTime;
     }
 
-    public double getLength() {
+    public int getLength() {
         return length;
     }
 
@@ -784,10 +774,7 @@ class ChapterInfo {
     }
 
     public static ChapterInfo create(
-            @NonNull final String name,
-            final long position,
-            final double startTime,
-            final double length) {
+            @NonNull final String name, final int position, final int startTime, final int length) {
         if (name == null || name.length() == 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -832,16 +819,16 @@ class ChapterInfo {
                 DataReader.optString(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.NAME, null);
 
-        long position =
-                DataReader.optLong(
+        int position =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.POSITION, -1);
 
-        double startTime =
-                DataReader.optDouble(
+        int startTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.START_TIME, -1);
 
-        double length =
-                DataReader.optDouble(
+        int length =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.ChapterInfo.LENGTH, -1);
 
         return create(name, position, startTime, length);
@@ -850,35 +837,32 @@ class ChapterInfo {
 
 class QoEInfo {
     private static final String LOG_TAG = "QoEInfo";
-    private final double bitrate;
-    private final double droppedFrames;
-    private final double fps;
-    private final double startupTime;
+    private final int bitrate;
+    private final int droppedFrames;
+    private final int fps;
+    private final int startupTime;
 
     private QoEInfo(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startupTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startupTime) {
         this.bitrate = bitrate;
         this.droppedFrames = droppedFrames;
         this.fps = fps;
         this.startupTime = startupTime;
     }
 
-    public double getBitrate() {
+    public int getBitrate() {
         return bitrate;
     }
 
-    public double getDroppedFrames() {
+    public int getDroppedFrames() {
         return droppedFrames;
     }
 
-    public double getFPS() {
+    public int getFPS() {
         return fps;
     }
 
-    public double getStartupTime() {
+    public int getStartupTime() {
         return startupTime;
     }
 
@@ -930,10 +914,7 @@ class QoEInfo {
     }
 
     public static QoEInfo create(
-            final double bitrate,
-            final double droppedFrames,
-            final double fps,
-            final double startupTime) {
+            final int bitrate, final int droppedFrames, final int fps, final int startupTime) {
         if (bitrate < 0) {
             Log.debug(
                     MediaInternalConstants.LOG_TAG,
@@ -974,19 +955,17 @@ class QoEInfo {
             return null;
         }
 
-        double bitrate =
-                DataReader.optDouble(
-                        info, MediaInternalConstants.EventDataKeys.QoEInfo.BITRATE, -1);
+        int bitrate =
+                DataReader.optInt(info, MediaInternalConstants.EventDataKeys.QoEInfo.BITRATE, -1);
 
-        double droppedFrames =
-                DataReader.optDouble(
+        int droppedFrames =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.QoEInfo.DROPPED_FRAMES, -1);
 
-        double fps =
-                DataReader.optDouble(info, MediaInternalConstants.EventDataKeys.QoEInfo.FPS, -1);
+        int fps = DataReader.optInt(info, MediaInternalConstants.EventDataKeys.QoEInfo.FPS, -1);
 
-        double startupTime =
-                DataReader.optDouble(
+        int startupTime =
+                DataReader.optInt(
                         info, MediaInternalConstants.EventDataKeys.QoEInfo.STARTUP_TIME, -1);
 
         return create(bitrate, droppedFrames, fps, startupTime);

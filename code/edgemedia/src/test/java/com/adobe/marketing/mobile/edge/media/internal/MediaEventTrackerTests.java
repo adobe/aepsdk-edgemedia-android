@@ -109,16 +109,16 @@ public class MediaEventTrackerTests {
         cleanedMetadata.put("vAlid_keY.12", "valid_value.@$%!2");
         cleanedMetadata.put("valid_key", "");
 
-        adBreakInfo1 = AdBreakInfo.create("adbreak1", 1, 10.0);
-        adBreakInfo2 = AdBreakInfo.create("adbreak2", 2, 20.0);
+        adBreakInfo1 = AdBreakInfo.create("adbreak1", 1, 10);
+        adBreakInfo2 = AdBreakInfo.create("adbreak2", 2, 20);
 
-        adInfo1 = AdInfo.create("ad1", "adname1", 1, 15.0);
-        adInfo2 = AdInfo.create("ad2", "adname2", 2, 15.0);
+        adInfo1 = AdInfo.create("ad1", "adname1", 1, 15);
+        adInfo2 = AdInfo.create("ad2", "adname2", 2, 15);
 
-        chapterInfo1 = ChapterInfo.create("chapter1", 1, 10.0, 30.0);
-        chapterInfo2 = ChapterInfo.create("chapter2", 2, 10.0, 30.0);
+        chapterInfo1 = ChapterInfo.create("chapter1", 1, 10, 30);
+        chapterInfo2 = ChapterInfo.create("chapter2", 2, 10, 30);
 
-        qoeInfo = QoEInfo.create(1.1, 2.2, 3.3, 4.4);
+        qoeInfo = QoEInfo.create(1, 2, 3, 4);
 
         state1 = StateInfo.create("mute");
 
@@ -320,7 +320,7 @@ public class MediaEventTrackerTests {
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1);
         assertFalse(trackerHandleAPI());
 
         testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
@@ -404,7 +404,7 @@ public class MediaEventTrackerTests {
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1);
         assertFalse(trackerHandleAPI());
 
         testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
@@ -448,7 +448,7 @@ public class MediaEventTrackerTests {
                 Media.Event.BitrateChange, emptyParams, emptyMetadata);
         assertFalse(trackerHandleAPI());
 
-        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1.1);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1);
         assertFalse(trackerHandleAPI());
 
         testableMediaTrackerEventGenerator.updateQoEObject(qoeInfo.toObjectMap());
@@ -1628,11 +1628,11 @@ public class MediaEventTrackerTests {
         assertTrue(tracker.isInPrerollInterval());
 
         testableMediaTrackerEventGenerator.incrementCurrentTimestamp(200);
-        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0.2);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1);
         trackerHandleAPI();
 
         testableMediaTrackerEventGenerator.incrementCurrentTimestamp(200);
-        testableMediaTrackerEventGenerator.updateCurrentPlayhead(0.4);
+        testableMediaTrackerEventGenerator.updateCurrentPlayhead(1);
         trackerHandleAPI();
 
         assertFalse(tracker.isInPrerollInterval());

@@ -23,7 +23,7 @@ open class TrackerScenarioTestBase {
     private val dispatcher: (Event) -> Unit = { event -> dispatchedEvents.add(event) }
 
     // Current playhead of MediaTracker
-    private var currentPlayhead: Double = 0.0
+    private var currentPlayhead: Int = 0
 
     internal lateinit var mediaState: MediaState
     internal lateinit var mediaEventProcessor: MediaEventProcessor
