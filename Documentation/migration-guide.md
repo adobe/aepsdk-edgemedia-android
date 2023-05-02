@@ -222,6 +222,68 @@ class MyApp : Application() {
 
 ------
 
+### Public API changes
+
+All numeric parameters of the public APIs have been updated to type integer.
+
+#### createMediaObject
+```diff
+- public static HashMap<String, Object> createMediaObject(String name,
+-                                                         String id,
+-                                                         double length,
+-                                                         String streamType,
+-                                                         MediaType mediaType);
++ public static HashMap<String, Object> createMediaObject(String name,
++                                                         String id,
++                                                         int length,
++                                                         String streamType,
++                                                         MediaType mediaType);
+```
+
+#### createAdBreakObject
+```diff
+- public static HashMap<String, Object> createAdBreakObject(String name, long position, double startTime);
++ public static HashMap<String, Object> createAdBreakObject(String name, int position, int startTime);
+```
+
+#### createAdObject
+```diff
+- public static HashMap<String, Object> createAdObject(String name, String id, long position, double length);
++ public static HashMap<String, Object> createAdObject(String name, String id, int position, int length);
+```
+
+#### createChapterObject
+```diff
+- public static HashMap<String, Object> createChapterObject(String name,
+-                                                           long position,
+-                                                           double length,
+-                                                           double startTime);
++ public static HashMap<String, Object> createChapterObject(String name,
++                                                           int position,
++                                                           int length,
++                                                           int startTime);
+```
+
+#### createQoeObject
+```diff
+- public static HashMap<String, Object> createQoEObject(long bitrate,
+-                                                       double startupTime,
+-                                                       double fps,
+-                                                       long droppedFrames);
++ public static HashMap<String, Object> createQoEObject(int bitrate,
++                                                       int startupTime,
++                                                       int fps,
++                                                       int droppedFrames);
+```
+
+#### updateCurrentPlayhead
+```diff
+- public void updateCurrentPlayhead(double time);
++ public void updateCurrentPlayhead(int time);
+```
+
+------
+
 ### Granular ad tracking
 
 Media extension allowed for ad content tracking of `1 second` when setting the `MediaConstants.MediaObjectKey.GRANULAR_AD_TRACKING` key in the media object. Media for Edge Network extension is even more customizable and now the ad content tracking interval can be set using the tracker configuration to a value between `[1-10] seconds`. For more details, refer to the [createTrackerWithConfig API](api-reference.md/#createTrackerWithConfig).
