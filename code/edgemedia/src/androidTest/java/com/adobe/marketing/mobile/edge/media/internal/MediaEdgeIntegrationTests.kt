@@ -31,8 +31,7 @@ import com.adobe.marketing.mobile.util.FunctionalTestHelper.getAllNetworkRequest
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.resetTestExpectations
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.setExpectationEvent
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.setNetworkResponseFor
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.adobe.marketing.mobile.util.JsonTestUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -409,8 +408,7 @@ class MediaEdgeIntegrationTests {
 
     private fun getXDMDataFromNetworkRequest(request: NetworkRequest): Map<String, Any> {
         val body = URLDecoder.decode(String(request.body), "UTF-8")
-        val requestBodyMap = ObjectMapper().readValue<MutableMap<Any, Any>>(body)
-
+        val requestBodyMap = JsonTestUtils.parseNetworkResponseAsMap(body) ?: return mapOf()
         val eventDataList = requestBodyMap["events"] as? List<Map<String, Any>> ?: return mapOf()
 
         val eventData = eventDataList[0]
