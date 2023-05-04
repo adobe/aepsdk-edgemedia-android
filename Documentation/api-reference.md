@@ -125,7 +125,7 @@ Creates an instance of the Media object.
 ```java
 public static HashMap<String, Object> createMediaObject(String name,
                                                         String id,
-                                                        Double length,
+                                                        int length,
                                                         String streamType,
                                                         MediaType mediaType);
 ```
@@ -136,7 +136,7 @@ public static HashMap<String, Object> createMediaObject(String name,
 ```java
 HashMap<String, Object> mediaInfo = Media.createMediaObject("video-name",
                                                             "video-id",
-                                                            60D,
+                                                            60,
                                                             MediaConstants.StreamType.VOD,
                                                             Media.MediaType.Video);
 ```
@@ -145,7 +145,7 @@ HashMap<String, Object> mediaInfo = Media.createMediaObject("video-name",
 ```kotlin
 var mediaInfo = Media.createMediaObject("video-name",
                                         "video-id",
-                                        60D,
+                                        60,
                                         MediaConstants.StreamType.VOD,
                                         Media.MediaType.Video)
 ```
@@ -163,19 +163,19 @@ Creates an instance of the AdBreak object.
 #### Syntax
 
 ```java
-public static HashMap<String, Object> createAdBreakObject(String name, Long position, Double startTime);
+public static HashMap<String, Object> createAdBreakObject(String name, int position, int startTime);
 ```
 
 #### Example
 
 ##### Java
 ```java
-HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D);
+HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name", 1, 0);
 ```
 
 ##### Kotlin
 ```kotlin
-val adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D)
+val adBreakObject = Media.createAdBreakObject("adbreak-name", 1, 0)
 ```
 
 ### createAdObject
@@ -192,19 +192,19 @@ Creates an instance of the Ad object.
 #### Syntax
 
 ```java
-public static HashMap<String, Object> createAdObject(String name, String id, Long position, Double length);
+public static HashMap<String, Object> createAdObject(String name, String id, int position, int length);
 ```
 
 #### Example
 
 ##### Java
 ```java
-HashMap<String, Object> adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15D);
+HashMap<String, Object> adInfo = Media.createAdObject("ad-name", "ad-id", 1, 15);
 ```
 
 ##### Kotlin
 ```kotlin
-val adInfo = Media.createAdObject("ad-name", "ad-id", 1L, 15D)
+val adInfo = Media.createAdObject("ad-name", "ad-id", 1, 15)
 ```
 
 ### createChapterObject
@@ -222,21 +222,21 @@ Creates an instance of the Chapter object.
 
 ```java
 public static HashMap<String, Object> createChapterObject(String name,
-                                                          Long position,
-                                                          Double length,
-                                                          Double startTime);
+                                                          int position,
+                                                          int length,
+                                                          int startTime);
 ```
 
 #### Example
 
 ##### Java
 ```java
-HashMap<String, Object> chapterInfo = Media.createChapterObject("chapter-name", 1L, 60D, 0D);
+HashMap<String, Object> chapterInfo = Media.createChapterObject("chapter-name", 1, 60, 0);
 ```
 
 ##### Kotlin
 ```java
-val chapterInfo = Media.createChapterObject("chapter-name", 1L, 60D, 0D)
+val chapterInfo = Media.createChapterObject("chapter-name", 1, 60, 0)
 ```
 
 ### createQoEObject
@@ -253,22 +253,22 @@ Creates an instance of the QoE object.
 #### Syntax
 
 ```java
-public static HashMap<String, Object> createQoEObject(Long bitrate,
-                                                      Double startupTime,
-                                                      Double fps,
-                                                      Long droppedFrames);
+public static HashMap<String, Object> createQoEObject(int bitrate,
+                                                      int startupTime,
+                                                      int fps,
+                                                      int droppedFrames);
 ```
 
 #### Example
 
 ##### Java
 ```java
-HashMap<String, Object> qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D);
+HashMap<String, Object> qoeInfo = Media.createQoEObject(10000000, 2, 23, 10);
 ```
 
 ##### Kotlin
 ```kotlin
-val qoeInfo = Media.createQoEObject(10000000L, 2D, 23D, 10D)
+val qoeInfo = Media.createQoEObject(10000000, 2, 23, 10)
 ```
 
 ### createStateObject
@@ -319,7 +319,7 @@ public void trackSessionStart(Map<String, Object> mediaInfo, Map<String, String>
 
 ##### Java
 ```java
-HashMap<String, Object> mediaObject = Media.createMediaObject("media-name", "media-id", 60D, MediaConstants.StreamType.VOD, Media.MediaType.Video);
+HashMap<String, Object> mediaObject = Media.createMediaObject("media-name", "media-id", 60, MediaConstants.StreamType.VOD, Media.MediaType.Video);
 
 HashMap<String, String> mediaMetadata = new HashMap<String, String>();
 // Standard metadata keys provided by adobe.
@@ -338,7 +338,7 @@ tracker.trackSessionStart(mediaInfo, mediaMetadata);
 val mediaObject = Media.createMediaObject(
                         "media-name",
                         "media-id",
-                        60.0,
+                        60,
                         MediaConstants.StreamType.VOD,
                         Media.MediaType.Video
                     )
@@ -501,7 +501,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```java
 // AdBreakStart
-  HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0D);
+  HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name", 1, 0);
   tracker.trackEvent(Media.Event.AdBreakStart, adBreakObject, null);
 
 // AdBreakComplete
@@ -511,7 +511,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 ##### Kotlin
 ```kotlin
 // AdBreakStart
-    val adBreakObject = Media.createAdBreakObject("adbreak-name", 1L, 0.0)
+    val adBreakObject = Media.createAdBreakObject("adbreak-name", 1, 0)
     tracker.trackEvent(Media.Event.AdBreakStart, adBreakObject, null)
 
 // AdBreakComplete
@@ -524,7 +524,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```java
 // AdStart
-  HashMap<String, Object> adObject = Media.createAdObject("ad-name", "ad-id", 1L, 15D);
+  HashMap<String, Object> adObject = Media.createAdObject("ad-name", "ad-id", 1, 15);
 
   HashMap<String, String> adMetadata = new HashMap<String, String>();
   // Standard metadata keys provided by adobe.
@@ -545,7 +545,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 ##### Kotlin
 ```kotlin
 //AdStart
-    val adObject = Media.createAdObject("ad-name", "ad-id", 1L, 15.0)
+    val adObject = Media.createAdObject("ad-name", "ad-id", 1, 15)
 
     val adMetadata = HashMap<String, String>()
     // Standard metadata keys provided by adobe.
@@ -568,7 +568,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```java
 // ChapterStart
-  HashMap<String, Object> chapterObject = Media.createChapterObject("chapter-name", 1L, 60D, 0D);
+  HashMap<String, Object> chapterObject = Media.createChapterObject("chapter-name", 1, 60, 0);
 
   HashMap<String, String> chapterMetadata = new HashMap<String, String>();
   chapterMetadata.put("segmentType", "Sample segment type");
@@ -585,7 +585,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 ##### Kotlin
 ```kotlin
 // ChapterStart
-  val chapterObject = Media.createChapterObject("chapter-name", 1L, 60.0, 0.0)
+  val chapterObject = Media.createChapterObject("chapter-name", 1, 60, 0)
 
   val chapterMetadata = HashMap<String, String>()
   chapterMetadata["segmentType"] = "Sample segment type"
@@ -639,7 +639,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```java
 // If the new bitrate value is available provide it to the tracker.
-  HashMap<String, Object> qoeObject = Media.createQoEObject(2000000L, 2D, 25D, 10D);
+  HashMap<String, Object> qoeObject = Media.createQoEObject(2000000, 2, 25, 10);
   tracker.updateQoEObject(qoeObject);
 
 // Bitrate change
@@ -650,7 +650,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```kotlin
 // If the new bitrate value is available provide it to the tracker.
-  val qoeObject = Media.createQoEObject(2000000L, 2D, 25D, 10D)
+  val qoeObject = Media.createQoEObject(2000000, 2, 25, 10)
   tracker.updateQoEObject(qoeObject)
 
 // Bitrate change
@@ -667,7 +667,7 @@ Provides the current media playhead to the media tracker instance. For accurate 
 
 #### Syntax
 ```java
-public void updateCurrentPlayhead(double time);
+public void updateCurrentPlayhead(int time);
 ```
 
 #### Example
@@ -688,15 +688,15 @@ tracker.updateCurrentPlayhead(1)
 ##### Java
 ```java
 //Calculation for number of seconds since midnight UTC of the day
-double timeFromMidnightInSecond = (System.currentTimeMillis()/1000) % 86400;
+int timeFromMidnightInSecond = (int)((System.currentTimeMillis() / 1000) % 86400);
 tracker.updateCurrentPlayhead(timeFromMidnightInSecond);
 ```
 
 ##### Kotlin
 ```kotlin
-val timeFromMidnightInSecond = (System.currentTimeMillis() / 1000 % 86400).toDouble()
+//Calculation for number of seconds since midnight UTC of the day
+val timeFromMidnightInSecond = (System.currentTimeMillis() / 1000 % 86400).toInt()
 tracker.updateCurrentPlayhead(timeFromMidnightInSecond);
-}
 ```
 
 ### updateQoEObject
@@ -717,13 +717,13 @@ public void updateQoEObject(Map<String, Object> qoeObject);
 
 ##### Java
 ```java
-HashMap<String, Object> qoeObject = Media.createQoEObject(1000000L, 2D, 25D, 10D);
+HashMap<String, Object> qoeObject = Media.createQoEObject(1000000, 2, 25, 10);
 tracker.updateQoEObject(qoeObject);
 ```
 
 ##### Kotlin
 ```kotlin
-val qoeObject = Media.createQoEObject(1000000L, 2D, 25D, 10D)
+val qoeObject = Media.createQoEObject(1000000, 2, 25, 10)
 tracker.updateQoEObject(qoeObject)
 ```
 
