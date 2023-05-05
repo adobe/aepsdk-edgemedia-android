@@ -63,8 +63,8 @@ class MediaEdgeLocationHintIntegrationTests {
         MobileCore.updateConfiguration(
             mapOf(
                 "edge.configId" to EDGE_CONFIG_ID,
-                "edgemedia.channel" to "testChannel",
-                "edgemedia.playerName" to "testPlayerName"
+                "edgeMedia.channel" to "testChannel",
+                "edgeMedia.playerName" to "testPlayerName"
             )
         )
 
