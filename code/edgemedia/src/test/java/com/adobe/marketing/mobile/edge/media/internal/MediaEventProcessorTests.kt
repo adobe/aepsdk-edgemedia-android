@@ -259,9 +259,9 @@ class MediaEventProcessorTests {
     fun `updateMediaState() calls handleMediaStateUpdate for all sessions`() {
         setTestSessionsToProcessor()
         val stateUpdate = mapOf(
-            "edgemedia.channel" to "testChannel",
-            "edgemedia.playerName" to "testPlayerName",
-            "edgemedia.appVersion" to "testAppVersion"
+            "edgeMedia.channel" to "testChannel",
+            "edgeMedia.playerName" to "testPlayerName",
+            "edgeMedia.appVersion" to "testAppVersion"
         )
         mediaEventProcessor.updateMediaState(stateUpdate)
 
@@ -274,9 +274,9 @@ class MediaEventProcessorTests {
     fun `updateMediaState() updates MediaState`() {
         setTestSessionsToProcessor()
         val stateUpdate = mapOf(
-            "edgemedia.channel" to "testChannel",
-            "edgemedia.playerName" to "testPlayerName",
-            "edgemedia.appVersion" to "testAppVersion"
+            "edgeMedia.channel" to "testChannel",
+            "edgeMedia.playerName" to "testPlayerName",
+            "edgeMedia.appVersion" to "testAppVersion"
         )
         mediaEventProcessor.updateMediaState(stateUpdate)
         verify(mockState).updateState(eq(stateUpdate))

@@ -28,9 +28,9 @@ public final class MediaTestConstants {
     }
 
     static final class Configuration {
-        static final String MEDIA_CHANNEL = "edgemedia.channel";
-        static final String MEDIA_PLAYER_NAME = "edgemedia.playerName";
-        static final String MEDIA_APP_VERSION = "edgemedia.appVersion";
+        static final String MEDIA_CHANNEL = "edgeMedia.channel";
+        static final String MEDIA_PLAYER_NAME = "edgeMedia.playerName";
+        static final String MEDIA_APP_VERSION = "edgeMedia.appVersion";
 
         private Configuration() {}
     }

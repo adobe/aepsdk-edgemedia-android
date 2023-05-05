@@ -23,9 +23,9 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
     private val backendSessionId = "backendSessionId"
 
     private val mediaSharedState = mutableMapOf(
-        "edgemedia.channel" to "test_channel",
-        "edgemedia.playerName" to "test_playerName",
-        "edgemedia.appVersion" to "test_appVersion"
+        "edgeMedia.channel" to "test_channel",
+        "edgeMedia.playerName" to "test_playerName",
+        "edgeMedia.appVersion" to "test_appVersion"
     )
 
     private val mediaInfo = MediaInfo.create(
