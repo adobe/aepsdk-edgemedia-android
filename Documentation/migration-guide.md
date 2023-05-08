@@ -25,9 +25,9 @@ This is the complete migration guide from Media to Media for Edge Network extens
 ### Media for Edge Network
 | Name | Key | Value | Required |
 | --- | --- | --- | --- |
-| Channel | "edgemedia.channel" | String | Yes |
-| Player Name | "edgemedia.playerName" | String | Yes |
-| Application Version | "edgemedia.appVersion" | String | No |
+| Channel | "edgeMedia.channel" | String | Yes |
+| Player Name | "edgeMedia.playerName" | String | Yes |
+| Application Version | "edgeMedia.appVersion" | String | No |
 
 Please refer [Media for Edge Network configuration](getting-started.md/#configuration) for more details.
 

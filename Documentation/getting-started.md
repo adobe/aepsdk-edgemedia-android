@@ -19,16 +19,16 @@ Currently Media for Edge Network extension doesn't have a Data Collection extens
 #### Configuration Keys
 | Name | Key | Value | Required |
 | --- | --- | --- | --- |
-| Channel | "edgemedia.channel" | String | **Yes** |
-| Player Name | "edgemedia.playerName" | String | **Yes** |
-| Application Version | "edgemedia.appVersion" | String | **No** |
+| Channel | "edgeMedia.channel" | String | **Yes** |
+| Player Name | "edgeMedia.playerName" | String | **Yes** |
+| Application Version | "edgeMedia.appVersion" | String | **No** |
 
 ##### Java 
     ```java
     Map<String, Object> mediaConfiguration = new HashMap<>();
-    mediaConfiguration.put("edgemedia.channel", "<YOUR_CHANNEL_NAME>");
-    mediaConfiguration.put("edgemedia.playerName", "<YOUR_PLAYER_NAME>");
-    mediaConfiguration.put("edgemedia.appVersion", "<YOUR_APP_VERSION>");
+    mediaConfiguration.put("edgeMedia.channel", "<YOUR_CHANNEL_NAME>");
+    mediaConfiguration.put("edgeMedia.playerName", "<YOUR_PLAYER_NAME>");
+    mediaConfiguration.put("edgeMedia.appVersion", "<YOUR_APP_VERSION>");
 
     MobileCore.updateConfiguration(mediaConfiguration);
     ```
@@ -36,9 +36,9 @@ Currently Media for Edge Network extension doesn't have a Data Collection extens
 ##### Kotlin
     ```koltin
     val mediaConfiguration = mapOf<String, Any>(
-        "edgemedia.channel" to "<YOUR_CHANNEL_NAME>", 
-        "edgemedia.playerName" to "<YOUR_PLAYER_NAME>", 
-        "edgemedia.appVersion" to "<YOUR_APP_VERSION>"
+        "edgeMedia.channel" to "<YOUR_CHANNEL_NAME>", 
+        "edgeMedia.playerName" to "<YOUR_PLAYER_NAME>", 
+        "edgeMedia.appVersion" to "<YOUR_APP_VERSION>"
     )
     MobileCore.updateConfiguration(mediaConfiguration)
     ```
