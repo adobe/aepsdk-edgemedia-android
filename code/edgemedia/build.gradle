@@ -10,6 +10,8 @@ apply from: '../codeformat.gradle'
 apply from: '../checkstyle.gradle'
 
 android {
+    namespace = 'com.adobe.marketing.mobile.edge.media'
+
     compileSdk rootProject.ext.targetSdkVersion
 
     defaultConfig {
