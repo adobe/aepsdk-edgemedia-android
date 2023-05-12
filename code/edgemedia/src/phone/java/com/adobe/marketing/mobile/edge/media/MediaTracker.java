@@ -63,11 +63,11 @@ public interface MediaTracker {
             @Nullable Map<String, String> contextData);
 
     /**
-     * Method to update current QoS information.
+     * Method to update current QoE information.
      *
-     * @param qoeData the Map instance containing current QoS information. This method can be called
+     * @param qoeData the Map instance containing current QoE information. This method can be called
      *     multiple times during a playback session. Player implementation must always return the
-     *     most recently available QoS data.
+     *     most recently available QoE data.
      */
     void updateQoEObject(@NonNull Map<String, Object> qoeData);
 
