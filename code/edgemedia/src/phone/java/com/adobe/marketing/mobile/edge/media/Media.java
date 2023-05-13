@@ -128,7 +128,7 @@ public class Media {
      * @param startupTime The start up time of media in seconds
      * @param fps The current frames per second information
      * @param droppedFrames The number of dropped frames so far
-     * @return A MediaObject instance representing the QoEObject.
+     * @return A map representing quality of experience information.
      */
     @NonNull public static HashMap<String, Object> createQoEObject(
             final int bitrate, final int startupTime, final int fps, final int droppedFrames) {
