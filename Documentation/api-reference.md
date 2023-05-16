@@ -343,7 +343,7 @@ val mediaObject = Media.createMediaObject(
                         Media.MediaType.Video
                     )
 
-val mediaMetadata = HashMap<String, String>()
+val mediaMetadata = mutableMapOf<String, String>()
 // Standard metadata keys provided by adobe.
 mediaMetadata[MediaConstants.VideoMetadataKeys.EPISODE] = "Sample Episode" 
 mediaMetadata[MediaConstants.VideoMetadataKeys.SHOW] = "Sample Show"
@@ -475,23 +475,23 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 
 ```java
 // StateStart
-  HashMap<String, Object> stateObject = Media.createStateObject("fullscreen");
+  HashMap<String, Object> stateObject = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN);
   tracker.trackEvent(Media.Event.StateStart, stateObject, null);
 
 // StateEnd
-  HashMap<String, Object> stateObject = Media.createStateObject("fullscreen");
+  HashMap<String, Object> stateObject = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN);
   tracker.trackEvent(Media.Event.StateEnd, stateObject, null);
 ```
 
 ##### Kotlin
 ```kotlin
 // StateStart
-    val stateObject = Media.createStateObject("fullscreen")
+    val stateObject = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN)
     tracker.trackEvent(Media.Event.StateStart, stateObject, null)
 
 // StateEnd
-    val stateObject = Media.createStateObject("fullscreen")
-    tracker.trackEvent(Media.Event.StateEnd, stateObject, null)`
+    val stateObject = Media.createStateObject(MediaConstants.PlayerState.FULLSCREEN)
+    tracker.trackEvent(Media.Event.StateEnd, stateObject, null)
 ```
 
 
@@ -547,7 +547,7 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
 //AdStart
     val adObject = Media.createAdObject("ad-name", "ad-id", 1, 15)
 
-    val adMetadata = HashMap<String, String>()
+    val adMetadata = mutableMapOf<String, String>()
     // Standard metadata keys provided by adobe.
     adMetadata[MediaConstants.AdMetadataKeys.ADVERTISER] = "Sample Advertiser"
     adMetadata[MediaConstants.AdMetadataKeys.CAMPAIGN_ID] = "Sample Campaign"
@@ -705,12 +705,12 @@ Provides the media tracker with the current QoE information. For accurate tracki
 
 | Parameter | Description |
 | :--- | :--- |
-| `qoeObject` | Current QoE information that was created by using the createQoEObject method. |
+| `qoeInfo` | Current QoE information that was created by using the createQoEObject method. |
 
 
 #### Syntax
 ```java
-public void updateQoEObject(Map<String, Object> qoeObject);
+public void updateQoEObject(Map<String, Object> qoeInfo);
 ```
 
 #### Example

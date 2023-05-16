@@ -61,7 +61,7 @@ public class Media {
      * Creates an instance of the video info object
      *
      * @param name The name of the media
-     * @param mediaId The unique identifier for the media
+     * @param id The unique identifier for the media
      * @param length The length of the media in seconds
      * @param streamType The stream type as a string. Use the pre-defined constants for vod, live,
      *     and linear content
@@ -70,11 +70,11 @@ public class Media {
      */
     @NonNull public static HashMap<String, Object> createMediaObject(
             @NonNull final String name,
-            @NonNull final String mediaId,
+            @NonNull final String id,
             final int length,
             @NonNull final String streamType,
             @NonNull final MediaType mediaType) {
-        return MediaObject.createMediaInfo(mediaId, name, streamType, mediaType, length);
+        return MediaObject.createMediaInfo(id, name, streamType, mediaType, length);
     }
 
     /**
@@ -94,17 +94,17 @@ public class Media {
      * Creates an instance of the Ad info object
      *
      * @param name The name of the ad
-     * @param adId The unique id for the ad
+     * @param id The unique id for the ad
      * @param position The start position of the ad
      * @param length The length of the ad in seconds
      * @return A MediaObject instance representing the Ad.
      */
     @NonNull public static HashMap<String, Object> createAdObject(
             @NonNull final String name,
-            @NonNull final String adId,
+            @NonNull final String id,
             final int position,
             final int length) {
-        return MediaObject.createAdInfo(name, adId, position, length);
+        return MediaObject.createAdInfo(name, id, position, length);
     }
 
     /**
@@ -122,13 +122,13 @@ public class Media {
     }
 
     /**
-     * Creates an instance of the QoS info object
+     * Creates an instance of the QoE info object
      *
      * @param bitrate The bitrate of media in bits per second
      * @param startupTime The start up time of media in seconds
      * @param fps The current frames per second information
      * @param droppedFrames The number of dropped frames so far
-     * @return A MediaObject instance representing the QoSObject.
+     * @return A map representing quality of experience information.
      */
     @NonNull public static HashMap<String, Object> createQoEObject(
             final int bitrate, final int startupTime, final int fps, final int droppedFrames) {

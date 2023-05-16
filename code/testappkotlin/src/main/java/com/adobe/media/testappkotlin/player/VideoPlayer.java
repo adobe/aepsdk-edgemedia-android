@@ -56,7 +56,7 @@ public class VideoPlayer extends Observable {
 
     private AudioManager _audio;
 
-    private Map<String, Object> _adBreakInfo, _adInfo, _chapterInfo, _qosInfo;
+    private Map<String, Object> _adBreakInfo, _adInfo, _chapterInfo, _qoeInfo;
 
     private Clock _clock;
 
@@ -90,12 +90,12 @@ public class VideoPlayer extends Observable {
         _adInfo = null;
         _chapterInfo = null;
 
-        // Build a static/hard-coded QoS info here.
-        _qosInfo = new HashMap<String, Object>();
-        _qosInfo.put("bitrate", 50000);
-        _qosInfo.put("fps", 24);
-        _qosInfo.put("droppedFrames", 10);
-        _qosInfo.put("startupTime", 2);
+        // Build a static/hard-coded QoE info here.
+        _qoeInfo = new HashMap<String, Object>();
+        _qoeInfo.put("bitrate", 50000);
+        _qoeInfo.put("fps", 24);
+        _qoeInfo.put("droppedFrames", 10);
+        _qoeInfo.put("startupTime", 2);
 
         _clock = null;
     }
@@ -134,8 +134,8 @@ public class VideoPlayer extends Observable {
         return _chapterInfo;
     }
 
-    public Map<String, Object> getQoSInfo() {
-        return _qosInfo;
+    public Map<String, Object> getQoEInfo() {
+        return _qoeInfo;
     }
 
     public void loadContent(Uri uri) {
