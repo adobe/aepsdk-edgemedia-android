@@ -160,44 +160,5 @@ public final class MediaTestConstants {
 
             private MediaEventName() {}
         }
-
-        static final class StandardMediaMetadata {
-            static final String SHOW = "a.media.show";
-            static final String SEASON = "a.media.season";
-            static final String EPISODE = "a.media.episode";
-            static final String ASSET_ID = "a.media.asset";
-            static final String GENRE = "a.media.genre";
-            static final String FIRST_AIR_DATE = "a.media.airDate";
-            static final String FIRST_DIGITAL_DATE = "a.media.digitalDate";
-            static final String RATING = "a.media.rating";
-            static final String ORIGINATOR = "a.media.originator";
-            static final String NETWORK = "a.media.network";
-            static final String SHOW_TYPE = "a.media.type";
-            static final String AD_LOAD = "a.media.adLoad";
-            static final String MVPD = "a.media.pass.mvpd";
-            static final String AUTH = "a.media.pass.auth";
-            static final String DAY_PART = "a.media.dayPart";
-            static final String FEED = "a.media.feed";
-            static final String STREAM_FORMAT = "a.media.format";
-            static final String ARTIST = "a.media.artist";
-            static final String ALBUM = "a.media.album";
-            static final String LABEL = "a.media.label";
-            static final String AUTHOR = "a.media.author";
-            static final String STATION = "a.media.station";
-            static final String PUBLISHER = "a.media.publisher";
-
-            private StandardMediaMetadata() {}
-        }
-
-        static final class StandardAdMetadata {
-            static final String ADVERTISER = "a.media.ad.advertiser";
-            static final String CAMPAIGN_ID = "a.media.ad.campaign";
-            static final String CREATIVE_ID = "a.media.ad.creative";
-            static final String PLACEMENT_ID = "a.media.ad.placement";
-            static final String SITE_ID = "a.media.ad.site";
-            static final String CREATIVE_URL = "a.media.ad.creativeURL";
-
-            private StandardAdMetadata() {}
-        }
     }
 }

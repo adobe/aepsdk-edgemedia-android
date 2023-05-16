@@ -30,47 +30,47 @@ public class MediaConstants {
 
     /** These constant strings define standard ad metadata keys. */
     public static final class AdMetadataKeys {
-        public static final String ADVERTISER = "advertiser";
-        public static final String CAMPAIGN_ID = "campaignID";
-        public static final String CREATIVE_ID = "creativeID";
-        public static final String CREATIVE_URL = "creativeURL";
-        public static final String PLACEMENT_ID = "placementID";
-        public static final String SITE_ID = "siteID";
+        public static final String ADVERTISER = "a.media.ad.advertiser";
+        public static final String CAMPAIGN_ID = "a.media.ad.campaign";
+        public static final String CREATIVE_ID = "a.media.ad.creative";
+        public static final String CREATIVE_URL = "a.media.ad.creativeURL";
+        public static final String PLACEMENT_ID = "a.media.ad.placement";
+        public static final String SITE_ID = "a.media.ad.site";
 
         private AdMetadataKeys() {}
     }
 
     /** These constant strings define standard audio metadata keys. */
     public static final class AudioMetadataKeys {
-        public static final String ALBUM = "album";
-        public static final String ARTIST = "artist";
-        public static final String AUTHOR = "author";
-        public static final String LABEL = "label";
-        public static final String PUBLISHER = "publisher";
-        public static final String STATION = "station";
+        public static final String ALBUM = "a.media.album";
+        public static final String ARTIST = "a.media.artist";
+        public static final String AUTHOR = "a.media.author";
+        public static final String LABEL = "a.media.label";
+        public static final String PUBLISHER = "a.media.publisher";
+        public static final String STATION = "a.media.station";
 
         private AudioMetadataKeys() {}
     }
 
     /** These constant strings define standard video metadata keys. */
     public static final class VideoMetadataKeys {
-        public static final String AD_LOAD = "adLoad";
-        public static final String ASSET_ID = "assetID";
-        public static final String AUTHORIZED = "isAuthenticated";
-        public static final String DAY_PART = "dayPart";
-        public static final String EPISODE = "episode";
-        public static final String FEED = "feed";
-        public static final String FIRST_AIR_DATE = "firstAirDate";
-        public static final String FIRST_DIGITAL_DATE = "firstDigitalDate";
-        public static final String GENRE = "genre";
-        public static final String MVPD = "mvpd";
-        public static final String NETWORK = "network";
-        public static final String ORIGINATOR = "originator";
-        public static final String SEASON = "season";
-        public static final String SHOW = "show";
-        public static final String SHOW_TYPE = "showType";
-        public static final String STREAM_FORMAT = "streamFormat";
-        public static final String RATING = "rating";
+        public static final String AD_LOAD = "a.media.adLoad";
+        public static final String ASSET_ID = "a.media.asset";
+        public static final String AUTHORIZED = "a.media.pass.auth";
+        public static final String DAY_PART = "a.media.dayPart";
+        public static final String EPISODE = "a.media.episode";
+        public static final String FEED = "a.media.feed";
+        public static final String FIRST_AIR_DATE = "a.media.airDate";
+        public static final String FIRST_DIGITAL_DATE = "a.media.digitalDate";
+        public static final String GENRE = "a.media.genre";
+        public static final String MVPD = "a.media.pass.mvpd";
+        public static final String NETWORK = "a.media.network";
+        public static final String ORIGINATOR = "a.media.originator";
+        public static final String RATING = "a.media.rating";
+        public static final String SEASON = "a.media.season";
+        public static final String SHOW = "a.media.show";
+        public static final String SHOW_TYPE = "a.media.type";
+        public static final String STREAM_FORMAT = "a.media.format";
 
         private VideoMetadataKeys() {}
     }
