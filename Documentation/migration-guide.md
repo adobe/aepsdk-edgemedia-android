@@ -224,6 +224,19 @@ class MyApp : Application() {
 
 ### Public API changes
 
+#### package name
+
+The Media for Edge Network extension uses the same class names as the Media Analytics extension. The Java package, however, is changed to `com.adobe.marketing.mobile.edge.media`. 
+
+```diff
+- import com.adobe.marketing.mobile.Media;
+- import com.adobe.marketing.mobile.MediaConstants;
+- import com.adobe.marketing.mobile.MediaTracker;
++ import com.adobe.marketing.mobile.edge.media.Media;
++ import com.adobe.marketing.mobile.edge.media.MediaConstants;
++ import com.adobe.marketing.mobile.edge.media.MediaTracker;
+```
+
 All numeric parameters of the public APIs have been updated to type integer.
 
 #### createMediaObject
