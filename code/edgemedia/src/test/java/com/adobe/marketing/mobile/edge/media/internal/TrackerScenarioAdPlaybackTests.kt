@@ -446,7 +446,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaEventProcessor.updateMediaState(mediaSharedState)
 
         // Create a new MediaTracker with the given config, overwrites `mediaTracker` variable
-        createTracker(mapOf(MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to 15, MediaConstants.TrackerConfig.AD_PING_INTERVAL to 1))
+        createTracker(mapOf(MediaConstants.Config.MAIN_PING_INTERVAL to 15, MediaConstants.Config.AD_PING_INTERVAL to 1))
 
         // Create new MediaSession
         mediaTracker.trackSessionStart(mediaInfo.toObjectMap(), mediaMetadata)
@@ -493,7 +493,7 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaEventProcessor.updateMediaState(mediaSharedState)
 
         // Create a new MediaTracker with the given config, overwrites `mediaTracker` variable
-        createTracker(mapOf(MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to 1, MediaConstants.TrackerConfig.AD_PING_INTERVAL to 11))
+        createTracker(mapOf(MediaConstants.Config.MAIN_PING_INTERVAL to 1, MediaConstants.Config.AD_PING_INTERVAL to 11))
 
         // Create new MediaSession
         mediaTracker.trackSessionStart(mediaInfo.toObjectMap(), mediaMetadata)

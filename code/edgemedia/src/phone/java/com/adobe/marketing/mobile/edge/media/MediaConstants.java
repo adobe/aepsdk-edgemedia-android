@@ -86,12 +86,12 @@ public class MediaConstants {
     }
 
     /** These constant strings define configuration for tracker. */
-    public static final class TrackerConfig {
+    public static final class Config {
         public static final String CHANNEL = "config.channel";
         public static final String AD_PING_INTERVAL = "config.adpinginterval";
         public static final String MAIN_PING_INTERVAL = "config.mainpinginterval";
 
-        private TrackerConfig() {}
+        private Config() {}
     }
 
     /** These constant strings define video/ad info keys used for MediaObject. */
