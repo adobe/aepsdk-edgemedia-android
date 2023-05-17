@@ -61,28 +61,14 @@ public class MediaTrackerEventGenerator implements MediaTracker {
             final Map<String, Object> config, final AdobeCallback<Event> eventConsumer) {
         final String trackerId = getUniqueId();
 
-        final Map<String, Object> cleanedConfig = new HashMap<>();
+        Map<String, Object> eventData = new HashMap<>();
+
+        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.ID, trackerId);
 
         if (config != null) {
-            for (Map.Entry<String, Object> entry : config.entrySet()) {
-                Object value = entry.getValue();
-                if (value instanceof Boolean || value instanceof String) {
-                    cleanedConfig.put(entry.getKey(), entry.getValue());
-                } else {
-                    // we just expect String and boolean config params
-                    Log.debug(
-                            MediaInternalConstants.LOG_TAG,
-                            SOURCE_TAG,
-                            "create - Unsupported config key:%s valueType:%s",
-                            entry.getKey(),
-                            entry.getValue().getClass().toString());
-                }
-            }
+            eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM, config);
         }
 
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.ID, trackerId);
-        eventData.put(MediaInternalConstants.EventDataKeys.Tracker.EVENT_PARAM, cleanedConfig);
         Event event =
                 new Event.Builder(
                                 "Edge Media CreateTrackerRequest",
