@@ -122,7 +122,7 @@ internal class MediaRealTimeSession(
         val statusCode = DataReader.optInt(data, "status", 0)
         val errorType = DataReader.optString(data, "type", null)
 
-        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400.equals(errorType, true)) {
+        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400.equals(errorType, ignoreCase = true)) {
             Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session ($id): Aborting session as error returned from session start request. $data")
             abort()
         }
