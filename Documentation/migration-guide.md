@@ -239,6 +239,14 @@ The Media for Edge Network extension uses the same class names as the Media Anal
 
 All numeric parameters of the public APIs have been updated to type integer.
 
+#### MediaConstants.TrackerConfig
+
+The Media Analytics and Media for Edge Network extensions both provide convienience constants when setting the tracker configuration. The Media Analytics extension named this class `Config`, while the Media for Edge Network extension names this class `TrackerConfig`.
+```diff
+- MediaConstants.Config
++ MediaConstants.TrackerConfig
+```
+
 #### createMediaObject
 ```diff
 - public static HashMap<String, Object> createMediaObject(String name,
@@ -304,7 +312,7 @@ Media extension allowed for ad content tracking of `1 second` when setting the `
 ```diff
 - MediaTracker tracker = Media.createTracker()
 + HashMap<String, Object> trackerConfig = new HashMap<>();
-+ trackerConfig.put(MediaConstants.Config.AD_PING_INTERVAL, 1);
++ trackerConfig.put(MediaConstants.TrackerConfig.AD_PING_INTERVAL, 1);
 + MediaTracker tracker = Media.createTrackerWith(trackerConfig);
 
 HashMap<String, Object> mediaObject = Media.createMediaObject("name", "id", 30, "vod", Media.MediaType.Video);
