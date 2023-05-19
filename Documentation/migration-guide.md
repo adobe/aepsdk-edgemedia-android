@@ -241,7 +241,7 @@ All numeric parameters of the public APIs have been updated to type integer.
 
 #### MediaConstants.TrackerConfig
 
-The Media Analytics and Media for Edge Network extensions both provide convienience constants when setting the tracker configuration. The Media Analytics extension named this class `Config`, while the Media for Edge Network extension names this class `TrackerConfig`.
+The Media Analytics and Media for Edge Network extensions both provide convenience constants when setting the tracker configuration. The Media Analytics extension named this class `Config`, while the Media for Edge Network extension names this class `TrackerConfig`.
 ```diff
 - MediaConstants.Config
 + MediaConstants.TrackerConfig
