@@ -21,12 +21,21 @@ import com.adobe.marketing.mobile.edge.media.Media
 
 class MediaTestApp : Application() {
     // TODO: Set up the preferred Environment File ID from your mobile property configured in Data Collection UI
-    private var ENVIRONMENT_FILE_ID: String = ""
+    private val ENVIRONMENT_FILE_ID: String = "94f571f308d5/e0549f176247/launch-dcba224e4bc5-development"
 
     override fun onCreate() {
         super.onCreate()
         MobileCore.setApplication(this)
         MobileCore.setLogLevel(LoggingMode.VERBOSE)
+        MobileCore.updateConfiguration(
+            mapOf(
+                "edge.configId" to "05d4a30a-f0b5-4452-b7a0-3bafefd691c0",
+                "__dev__edge.configId" to "05d4a30a-f0b5-4452-b7a0-3bafefd691c0",
+                "experienceCloud.org" to "6D9FE18C5536A5E90A4C98A6@AdobeOrg",
+                "edge.domain" to "edge.adobedc.net"
+            )
+        )
+
         MobileCore.registerExtensions(listOf(Identity.EXTENSION, Edge.EXTENSION, Media.EXTENSION, Assurance.EXTENSION)) {
             MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID)
         }

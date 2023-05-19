@@ -47,7 +47,7 @@ internal class MediaXDMEventGenerator(
         val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaContext.mediaInfo, mediaContext.mediaMetadata, forceResume)
         val customMetadata = MediaXDMEventHelper.generateMediaCustomMetadata(mediaContext.mediaMetadata)
 
-        val channel = DataReader.optString(trackerConfig, MediaConstants.Config.CHANNEL, null)
+        val channel = DataReader.optString(trackerConfig, MediaConstants.TrackerConfig.CHANNEL, null)
         if (!StringUtils.isNullOrEmpty(channel)) {
             sessionDetails.channel = channel
         }
@@ -291,12 +291,12 @@ internal class MediaXDMEventGenerator(
     // / - Return: the custom interval in `MILLISECONDS` if found in tracker configuration. Returns the default `MediaConstants.PingInterval.REALTIME_TRACKING` if the custom values are invalid or not found
     private fun getReportingIntervalFromTrackerConfig(isAdStart: Boolean = false): Int {
         if (isAdStart) {
-            val customAdPingInterval = DataReader.optInt(trackerConfig, MediaConstants.Config.AD_PING_INTERVAL, 0)
+            val customAdPingInterval = DataReader.optInt(trackerConfig, MediaConstants.TrackerConfig.AD_PING_INTERVAL, 0)
             if (allowedAdPingIntervalRangeInSeconds.contains(customAdPingInterval)) {
                 return customAdPingInterval * 1000 // convert to Milliseconds
             }
         } else {
-            val customMainPingInterval = DataReader.optInt(trackerConfig, MediaConstants.Config.MAIN_PING_INTERVAL, 0)
+            val customMainPingInterval = DataReader.optInt(trackerConfig, MediaConstants.TrackerConfig.MAIN_PING_INTERVAL, 0)
             if (allowedMainPingIntervalRangeInSeconds.contains(customMainPingInterval)) {
                 return customMainPingInterval * 1000 // convert to Milliseconds
             }

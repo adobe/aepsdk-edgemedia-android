@@ -26,7 +26,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
     private var tracker: MediaTracker
 
     init {
-        val config = mutableMapOf<String, Any>(MediaConstants.Config.CHANNEL to "android_kotlin_sample") // Overwrites channel configured from remote configuration
+        val config = mutableMapOf<String, Any>(MediaConstants.TrackerConfig.CHANNEL to "android_kotlin_sample") // Overwrites channel configured from remote configuration
         // config[MediaConstants.Config.AD_PING_INTERVAL] = 1  // Overwrites ad content ping interval to 1 second
         // config[MediaConstants.Config.MAIN_PING_INTERVAL] = 30 // Overwrites main content ping interval to 30 seconds.
 

@@ -92,7 +92,7 @@ class MediaXDMEventGeneratorTests {
         eventGenerator = MediaXDMEventGenerator(
             mediaContext,
             mockEventProcessor,
-            mapOf(MediaConstants.Config.CHANNEL to "channel"),
+            mapOf(MediaConstants.TrackerConfig.CHANNEL to "channel"),
             0
         )
         val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata)
@@ -790,7 +790,7 @@ class MediaXDMEventGeneratorTests {
             mockEventProcessor = Mockito.mock(MediaEventProcessor::class.java) // create new mock for each iteration
 
             val internalMS = interval * 1000
-            val trackerConfig = mapOf<String, Any>(MediaConstants.Config.MAIN_PING_INTERVAL to interval)
+            val trackerConfig = mapOf<String, Any>(MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to interval)
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(internalMS, reset = true)
 
@@ -815,7 +815,7 @@ class MediaXDMEventGeneratorTests {
         for (interval in invalidIntervals) {
             mockEventProcessor = Mockito.mock(MediaEventProcessor::class.java) // create new mock for each iteration
 
-            val trackerConfig = mapOf<String, Any>(MediaConstants.Config.MAIN_PING_INTERVAL to interval)
+            val trackerConfig = mapOf<String, Any>(MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to interval)
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS, reset = true)
 
@@ -841,7 +841,7 @@ class MediaXDMEventGeneratorTests {
             mockEventProcessor = Mockito.mock(MediaEventProcessor::class.java) // create new mock for each iteration
 
             val internalMS = interval * 1000
-            val trackerConfig = mapOf<String, Any>(MediaConstants.Config.AD_PING_INTERVAL to interval)
+            val trackerConfig = mapOf<String, Any>(MediaConstants.TrackerConfig.AD_PING_INTERVAL to interval)
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(internalMS, reset = true)
             // mock adStart
@@ -868,7 +868,7 @@ class MediaXDMEventGeneratorTests {
         for (interval in invalidIntervals) {
             mockEventProcessor = Mockito.mock(MediaEventProcessor::class.java) // create new mock for each iteration
 
-            val trackerConfig = mapOf<String, Any>(MediaConstants.Config.AD_PING_INTERVAL to interval)
+            val trackerConfig = mapOf<String, Any>(MediaConstants.TrackerConfig.AD_PING_INTERVAL to interval)
             eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
             updateTs(MediaInternalConstants.PingInterval.REALTIME_TRACKING_MS, reset = true)
             // mock adStart
@@ -893,8 +893,8 @@ class MediaXDMEventGeneratorTests {
     fun testCustomMainPingIntervalAndCustomAdPingInterval_validRange_sendsPingWithCustomValue() {
         // setup
         val trackerConfig = mapOf<String, Any>(
-            MediaConstants.Config.MAIN_PING_INTERVAL to 15,
-            MediaConstants.Config.AD_PING_INTERVAL to 3
+            MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to 15,
+            MediaConstants.TrackerConfig.AD_PING_INTERVAL to 3
         )
         eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
 
@@ -930,7 +930,7 @@ class MediaXDMEventGeneratorTests {
     fun testDefaultMainPingIntervalAndCustomAdPingInterval() {
         // setup
         val trackerConfig = mapOf<String, Any>(
-            MediaConstants.Config.AD_PING_INTERVAL to 3
+            MediaConstants.TrackerConfig.AD_PING_INTERVAL to 3
         )
         eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
 
@@ -978,7 +978,7 @@ class MediaXDMEventGeneratorTests {
     fun testCustomMainPingIntervalAndDefaultAdPingInterval() {
         // setup
         val trackerConfig = mapOf<String, Any>(
-            MediaConstants.Config.MAIN_PING_INTERVAL to 15
+            MediaConstants.TrackerConfig.MAIN_PING_INTERVAL to 15
         )
         eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, trackerConfig, 0)
 

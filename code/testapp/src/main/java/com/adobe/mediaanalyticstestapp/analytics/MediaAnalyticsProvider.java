@@ -32,7 +32,7 @@ public class MediaAnalyticsProvider implements Observer {
         _player = player;
         HashMap<String, Object> config = new HashMap<>();
         config.put(
-                MediaConstants.Config.CHANNEL,
+                MediaConstants.TrackerConfig.CHANNEL,
                 "android_v5_sample"); // Overwrites channel configured from remote configuration
         // config.put(MediaConstants.TrackerConfig.AD_PING_INTERVAL, 1);  // Overwrites ad content
         // ping interval to 1 second
