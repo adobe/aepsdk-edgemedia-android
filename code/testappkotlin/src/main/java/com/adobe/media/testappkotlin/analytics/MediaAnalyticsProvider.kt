@@ -23,7 +23,7 @@ import java.util.*
 class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
     private val LOG_TAG = "MediaAnalyticsProvider"
     private var player: VideoPlayer = player
-    private var tracker: MediaTracker? = null
+    private var tracker: MediaTracker
 
     init {
         val config = mutableMapOf<String, Any>(MediaConstants.TrackerConfig.CHANNEL to "android_kotlin_sample") // Overwrites channel configured from remote configuration
@@ -35,7 +35,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
     }
 
     fun destroy() {
-        tracker?.trackSessionEnd()
+        tracker.trackSessionEnd()
         player.destroy()
         player.deleteObserver(this)
     }
@@ -65,35 +65,35 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
 
                 // Set to true if this is a resume playback scenario (not starting from playhead 0)
                 // mediaInfo.put(MediaConstants.MediaObjectKey.RESUMED, true);
-                tracker?.trackSessionStart(mediaInfo, videoMetadata)
+                tracker.trackSessionStart(mediaInfo, videoMetadata)
             }
             PlayerEvent.VIDEO_UNLOAD -> {
                 Log.d(LOG_TAG, "Video unloaded.")
-                tracker?.trackSessionEnd()
+                tracker.trackSessionEnd()
             }
             PlayerEvent.PLAY -> {
                 Log.d(LOG_TAG, "Playback started.")
-                tracker?.trackPlay()
+                tracker.trackPlay()
             }
             PlayerEvent.PAUSE -> {
                 Log.d(LOG_TAG, "Playback paused.")
-                tracker?.trackPause()
+                tracker.trackPause()
             }
             PlayerEvent.SEEK_START -> {
                 Log.d(LOG_TAG, "Seek started.")
-                tracker?.trackEvent(Media.Event.SeekStart, null, null)
+                tracker.trackEvent(Media.Event.SeekStart, null, null)
             }
             PlayerEvent.SEEK_COMPLETE -> {
                 Log.d(LOG_TAG, "Seek completed.")
-                tracker?.trackEvent(Media.Event.SeekComplete, null, null)
+                tracker.trackEvent(Media.Event.SeekComplete, null, null)
             }
             PlayerEvent.BUFFER_START -> {
                 Log.d(LOG_TAG, "Buffer started.")
-                tracker?.trackEvent(Media.Event.BufferStart, null, null)
+                tracker.trackEvent(Media.Event.BufferStart, null, null)
             }
             PlayerEvent.BUFFER_COMPLETE -> {
                 Log.d(LOG_TAG, "Buffer completed.")
-                tracker?.trackEvent(Media.Event.BufferComplete, null, null)
+                tracker.trackEvent(Media.Event.BufferComplete, null, null)
             }
             PlayerEvent.AD_START -> {
                 Log.d(LOG_TAG, "Ad started.")
@@ -105,7 +105,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 adMetadata[MediaConstants.AdMetadataKeys.CAMPAIGN_ID] = "Sample Campaign"
 
                 // Ad Break Info
-                val adBreakData = player!!.adBreakInfo
+                val adBreakData = player.adBreakInfo
                 val name = adBreakData["name"] as String?
                 val position = adBreakData["position"] as Int?
                 val startTime = adBreakData["startTime"] as Int?
@@ -116,7 +116,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 )
 
                 // Ad Info
-                val adData = player!!.adInfo
+                val adData = player.adInfo
                 val adName = adData["name"] as String?
                 val adId = adData["id"] as String?
                 val adPosition = adData["position"] as Int?
@@ -127,13 +127,13 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                     adPosition!!,
                     adLength!!
                 )
-                tracker?.trackEvent(Media.Event.AdBreakStart, adBreakInfo, null)
-                tracker?.trackEvent(Media.Event.AdStart, adInfo, adMetadata)
+                tracker.trackEvent(Media.Event.AdBreakStart, adBreakInfo, null)
+                tracker.trackEvent(Media.Event.AdStart, adInfo, adMetadata)
             }
             PlayerEvent.AD_COMPLETE -> {
                 Log.d(LOG_TAG, "Ad completed.")
-                tracker?.trackEvent(Media.Event.AdComplete, null, null)
-                tracker?.trackEvent(Media.Event.AdBreakComplete, null, null)
+                tracker.trackEvent(Media.Event.AdComplete, null, null)
+                tracker.trackEvent(Media.Event.AdBreakComplete, null, null)
             }
             PlayerEvent.CHAPTER_START -> {
                 Log.d(LOG_TAG, "Chapter started.")
@@ -141,7 +141,7 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                 chapterMetadata["segmentType"] = "Sample Segment Type"
 
                 // Chapter Info
-                val chapterData = player!!.chapterInfo
+                val chapterData = player.chapterInfo
                 val chapterName = chapterData["name"] as String?
                 val chapterPosition = chapterData["position"] as Int?
                 val chapterLength = chapterData["length"] as Int?
@@ -152,27 +152,27 @@ class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
                     chapterLength!!,
                     chapterStartTime!!
                 )
-                tracker?.trackEvent(Media.Event.ChapterStart, chapterDataInfo, chapterMetadata)
+                tracker.trackEvent(Media.Event.ChapterStart, chapterDataInfo, chapterMetadata)
             }
             PlayerEvent.CHAPTER_COMPLETE -> {
                 Log.d(LOG_TAG, "Chapter completed.")
-                tracker?.trackEvent(Media.Event.ChapterComplete, null, null)
+                tracker.trackEvent(Media.Event.ChapterComplete, null, null)
             }
             PlayerEvent.COMPLETE -> {
                 Log.d(LOG_TAG, "Playback completed.")
-                tracker?.trackComplete()
+                tracker.trackComplete()
             }
             PlayerEvent.PLAYHEAD_UPDATE -> // Log.d(LOG_TAG, "Playhead update.");
-                tracker?.updateCurrentPlayhead(player!!.currentPlaybackTime)
+                tracker.updateCurrentPlayhead(player.currentPlaybackTime)
             PlayerEvent.PLAYER_STATE_MUTE_START -> {
                 Log.d(LOG_TAG, "Player State(Mute).")
                 val stateInfo = Media.createStateObject(MediaConstants.PlayerState.MUTE)
-                tracker?.trackEvent(Media.Event.StateStart, stateInfo, null)
+                tracker.trackEvent(Media.Event.StateStart, stateInfo, null)
             }
             PlayerEvent.PLAYER_STATE_MUTE_END -> {
                 Log.d(LOG_TAG, "Player State End.")
                 val stateInfo = Media.createStateObject(MediaConstants.PlayerState.MUTE)
-                tracker?.trackEvent(Media.Event.StateEnd, stateInfo, null)
+                tracker.trackEvent(Media.Event.StateEnd, stateInfo, null)
             }
         }
     }

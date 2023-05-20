@@ -12,7 +12,6 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.edge.media.MediaConstants
-import com.adobe.marketing.mobile.edge.media.MediaConstants.PlayerState
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMCustomMetadata
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaCollection
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
@@ -90,7 +89,12 @@ class MediaXDMEventGeneratorTests {
     @Test
     fun testProcessSessionStart_withValidChannelValuePassedInTrackerConfig() {
         // setup
-        eventGenerator = MediaXDMEventGenerator(mediaContext, mockEventProcessor, mapOf(MediaConstants.TrackerConfig.CHANNEL to "channel"), 0)
+        eventGenerator = MediaXDMEventGenerator(
+            mediaContext,
+            mockEventProcessor,
+            mapOf(MediaConstants.TrackerConfig.CHANNEL to "channel"),
+            0
+        )
         val sessionDetails = MediaXDMEventHelper.generateSessionDetails(mediaInfo, metadata)
         sessionDetails.show = "show"
         sessionDetails.channel = "channel"

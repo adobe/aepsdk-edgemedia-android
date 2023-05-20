@@ -33,13 +33,13 @@ public class MediaTests {
     static final String TRACKER_EVENT_PARAM = "event.param";
 
     @Test
-    public void test_createTrackerEventDatawithConfig() {
+    public void test_createTrackerEventDataWithConfig() {
         Map<String, Object> config = new HashMap<>();
         config.put("booleanKey", true);
         config.put("stringKey", "string");
-        config.put("invalidKey1", 12);
-        config.put("invalidKey2", 100.100);
-        config.put("invalidKey3", new HashMap<String, String>());
+        config.put("integerKey", 12);
+        config.put("doubleKey", 100.100);
+        config.put("objectKey", new HashMap<String, String>());
 
         try (MockedStatic<MobileCore> mobileCoreMockedStatic =
                 Mockito.mockStatic(MobileCore.class)) {
@@ -58,14 +58,12 @@ public class MediaTests {
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("booleanKey", true);
-            params.put("stringKey", "string");
+            Map<String, Object> params = config;
             Map<String, Object> expectedEventData = new HashMap<>();
             expectedEventData.put(TRACKER_ID, trackerId);
             expectedEventData.put(TRACKER_EVENT_PARAM, params);
 
-            assertEquals(event.getEventData(), expectedEventData);
+            assertEquals(expectedEventData, event.getEventData());
         }
     }
 
@@ -88,12 +86,10 @@ public class MediaTests {
             String trackerId = DataReader.optString(event.getEventData(), TRACKER_ID, null);
             assertNotNull(trackerId);
 
-            Map<String, Object> params = new HashMap<>();
             Map<String, Object> expectedEventData = new HashMap<>();
             expectedEventData.put(TRACKER_ID, trackerId);
-            expectedEventData.put(TRACKER_EVENT_PARAM, params);
 
-            assertEquals(event.getEventData(), expectedEventData);
+            assertEquals(expectedEventData, event.getEventData());
         }
     }
 

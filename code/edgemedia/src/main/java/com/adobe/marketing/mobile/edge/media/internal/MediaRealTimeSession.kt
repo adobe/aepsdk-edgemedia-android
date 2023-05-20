@@ -19,6 +19,7 @@ import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.services.Log
+import com.adobe.marketing.mobile.util.DataReader
 import com.adobe.marketing.mobile.util.StringUtils
 
 internal class MediaRealTimeSession(
@@ -118,14 +119,10 @@ internal class MediaRealTimeSession(
             return
         }
 
-        val statusCode = data["status"]
-        val errorType = data["type"]
+        val statusCode = DataReader.optInt(data, "status", 0)
+        val errorType = DataReader.optString(data, "type", null)
 
-        if (statusCode !is Long || errorType !is String) {
-            return
-        }
-
-        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && errorType == MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400) {
+        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400.equals(errorType, ignoreCase = true)) {
             Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session ($id): Aborting session as error returned from session start request. $data")
             abort()
         }
