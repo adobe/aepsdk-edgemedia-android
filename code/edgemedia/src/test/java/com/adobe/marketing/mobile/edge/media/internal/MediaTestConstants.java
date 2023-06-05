@@ -131,34 +131,5 @@ public final class MediaTestConstants {
 
             private Tracker() {}
         }
-
-        // Event Data Key Constants - EventName
-        static final class MediaEventName {
-            static final String SESSION_START = "sessionstart";
-            static final String SESSION_END = "sessionend";
-            static final String PLAY = "play";
-            static final String PAUSE = "pause";
-            static final String COMPLETE = "complete";
-            static final String BUFFER_START = "bufferstart";
-            static final String BUFFER_COMPLETE = "buffercomplete";
-            static final String SEEK_START = "seekstart";
-            static final String SEEK_COMPLETE = "seekcomplete";
-            static final String AD_START = "adstart";
-            static final String AD_COMPLETE = "adcomplete";
-            static final String AD_SKIP = "adskip";
-            static final String ADBREAK_START = "adbreakstart";
-            static final String ADBREAK_COMPLETE = "adbreakcomplete";
-            static final String CHAPTER_START = "chapterstart";
-            static final String CHAPTER_COMPLETE = "chaptercomplete";
-            static final String CHAPTER_SKIP = "chapterskip";
-            static final String BITRATE_CHANGE = "bitratechange";
-            static final String ERROR = "error";
-            static final String QOE_UPDATE = "qoeupdate";
-            static final String PLAYHEAD_UPDATE = "playheadupdate";
-            static final String STATE_START = "statestart";
-            static final String STATE_END = "stateend";
-
-            private MediaEventName() {}
-        }
     }
 }
