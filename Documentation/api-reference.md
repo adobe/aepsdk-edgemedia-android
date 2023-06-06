@@ -1,5 +1,39 @@
 ## Adobe Streaming Media for Edge Network Extension Android API Reference
 
+## Prerequisites
+
+Refer to the [Getting Started Guide](getting-started.md)
+
+## API reference
+
+| APIs                                                  |
+| ----------------------------------------------------- |
+| [extensionVersion](#extensionVersion)                 |
+| [registerExtensions](#registerExtensions)             |
+| [createTracker](#createTracker)                       |
+| [createTrackerWithConfig](#createTrackerWithConfig)   |
+| [createMediaObject](#createMediaObject)               |
+| [createAdBreakObject](#createAdBreakObject)           |
+| [createAdObject](#createAdObject)                     |
+| [createChapterObject](#createChapterObject)           |
+| [createQoEObject](#createQoEObject)                   |
+| [createStateObject](#createStateObject)               |
+
+## Media Tracker API reference
+
+| APIs                                                  |
+| ----------------------------------------------------- |
+| [trackSessionStart](#trackSessionStart)               |
+| [trackPlay](#trackPlay)                               |
+| [trackPause](#trackPause)                             |
+| [trackComplete](#trackComplete)                       |
+| [trackSessionEnd](#trackSessionEnd)                   |
+| [trackError](#trackError)                             |
+| [trackEvent](#trackEvent)                             |
+| [updateCurrentPlayhead](#updateCurrentPlayhead)       |
+| [updateQoEObject](#updateQoEObject)                   |
+
+------
 ### extensionVersion
 
 The extensionVersion() API returns the version of the Media for Edge Network extension that is used to register with the Mobile Core extension.
@@ -23,12 +57,17 @@ val mediaExtensionVersion = Media.extensionVersion()
 
 ### EXTENSION
 
-Represents a reference to MediaExtension.class that can be used to register with MobileCore via its registerExtensions api.
+Represents a reference to MediaExtension.class that can be used to register with MobileCore via its [registerExtensions](#registerExtensions) api.
 
 #### Syntax
 ```java
 public static final Class<? extends Extension> EXTENSION = MediaExtension.class;
 ```
+
+
+### registerExtensions
+
+Refer MobileCore [registerExtensions](https://github.com/adobe/aepsdk-core-android/blob/main/Documentation/MobileCore/api-reference.md) API.
 
 #### Example
 
