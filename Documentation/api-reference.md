@@ -1,5 +1,39 @@
-## Adobe Experience Platform Media for Edge Network Extension Android API Reference
+## Adobe Streaming Media for Edge Network Extension Android API Reference
 
+## Prerequisites
+
+Refer to the [Getting Started Guide](getting-started.md)
+
+## API reference
+
+| APIs                                                  |
+| ----------------------------------------------------- |
+| [extensionVersion](#extensionVersion)                 |
+| [registerExtensions](#registerExtensions)             |
+| [createTracker](#createTracker)                       |
+| [createTrackerWithConfig](#createTrackerWithConfig)   |
+| [createMediaObject](#createMediaObject)               |
+| [createAdBreakObject](#createAdBreakObject)           |
+| [createAdObject](#createAdObject)                     |
+| [createChapterObject](#createChapterObject)           |
+| [createQoEObject](#createQoEObject)                   |
+| [createStateObject](#createStateObject)               |
+
+## Media Tracker API reference
+
+| APIs                                                  |
+| ----------------------------------------------------- |
+| [trackSessionStart](#trackSessionStart)               |
+| [trackPlay](#trackPlay)                               |
+| [trackPause](#trackPause)                             |
+| [trackComplete](#trackComplete)                       |
+| [trackSessionEnd](#trackSessionEnd)                   |
+| [trackError](#trackError)                             |
+| [trackEvent](#trackEvent)                             |
+| [updateCurrentPlayhead](#updateCurrentPlayhead)       |
+| [updateQoEObject](#updateQoEObject)                   |
+
+------
 ### extensionVersion
 
 The extensionVersion() API returns the version of the Media for Edge Network extension that is used to register with the Mobile Core extension.
@@ -21,14 +55,22 @@ String mediaExtensionVersion = Media.extensionVersion();
 val mediaExtensionVersion = Media.extensionVersion()
 ```
 
+------
+
 ### EXTENSION
 
-Represents a reference to MediaExtension.class that can be used to register with MobileCore via its registerExtensions api.
+Represents a reference to MediaExtension.class that can be used to register with MobileCore via its [registerExtensions](#registerExtensions) api.
 
 #### Syntax
 ```java
 public static final Class<? extends Extension> EXTENSION = MediaExtension.class;
 ```
+
+------
+
+### registerExtensions
+
+Refer MobileCore [registerExtensions](https://github.com/adobe/aepsdk-core-android/blob/main/Documentation/MobileCore/api-reference.md) API.
 
 #### Example
 
@@ -45,6 +87,8 @@ MobileCore.registerExtensions(listOf(Media.EXTENSION, ...)){
     // implement completion callback
 }
 ```
+
+------
 
 ### createTracker
 
@@ -67,6 +111,8 @@ MediaTracker tracker = Media.createTracker()
 ```kotlin
 val tracker = Media.createTracker()
 ```
+
+------
 
 ### createTrackerWithConfig
 
@@ -106,6 +152,8 @@ val config = mapOf(
 
 val mediaTracker = Media.createTracker(config) // Use the instance for tracking media.
 ```
+
+------
 
 ### createMediaObject
 
@@ -150,6 +198,8 @@ var mediaInfo = Media.createMediaObject("video-name",
                                         Media.MediaType.Video)
 ```
 
+------
+
 ### createAdBreakObject
 
 Creates an instance of the AdBreak object.
@@ -177,6 +227,8 @@ HashMap<String, Object> adBreakObject = Media.createAdBreakObject("adbreak-name"
 ```kotlin
 val adBreakObject = Media.createAdBreakObject("adbreak-name", 1, 0)
 ```
+
+------
 
 ### createAdObject
 
@@ -206,6 +258,8 @@ HashMap<String, Object> adInfo = Media.createAdObject("ad-name", "ad-id", 1, 15)
 ```kotlin
 val adInfo = Media.createAdObject("ad-name", "ad-id", 1, 15)
 ```
+
+------
 
 ### createChapterObject
 
@@ -239,6 +293,8 @@ HashMap<String, Object> chapterInfo = Media.createChapterObject("chapter-name", 
 val chapterInfo = Media.createChapterObject("chapter-name", 1, 60, 0)
 ```
 
+------
+
 ### createQoEObject
 
 Creates an instance of the QoE object.
@@ -270,6 +326,8 @@ HashMap<String, Object> qoeInfo = Media.createQoEObject(10000000, 2, 23, 10);
 ```kotlin
 val qoeInfo = Media.createQoEObject(10000000, 2, 23, 10)
 ```
+
+------
 
 ### createStateObject
 
@@ -354,9 +412,35 @@ mediaMetadata["tvStation"] = "Sample TV Station"
 tracker.trackSessionStart(mediaInfo, mediaMetadata)
 ```
 
+------
+
 ### trackPlay
 
 Tracks the media play, or resume, after a previous pause.
+
+#### Syntax
+
+```java
+public void trackPlay();
+```
+
+#### Example
+
+##### Java
+```java
+tracker.trackPlay();
+```
+
+##### Kotlin
+```kotlin
+tracker.trackPlay()
+```
+
+------
+
+### trackPause
+
+Tracks the media pause.
 
 #### Syntax
 
@@ -375,6 +459,8 @@ tracker.trackPause();
 ```kotlin
 tracker.trackPause()
 ```
+
+------
 
 ### trackComplete
 
@@ -399,6 +485,8 @@ tracker.trackComplete();
 tracker.trackComplete()
 ```
 
+------
+
 ### trackSessionEnd
 
 Tracks the end of a viewing session. Call this method even if the user does not view the media to completion.
@@ -420,6 +508,8 @@ tracker.trackSessionEnd();
 ```kotlin
 tracker.trackSessionEnd()
 ```
+
+------
 
 ### trackError
 
@@ -446,6 +536,8 @@ tracker.trackError("errorId");
 ```kotlin
 tracker.trackError("errorId")
 ```
+
+------
 
 ### trackEvent
 
@@ -657,6 +749,8 @@ public void trackEvent(Media.Event event, Map<String, Object> info, Map<String, 
   tracker.trackEvent(Media.Event.BitrateChange, null, null)
 ```
 
+------
+
 ### updateCurrentPlayhead
 
 Provides the current media playhead to the media tracker instance. For accurate tracking, call this method everytime the playhead changes. If the player does not notify playhead changes, call this method once every second with the most recent playhead.
@@ -698,6 +792,8 @@ tracker.updateCurrentPlayhead(timeFromMidnightInSecond);
 val timeFromMidnightInSecond = (System.currentTimeMillis() / 1000 % 86400).toInt()
 tracker.updateCurrentPlayhead(timeFromMidnightInSecond);
 ```
+
+------
 
 ### updateQoEObject
 
