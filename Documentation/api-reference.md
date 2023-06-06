@@ -1,4 +1,4 @@
-## Adobe Streaming Media for Edge Network Extension Android API Reference
+## Adobe Streaming Media for Edge Network extension - Android
 
 ## Prerequisites
 
