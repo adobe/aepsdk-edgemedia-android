@@ -16,9 +16,41 @@ To install and start using the Media for Edge Network extension, check out the [
 
 Please refer to the [Migrating from AEPMedia to AEPEdgeMedia](Documentation/migration-guide.md) guide.
 
+### Development
+
+**Open the project**
+
+To open and run the project, open the `code/settings.gradle` file in Android Studio
+
+### Development
+
+#### Run the test application
+
+To configure and run the test app for this project, follow the [getting started guide for the test app](Documentation/getting-started-test-app.md).
+
+#### Code format
+
+This project uses the code formatting tools [Spotless](https://github.com/diffplug/spotless/tree/main/plugin-gradle) with [Prettier](https://prettier.io/). Formatting is applied when the project is built from Gradle and is checked when changes are submitted to the CI build system.
+
+Prettier requires [Node version](https://nodejs.org/en/download/releases/) 10+
+To enable the Git pre-commit hook to apply code formatting on each commit, run the following to update the project's git config `core.hooksPath`:
+```
+make init
+```
+
+## Related Projects
+
+| Project                                                      | Description                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| [Core extensions](https://github.com/adobe/aepsdk-core-android)                                    | The Mobile Core represents the foundation of the Adobe Experience Platform Mobile SDK. |
+| [Edge Network extension](https://github.com/adobe/aepsdk-edge-android) | The Edge Network extension allows you to send data to the Adobe Edge Network from a mobile application. |
+| [Assurance extension](https://github.com/adobe/aepsdk-assurance-android) | The Assurance extension enables validation workflows for your SDK implementation.                |
+
 ## Documentation
 
-Additional documentation for usage and SDK architecture can be found under the [Documentation](https://developer.adobe.com/client-sdks) directory.
+Information about Adobe Streaming Media for Edge Network implementation, API usage, and architecture can be found in the [Documentation](Documentation) directory.
+
+Learn more about Media for Edge Network and all other Mobile SDK extensions in the official [Adobe Experience Platform Mobile SDK documentation](https://developer.adobe.com/client-sdks).
 
 ## Contributing
 
