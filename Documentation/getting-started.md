@@ -1,20 +1,15 @@
 ## Getting started
 
-## Configure the Adobe Streaming Media for Edge Network extension in the Data Collection UI
-The Media for Edge Network extension has specific configuration requirements for including the Media Collection Details field group in the XDM schema, enabling Media Analytics in a datastream, and installing the Adobe Streaming Media for Edge Network extension in a Tag mobile property.
+## Before Starting
 
-### Configure and Setup Adobe Streaming Media for Edge Network
-
-1. [Define a report suite](https://experienceleague.adobe.com/docs/media-analytics/using/implementation/implementation-edge.html#define-a-report-suite)
-2. [Set up the schema in Adobe Experience Platform](https://experienceleague.adobe.com/docs/media-analytics/using/implementation/implementation-edge.html#set-up-the-schema-in-adobe-experience-platform)
-3. [Create a dataset in Adobe Experience Platform](https://experienceleague.adobe.com/docs/media-analytics/using/implementation/implementation-edge.html#create-a-dataset-in-adobe-experience-platform)
-4. [Configure a datastream in Adobe Experience Platform](https://experienceleague.adobe.com/docs/media-analytics/using/implementation/implementation-edge.html#configure-a-datastream-in-adobe-experience-platform)
+The Adobe Streaming Media for Edge Network extension has specific configuration requirements for including the Media Collection Details field group in the XDM schema, enabling Media Analytics in a datastream configuration. For more details, please refer to this guide to [configure and set up Adobe Streaming Media for  Edge Network](https://developer.adobe.com/client-sdks/documentation/media-for-edge-network/#configure-and-setup-adobe-streaming-media-for-edge-network).
 
 ### Configure and Install Dependencies
 
-Media for Edge Network requires Edge and Edge Identity extensions.
-1. [Configure the Edge extension in Data Collection UI](https://developer.adobe.com/client-sdks/documentation/edge-network/#configure-the-edge-network-extension-in-data-collection-ui)
-2. [Configure the Edge Identity extension in Data Collection UI](https://developer.adobe.com/client-sdks/documentation/identity-for-edge-network/#configure-the-identity-extension-in-the-data-collection-ui)
+The Adobe Streaming Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
+- [AEPCore](https://github.com/adobe/aepsdk-core-android)
+- [AEPEdge](https://github.com/adobe/aepsdk-edge-android)
+- [AEPEdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
 
 ### Configure Media for Edge Network extension in the Data Collection Tags
 
@@ -57,11 +52,6 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
 ----
 
 ## Add Media for Edge Network extension to your app
-
-The Adobe Streaming Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
-- [MobileCore](https://github.com/adobe/aepsdk-core-android)
-- [Edge](https://github.com/adobe/aepsdk-edge-android)
-- [EdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
 
 1. Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app. Add the Mobile Core, Edge, EdgeIdentity, and EdgeMedia extensions to your project using the app's Gradle file:
 
