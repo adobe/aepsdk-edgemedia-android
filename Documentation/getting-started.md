@@ -1,22 +1,26 @@
 ## Getting started
 
+The Adobe Streaming Media for Edge Network extension has specific configuration requirements for including the Media Collection Details field group in the XDM schema and enabling Media Analytics in a datastream configuration. For more details, please refer to this guide to [configure and set up Adobe Streaming Media for  Edge Network](https://developer.adobe.com/client-sdks/documentation/media-for-edge-network/#configure-and-setup-adobe-streaming-media-for-edge-network).
+
+### Configure and install dependencies
+
 The Adobe Streaming Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
 - [MobileCore](https://github.com/adobe/aepsdk-core-android)
 - [Edge](https://github.com/adobe/aepsdk-edge-android)
 - [EdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
 
-## Configuration
+### Configure Media for Edge Network extension in the Data Collection Tags
 
-### Configure Dependencies
-Configure the Edge, EdgeIdentity extensions in the mobile property using the Data Collection UI.
-
-> **Note** 
-> If this is your first time setting up Edge extensions and using Data Collection UI, please follow this [tutorial](https://github.com/adobe/aepsdk-edge-android/tree/main/Documentation/Tutorials) to learn about Adobe Experience Platform and how to setup required schemas, datasets, datastreams and creating mobile property etc.
+1. In the Data Collection Tags, select the **Extensions** tab in your mobile property.
+2. On the **Catalog** tab, locate the **Adobe Streaming Media for Edge Network** extension, and select **Install**.
+3. Type the extension settings for **Channel**, **Player Name**, and **Application Version**.
+4. Select **Save**.
+5. Follow the publishing process to update your SDK configuration.
 
 ### Configure Media for Edge Network extension
-Currently Media for Edge Network extension doesn't have a Data Collection extension and needs to be configured programmatically.
+Optionally, the Media for Edge Network configuration may be set or changed programmatically.
 
-#### Configuration Keys
+#### Configuration keys
 | Name | Key | Value | Required |
 | --- | --- | --- | --- |
 | Channel | "edgeMedia.channel" | String | **Yes** |
@@ -43,7 +47,9 @@ Currently Media for Edge Network extension doesn't have a Data Collection extens
     MobileCore.updateConfiguration(mediaConfiguration)
     ```
 
-## Add Media extension to your app
+----
+
+## Add Media for Edge Network extension to your app
 
 1. Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app. Add the Mobile Core, Edge, EdgeIdentity, and EdgeMedia extensions to your project using the app's Gradle file:
 
@@ -121,6 +127,6 @@ Currently Media for Edge Network extension doesn't have a Data Collection extens
    }
    ```
 
-## Next Steps
+## Next steps
 
 Get familiar with the various APIs offered by the AEP SDK by checking out the [Media API reference](./api-reference.md).
