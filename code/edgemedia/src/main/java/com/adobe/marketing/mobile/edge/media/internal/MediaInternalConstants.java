@@ -13,7 +13,7 @@ package com.adobe.marketing.mobile.edge.media.internal;
 
 final class MediaInternalConstants {
     static final String EXTENSION_NAME = "com.adobe.edge.media";
-    static final String FRIENDLY_NAME = "Edge Media Analytics";
+    static final String FRIENDLY_NAME = "Edge Media";
     static final String LOG_TAG = FRIENDLY_NAME;
 
     private MediaInternalConstants() {}
