@@ -43,13 +43,16 @@ jobs:
           name: Run unit tests
           command: make unit-test-coverage
 
+      - store_artifacts:
+          path: code/edgemedia/build/reports/tests
+
       - store_test_results:
-          path: code/media/build/test-results/testPhoneDebugUnitTest
+          path: code/edgemedia/build/test-results/testPhoneDebugUnitTest
 
       - run:
           name: Upload unit test coverage
           command: |            
-            bash ./codecov -v -X s3 -c -D "./code/media/build/reports/coverage/test/phone/debug" -F unit-tests
+            bash ./codecov -v -X s3 -c -D "./code/edgemedia/build/reports/coverage/test/phone/debug" -F unit-tests
 
   functional-test:
       executor:
@@ -65,6 +68,12 @@ jobs:
             post-emulator-launch-assemble-command: make assemble-phone
             test-command: make functional-test-coverage
 
+        - store_artifacts:
+            path: code/edgemedia/build/reports/androidTests
+
+        - store_test_results:
+            path: code/edgemedia/build/outputs/androidTest-results
+
         - run:
             name: Download Codecov Uploader
             command: |
@@ -79,11 +88,11 @@ jobs:
         - run:
             name: Upload coverage report
             command: |                        
-              bash ./codecov -v -X s3 -c -D "./code/media/build/reports/coverage/androidTest/phone/debug" -F functional-tests
+              bash ./codecov -v -X s3 -c -D "./code/edgemedia/build/reports/coverage/androidTest/phone/debug" -F functional-tests
 
 workflows:
   version: 2
-  aepsdk-media-ci: 
+  aepsdk-edgemedia-ci: 
     jobs:
       - build-and-unit-test
       - functional-test
