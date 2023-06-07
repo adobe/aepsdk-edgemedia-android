@@ -1,10 +1,8 @@
 ## Getting started
 
-## Before Starting
+The Adobe Streaming Media for Edge Network extension has specific configuration requirements for including the Media Collection Details field group in the XDM schema and enabling Media Analytics in a datastream configuration. For more details, please refer to this guide to [configure and set up Adobe Streaming Media for  Edge Network](https://developer.adobe.com/client-sdks/documentation/media-for-edge-network/#configure-and-setup-adobe-streaming-media-for-edge-network).
 
-The Adobe Streaming Media for Edge Network extension has specific configuration requirements for including the Media Collection Details field group in the XDM schema, enabling Media Analytics in a datastream configuration. For more details, please refer to this guide to [configure and set up Adobe Streaming Media for  Edge Network](https://developer.adobe.com/client-sdks/documentation/media-for-edge-network/#configure-and-setup-adobe-streaming-media-for-edge-network).
-
-### Configure and Install Dependencies
+### Configure and install dependencies
 
 The Adobe Streaming Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
 - [AEPCore](https://github.com/adobe/aepsdk-core-android)
@@ -22,7 +20,7 @@ The Adobe Streaming Media for Edge Network mobile extension has the following de
 ### Configure Media for Edge Network extension
 Optionally, the Media for Edge Network configuration may be set or changed programmatically.
 
-#### Configuration Keys
+#### Configuration keys
 | Name | Key | Value | Required |
 | --- | --- | --- | --- |
 | Channel | "edgeMedia.channel" | String | **Yes** |
@@ -129,6 +127,6 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
    }
    ```
 
-## Next Steps
+## Next steps
 
 Get familiar with the various APIs offered by the AEP SDK by checking out the [Media API reference](./api-reference.md).
