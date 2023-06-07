@@ -14,7 +14,7 @@ To install and start using the Media for Edge Network extension, check out the [
 
 ## Migrating from Media Analytics
 
-Please refer to the [Migrating from AEPMedia to AEPEdgeMedia](Documentation/migration-guide.md) guide.
+Please refer to the [Migrating from Media to Media for Edge Network guide](Documentation/migration-guide.md).
 
 ### Development
 
@@ -44,6 +44,7 @@ make init
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | [Core extensions](https://github.com/adobe/aepsdk-core-android)                                    | The Mobile Core represents the foundation of the Adobe Experience Platform Mobile SDK. |
 | [Edge Network extension](https://github.com/adobe/aepsdk-edge-android) | The Edge Network extension allows you to send data to the Adobe Edge Network from a mobile application. |
+| [Identity for Edge Network](https://github.com/adobe/aepsdk-edgeidentity-android)        | The Identity for Edge Network extension enables identity management from a mobile app when using the Edge Network extension. |
 | [Assurance extension](https://github.com/adobe/aepsdk-assurance-android) | The Assurance extension enables validation workflows for your SDK implementation.                |
 
 ## Documentation
