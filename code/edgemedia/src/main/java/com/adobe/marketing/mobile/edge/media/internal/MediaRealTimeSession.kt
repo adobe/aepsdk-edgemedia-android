@@ -1,0 +1,196 @@
+/*
+  Copyright 2023 Adobe. All rights reserved.
+  This file is licensed to you under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License. You may obtain a copy
+  of the License at http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software distributed under
+  the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+  OF ANY KIND, either express or implied. See the License for the specific language
+  governing permissions and limitations under the License.
+*/
+
+package com.adobe.marketing.mobile.edge.media.internal
+
+import androidx.annotation.VisibleForTesting
+import com.adobe.marketing.mobile.Event
+import com.adobe.marketing.mobile.EventSource
+import com.adobe.marketing.mobile.EventType
+import com.adobe.marketing.mobile.edge.media.internal.MediaInternalConstants.LOG_TAG
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
+import com.adobe.marketing.mobile.services.Log
+import com.adobe.marketing.mobile.util.DataReader
+import com.adobe.marketing.mobile.util.StringUtils
+
+internal class MediaRealTimeSession(
+    id: String,
+    state: MediaState,
+    dispatchHandler: (Event) -> Unit
+) : MediaSession(id, state, dispatchHandler) {
+
+    private val sourceTag = "MediaRealTimeSession" // Log source tag
+
+    // Session id for this session, set when handling sessionStart response from backend media server
+    @VisibleForTesting
+    internal var mediaBackendSessionId: String? = null
+        set(value) {
+            field = if (!StringUtils.isNullOrEmpty(value)) value else null
+        }
+
+    // Edge request id for this session, set when the sessionStart event is dispatched
+    @VisibleForTesting
+    internal var sessionStartEdgeRequestId: String? = null
+
+    /**
+     * Handles media state update notifications by triggering the event processing loop.
+     */
+    override fun handleMediaStateUpdate() {
+        processMediaEvents()
+    }
+
+    /**
+     * Handles session end requests. Attempts to finish processing any queued events and calls the
+     * session end closure if all events were processed.
+     * @see [MediaSession.end]
+     */
+    override fun handleSessionEnd() {
+        processMediaEvents()
+        if (eventQueue.isEmpty()) {
+            Log.trace(LOG_TAG, sourceTag, "Successfully ended media session ($id) with id $mediaBackendSessionId")
+        } else {
+            Log.trace(LOG_TAG, sourceTag, "Media session ($id) with id $mediaBackendSessionId was ended but not all queued events could be processed.")
+        }
+    }
+
+    /**
+     * Handles session abort requests. Removes all queued events and calls the session end closure.
+     * @see [MediaSession.abort]
+     */
+    override fun handleSessionAbort() {
+        eventQueue.clear()
+        Log.trace(LOG_TAG, sourceTag, "Successfully aborted media session ($id) with id $mediaBackendSessionId")
+    }
+
+    /**
+     * Queues the [XDMMediaEvent] and triggers the event processing loop.
+     * @see [MediaSession.queue]
+     */
+    override fun handleQueueEvent(event: XDMMediaEvent) {
+        eventQueue.add(event)
+        processMediaEvents()
+    }
+
+    /**
+     * Handles the media backend session id dispatched from the Edge extension.
+     * If the backend session id is valid (not null or empty) then triggers the event processing
+     * loop. Aborts the current session if the backend session id is invalid.
+     *
+     * @param requestEventId the [Edge] request event ID
+     * @param backendSessionId the backend session ID for the current [MediaSession]
+     *
+     * @see [MediaSession.abort]
+     */
+    override fun handleSessionUpdate(requestEventId: String, backendSessionId: String?) {
+        if (requestEventId != sessionStartEdgeRequestId) {
+            return
+        }
+
+        mediaBackendSessionId = backendSessionId
+        Log.trace(LOG_TAG, sourceTag, "Session ($id) updated with Edge Network session ID ($mediaBackendSessionId).")
+        if (mediaBackendSessionId != null) {
+            processMediaEvents()
+        } else {
+            Log.warning(LOG_TAG, sourceTag, "handleSessionUpdate - Session ($id): Aborting session as session ID ($backendSessionId) returned from session start request is invalid.")
+            abort()
+        }
+    }
+
+    /**
+     * Handles media backend error response dispatched from the Edge extension.
+     * Handles errors of type `va-edge-0400-400` and code `400` by aborting the current session.
+     *
+     * @param requestEventId the [Edge] request event ID
+     * @param data contains errors returned by the backend server
+     *
+     * @see [MediaSession.abort]
+     */
+    override fun handleErrorResponse(requestEventId: String, data: Map<String, Any>) {
+        if (requestEventId != sessionStartEdgeRequestId) {
+            return
+        }
+
+        val statusCode = DataReader.optInt(data, "status", 0)
+        val errorType = DataReader.optString(data, "type", null)
+
+        if (statusCode == MediaInternalConstants.Edge.ERROR_CODE_400 && MediaInternalConstants.Edge.ERROR_TYPE_VA_EDGE_400.equals(errorType, ignoreCase = true)) {
+            Log.warning(LOG_TAG, sourceTag, "handleErrorResponse - Session ($id): Aborting session as error returned from session start request. $data")
+            abort()
+        }
+    }
+
+    /**
+     * Processes queued [XDMMediaEvent]s.
+     * If no backend session id is set and the event type is not `sessionStart`, then processing
+     * is stopped until a valid backend session id is received.
+     * Dispatches an experience event to the Edge extension for each successfully processed event.
+     */
+    private fun processMediaEvents() {
+        if (!state.isValid) {
+            Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the required configuration is missing. Verify 'edgemedia.channel' and 'edgemedia.playerName' are configured.")
+            return
+        }
+
+        while (eventQueue.isNotEmpty()) {
+            val event = eventQueue.first()
+
+            if (event.xdmData.eventType != XDMMediaEventType.SESSION_START && mediaBackendSessionId == null) {
+                Log.trace(LOG_TAG, sourceTag, "processMediaEvents - Session ($id): Exiting as the media session id is unavailable, will retry later.")
+                return
+            }
+
+            attachMediaStateInfo(event)
+
+            dispatchExperienceEvent(event, dispatchHandler)
+
+            eventQueue.removeFirst()
+        }
+    }
+
+    /**
+     * Attaches the required [MediaState] information to the given [XDMMediaEvent].
+     */
+    private fun attachMediaStateInfo(event: XDMMediaEvent) {
+        if (XDMMediaEventType.SESSION_START == event.xdmData.eventType) {
+            event.xdmData.mediaCollection.sessionDetails?.playerName = state.mediaPlayerName
+            event.xdmData.mediaCollection.sessionDetails?.appVersion = state.mediaAppVersion
+            if (event.xdmData.mediaCollection.sessionDetails?.channel == null) {
+                event.xdmData.mediaCollection.sessionDetails?.channel = state.mediaChannel
+            }
+        } else {
+            event.xdmData.mediaCollection.sessionID = mediaBackendSessionId
+            if (XDMMediaEventType.AD_START == event.xdmData.eventType) {
+                event.xdmData.mediaCollection.advertisingDetails?.playerName = state.mediaPlayerName
+            }
+        }
+    }
+
+    /**
+     * Dispatches a experience event to the Edge extension to send to the media backend service.
+     */
+    private fun dispatchExperienceEvent(mediaEvent: XDMMediaEvent, dispatcher: (event: Event) -> Unit) {
+        val edgeEvent = Event.Builder(
+            "Edge Media - ${XDMMediaEventType.getTypeString(mediaEvent.xdmData.eventType)}",
+            EventType.EDGE,
+            EventSource.REQUEST_CONTENT
+        )
+            .setEventData(mediaEvent.serializeToXDM())
+            .build()
+
+        if (XDMMediaEventType.SESSION_START == mediaEvent.xdmData.eventType) {
+            sessionStartEdgeRequestId = edgeEvent.uniqueIdentifier
+        }
+
+        // Dispatch the media event to the eventhub to be sent to the backend service by the edge extension
+        dispatcher(edgeEvent)
+    }
+}
