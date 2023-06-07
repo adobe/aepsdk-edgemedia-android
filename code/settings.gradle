@@ -1,3 +1,4 @@
-rootProject.name = "aepsdk-media-android"
-include ':media'
+rootProject.name = "edgemedia-sdk"
+include ':edgemedia'
 include ':testapp'
+include ':testappkotlin'
