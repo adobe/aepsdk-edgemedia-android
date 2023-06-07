@@ -32,7 +32,7 @@ public interface MediaTracker {
     void trackPause();
 
     /**
-     * Video playback tracking method to track Video Complete triggers {@coce complete} event and
+     * Video playback tracking method to track Video Complete triggers {@code complete} event and
      * calls back the callback method.
      */
     void trackComplete();
