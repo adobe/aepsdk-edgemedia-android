@@ -5,9 +5,9 @@ The Adobe Streaming Media for Edge Network extension has specific configuration 
 ### Configure and install dependencies
 
 The Adobe Streaming Media for Edge Network mobile extension has the following dependencies, which must be installed prior to installing the extension:
-- [AEPCore](https://github.com/adobe/aepsdk-core-android)
-- [AEPEdge](https://github.com/adobe/aepsdk-edge-android)
-- [AEPEdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
+- [MobileCore](https://github.com/adobe/aepsdk-core-android)
+- [Edge](https://github.com/adobe/aepsdk-edge-android)
+- [EdgeIdentity](https://github.com/adobe/aepsdk-edgeidentity-android)
 
 ### Configure Media for Edge Network extension in the Data Collection Tags
 
