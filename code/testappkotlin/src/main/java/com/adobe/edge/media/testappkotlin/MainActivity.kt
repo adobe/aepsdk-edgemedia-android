@@ -16,8 +16,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import com.adobe.marketing.mobile.Assurance
+import com.adobe.marketing.mobile.edge.media.Media
 
 class MainActivity : ComponentActivity() {
 
@@ -32,6 +34,9 @@ class MainActivity : ComponentActivity() {
         if (data != null) {
             Assurance.startSession(data.toString())
         }
+
+        val versionTextView = findViewById<TextView>(R.id.version)
+        versionTextView.text = Media.extensionVersion()
 
         val startPlayerButton = findViewById<Button>(R.id.startVideoPlayer)
         startPlayerButton.setOnClickListener {
