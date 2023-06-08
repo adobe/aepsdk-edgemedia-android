@@ -15,3 +15,14 @@ See the [Getting started](./getting-started.md) guide for instructions on settin
 
 1. In the test app, set your `ENVIRONMENT_FILE_ID` in `MediaTestApp.kt`, as found in the mobile property.
 2. Select the `testappkotlin` runnable with the desired emulator and run the program.
+
+## Validation with Assurance
+
+Configure a new Assurance session by setting the Base URL to `testapp://main` and launch Assurance in the demo app by running the following command in your terminal:
+
+```bash
+$ adb shell am start -W -a android.intent.action.VIEW -d "testapp://main?adb_validation_sessionid=ADD_YOUR_SESSION_ID_HERE" com.adobe.edge.media.testappkotlin
+```
+
+> **Note**  
+> Replace `ADD_YOUR_SESSION_ID_HERE` with your Assurance session identifier.

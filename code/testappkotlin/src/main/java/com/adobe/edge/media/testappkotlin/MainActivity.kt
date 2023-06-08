@@ -25,6 +25,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Deep links handling
+        val intent = intent
+        val data = intent.data
+
+        if (data != null) {
+            Assurance.startSession(data.toString())
+        }
+
         val startPlayerButton = findViewById<Button>(R.id.startVideoPlayer)
         startPlayerButton.setOnClickListener {
             val intent = Intent(this, MediaPlayerActivity::class.java)
