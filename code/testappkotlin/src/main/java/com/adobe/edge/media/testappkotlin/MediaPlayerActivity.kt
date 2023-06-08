@@ -9,16 +9,17 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin
+package com.adobe.edge.media.testappkotlin
 
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.adobe.media.testappkotlin.analytics.MediaAnalyticsProvider
-import com.adobe.media.testappkotlin.player.PlayerEvent
-import com.adobe.media.testappkotlin.player.VideoPlayer
-import java.util.*
+import com.adobe.edge.media.testappkotlin.analytics.MediaAnalyticsProvider
+import com.adobe.edge.media.testappkotlin.player.PlayerEvent
+import com.adobe.edge.media.testappkotlin.player.VideoPlayer
+import java.util.Observable
+import java.util.Observer
 
 class MediaPlayerActivity : Activity(), Observer {
     var player: VideoPlayer? = null

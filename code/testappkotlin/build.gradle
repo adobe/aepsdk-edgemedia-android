@@ -7,11 +7,11 @@ plugins {
 apply from: '../codeformat.gradle'
 
 android {
-    namespace 'com.adobe.media.testappkotlin'
+    namespace 'com.adobe.edge.media.testappkotlin'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.adobe.media.testappkotlin"
+        applicationId "com.adobe.edge.media.testappkotlin"
         minSdk 19
         targetSdk 33
         versionCode 1

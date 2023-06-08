@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".MediaPlayerActivity">
 
-    <com.adobe.media.testappkotlin.player.ObservableVideoView
+    <com.adobe.edge.media.testappkotlin.player.ObservableVideoView
         android:id="@+id/videoView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
