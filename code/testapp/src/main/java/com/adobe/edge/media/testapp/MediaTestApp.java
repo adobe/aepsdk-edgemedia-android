@@ -21,7 +21,7 @@ import com.adobe.marketing.mobile.edge.identity.Identity;
 import com.adobe.marketing.mobile.edge.media.Media;
 import java.util.Arrays;
 
-public class MediaAnalyticsTestApp extends Application {
+public class MediaTestApp extends Application {
     private static final String LAUNCH_ENVIRONMENT_FILE_ID = "";
 
     @Override
