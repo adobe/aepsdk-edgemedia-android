@@ -9,15 +9,15 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.mediaanalyticstestapp;
+package com.adobe.edge.media.testapp;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import com.adobe.mediaanalyticstestapp.analytics.MediaAnalyticsProvider;
-import com.adobe.mediaanalyticstestapp.player.PlayerEvent;
-import com.adobe.mediaanalyticstestapp.player.VideoPlayer;
+import com.adobe.edge.media.testapp.analytics.MediaAnalyticsProvider;
+import com.adobe.edge.media.testapp.player.PlayerEvent;
+import com.adobe.edge.media.testapp.player.VideoPlayer;
 import java.util.Observable;
 import java.util.Observer;
 

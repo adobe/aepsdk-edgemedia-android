@@ -9,15 +9,19 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.mediaanalyticstestapp.analytics;
+package com.adobe.edge.media.testapp.analytics;
 
 import android.util.Log;
+import com.adobe.edge.media.testapp.Configuration;
+import com.adobe.edge.media.testapp.player.PlayerEvent;
+import com.adobe.edge.media.testapp.player.VideoPlayer;
 import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import com.adobe.marketing.mobile.edge.media.MediaTracker;
-import com.adobe.mediaanalyticstestapp.Configuration;
-import com.adobe.mediaanalyticstestapp.player.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 public class MediaAnalyticsProvider implements Observer {
     private static final String LOG_TAG = "MediaAnalyticsProvider";

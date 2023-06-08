@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.mediaanalyticstestapp;
+package com.adobe.edge.media.testapp;
 
 import android.content.Intent;
 import android.os.Bundle;

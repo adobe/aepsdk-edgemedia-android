@@ -7,10 +7,11 @@ plugins {
 apply from: '../codeformat.gradle'
 
 android {
+    namespace 'com.adobe.edge.media.testapp'
     compileSdk rootProject.ext.targetSdkVersion
 
     defaultConfig {
-        applicationId "com.adobe.mobile.marketing.aep.testapp"
+        applicationId "com.adobe.edge.media.testapp"
         minSdk rootProject.ext.minSdkVersion
         targetSdk rootProject.ext.targetSdkVersion
         versionCode 1
