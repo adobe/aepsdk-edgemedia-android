@@ -12,6 +12,7 @@
 package com.adobe.edge.media.testapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Deep links handling
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+
+        if (data != null) {
+            Assurance.startSession(data.toString());
+        }
 
         startPlayerBtn = findViewById(R.id.startVideoPlayer);
         startPlayerBtn.setOnClickListener(
