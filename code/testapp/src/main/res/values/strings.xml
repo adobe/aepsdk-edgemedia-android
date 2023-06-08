@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Edge Media Test App</string>
     <string name="ad_overlay_text">Ad</string>
+    <string name="set_assurance">Set Assurance</string>
+    <string name="enter_assurance_url">Enter Assurance Url</string>
+    <string name="start_video_player">Start Video Player</string>
 </resources>
