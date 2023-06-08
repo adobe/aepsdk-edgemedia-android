@@ -17,8 +17,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.adobe.marketing.mobile.Assurance;
+import com.adobe.marketing.mobile.edge.media.Media;
 
 public class MainActivity extends AppCompatActivity {
     Button startPlayerBtn;
@@ -36,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         if (data != null) {
             Assurance.startSession(data.toString());
         }
+
+        TextView versionTextView = findViewById(R.id.version);
+        versionTextView.setText(Media.extensionVersion());
 
         startPlayerBtn = findViewById(R.id.startVideoPlayer);
         startPlayerBtn.setOnClickListener(
