@@ -22,7 +22,7 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    flavorDimensions "target"
+    flavorDimensions = ["target"]
 
     productFlavors {
         phone {
@@ -76,7 +76,7 @@ dependencies {
     androidTestImplementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     testLogging {
         showStandardStreams = true
     }
@@ -84,7 +84,8 @@ tasks.withType(Test) {
     jacoco.excludes = ['jdk.internal.*']
 }
 
-task unitTestsCoverageReport(type: JacocoReport, dependsOn: "testPhoneDebugUnitTest") {
+tasks.register('unitTestsCoverageReport', JacocoReport) {
+    dependsOn "testPhoneDebugUnitTest"
     def excludeRegex = ['**/ADB*.class', '**/BuildConfig.class']
     def javaClasses = fileTree(dir: "${project.buildDir}/intermediates/javac/phoneDebug/classes", excludes: excludeRegex)
     def kotlinClasses = fileTree(dir: "${project.buildDir}/tmp/kotlin-classes/phoneDebug", excludes: excludeRegex)
@@ -94,7 +95,7 @@ task unitTestsCoverageReport(type: JacocoReport, dependsOn: "testPhoneDebugUnitT
     def phoneSrc = "${project.projectDir}/src/phone/java"
     sourceDirectories.setFrom files([mainSrc, phoneSrc])
 
-    executionData.setFrom fileTree(dir: "$buildDir", includes: [            
+    executionData.setFrom fileTree(dir: "$buildDir", includes: [
             "outputs/unit_test_code_coverage/phoneDebugUnitTest/testPhoneDebugUnitTest.exec",
     ])
 
@@ -105,7 +106,8 @@ task unitTestsCoverageReport(type: JacocoReport, dependsOn: "testPhoneDebugUnitT
     }
 }
 
-task functionalTestsCoverageReport(type: JacocoReport, dependsOn: "createPhoneDebugCoverageReport") {
+tasks.register('functionalTestsCoverageReport', JacocoReport) {
+    dependsOn "createPhoneDebugCoverageReport"
     def excludeRegex = ['**/ADB*.class', '**/BuildConfig.class']
     def javaClasses = fileTree(dir: "${project.buildDir}/intermediates/javac/phoneDebug/classes", excludes: excludeRegex)
     def kotlinClasses = fileTree(dir: "${project.buildDir}/tmp/kotlin-classes/phoneDebug", excludes: excludeRegex)
