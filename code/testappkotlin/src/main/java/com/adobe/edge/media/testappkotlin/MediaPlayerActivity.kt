@@ -17,13 +17,13 @@ import android.os.Bundle
 import android.view.View
 import com.adobe.edge.media.testappkotlin.player.PlayerEvent
 import com.adobe.edge.media.testappkotlin.player.VideoPlayer
-import com.adobe.edge.media.testappkotlin.tracker.MediaAnalyticsProvider
+import com.adobe.edge.media.testappkotlin.tracker.MediaPlayerObserver
 import java.util.Observable
 import java.util.Observer
 
 class MediaPlayerActivity : Activity(), Observer {
     var player: VideoPlayer? = null
-    var analyticsProvider: MediaAnalyticsProvider? = null
+    var mediaPlayerObserver: MediaPlayerObserver? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activitymedia)
@@ -32,9 +32,9 @@ class MediaPlayerActivity : Activity(), Observer {
         val player = VideoPlayer(this)
         player.addObserver(this)
 
-        // Create the MediaAnalyticsProvider instance and
+        // Create the MediaPlayerObserver instance and
         // attach it to the VideoPlayer instance.
-        analyticsProvider = MediaAnalyticsProvider(player)
+        mediaPlayerObserver = MediaPlayerObserver(player)
 
         // Load the main video content.
         val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.video)
@@ -54,7 +54,7 @@ class MediaPlayerActivity : Activity(), Observer {
     }
 
     override fun onDestroy() {
-        analyticsProvider?.destroy()
+        mediaPlayerObserver?.destroy()
         super.onDestroy()
     }
     private fun onEnterAd() {

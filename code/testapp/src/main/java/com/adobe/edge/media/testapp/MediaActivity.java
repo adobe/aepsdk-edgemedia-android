@@ -17,13 +17,13 @@ import android.os.Bundle;
 import android.view.View;
 import com.adobe.edge.media.testapp.player.PlayerEvent;
 import com.adobe.edge.media.testapp.player.VideoPlayer;
-import com.adobe.edge.media.testapp.tracker.MediaAnalyticsProvider;
+import com.adobe.edge.media.testapp.tracker.MediaPlayerObserver;
 import java.util.Observable;
 import java.util.Observer;
 
 public class MediaActivity extends Activity implements Observer {
     private VideoPlayer _player;
-    private MediaAnalyticsProvider _analyticsProvider;
+    private MediaPlayerObserver _mediaPlayerObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,9 @@ public class MediaActivity extends Activity implements Observer {
 
         _player.addObserver(this);
 
-        // Create the MediaAnalyticsProvider instance and
+        // Create the MediaPlayerObserver instance and
         // attach it to the VideoPlayer instance.
-        _analyticsProvider = new MediaAnalyticsProvider(_player);
+        _mediaPlayerObserver = new MediaPlayerObserver(_player);
 
         // Load the main video content.
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video);
@@ -46,8 +46,8 @@ public class MediaActivity extends Activity implements Observer {
 
     @Override
     protected void onDestroy() {
-        _analyticsProvider.destroy();
-        _analyticsProvider = null;
+        _mediaPlayerObserver.destroy();
+        _mediaPlayerObserver = null;
         _player = null;
 
         super.onDestroy();

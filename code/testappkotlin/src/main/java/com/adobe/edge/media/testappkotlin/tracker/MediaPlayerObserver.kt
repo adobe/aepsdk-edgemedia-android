@@ -21,8 +21,8 @@ import com.adobe.marketing.mobile.edge.media.MediaTracker
 import java.util.Observable
 import java.util.Observer
 
-class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
-    private val LOG_TAG = "MediaAnalyticsProvider"
+class MediaPlayerObserver(player: VideoPlayer) : Observer {
+    private val LOG_TAG = "MediaPlayerObserver"
     private var player: VideoPlayer = player
     private var tracker: MediaTracker
 

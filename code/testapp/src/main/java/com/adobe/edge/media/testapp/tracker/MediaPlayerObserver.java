@@ -23,12 +23,12 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-public class MediaAnalyticsProvider implements Observer {
-    private static final String LOG_TAG = "MediaAnalyticsProvider";
+public class MediaPlayerObserver implements Observer {
+    private static final String LOG_TAG = "MediaPlayerObserver";
     private VideoPlayer _player;
     private MediaTracker _tracker;
 
-    public MediaAnalyticsProvider(VideoPlayer player) {
+    public MediaPlayerObserver(VideoPlayer player) {
         if (player == null) {
             throw new IllegalArgumentException("Player reference cannot be null.");
         }
