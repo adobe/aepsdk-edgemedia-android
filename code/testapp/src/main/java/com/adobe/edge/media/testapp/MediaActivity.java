@@ -15,9 +15,9 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import com.adobe.edge.media.testapp.analytics.MediaAnalyticsProvider;
 import com.adobe.edge.media.testapp.player.PlayerEvent;
 import com.adobe.edge.media.testapp.player.VideoPlayer;
+import com.adobe.edge.media.testapp.tracker.MediaAnalyticsProvider;
 import java.util.Observable;
 import java.util.Observer;
 

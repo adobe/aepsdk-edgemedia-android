@@ -15,9 +15,9 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.adobe.edge.media.testappkotlin.analytics.MediaAnalyticsProvider
 import com.adobe.edge.media.testappkotlin.player.PlayerEvent
 import com.adobe.edge.media.testappkotlin.player.VideoPlayer
+import com.adobe.edge.media.testappkotlin.tracker.MediaAnalyticsProvider
 import java.util.Observable
 import java.util.Observer
 

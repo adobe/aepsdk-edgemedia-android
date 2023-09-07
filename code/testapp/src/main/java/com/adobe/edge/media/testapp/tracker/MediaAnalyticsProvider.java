@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testapp.analytics;
+package com.adobe.edge.media.testapp.tracker;
 
 import android.util.Log;
 import com.adobe.edge.media.testapp.Configuration;
