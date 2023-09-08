@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Edgemediasdk">
 
-        <activity android:name=".MediaPlayerActivity"></activity>
+        <activity android:name=".MediaPlayerActivity" />
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -18,10 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter android:label="DeepLink">
-                <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="basicplayersample" />
+                <data android:scheme="testapp" android:host="main"/>
             </intent-filter>
         </activity>
 

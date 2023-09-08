@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin.player;
+package com.adobe.edge.media.testappkotlin.player;
 
 import android.content.Context;
 import android.util.AttributeSet;

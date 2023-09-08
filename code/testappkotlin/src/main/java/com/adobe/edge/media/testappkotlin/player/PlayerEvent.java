@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin.player;
+package com.adobe.edge.media.testappkotlin.player;
 
 public enum PlayerEvent {
     VIDEO_LOAD("video_load"),

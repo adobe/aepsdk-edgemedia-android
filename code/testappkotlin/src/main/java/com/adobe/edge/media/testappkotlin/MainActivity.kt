@@ -9,21 +9,34 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin
+package com.adobe.edge.media.testappkotlin
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import com.adobe.marketing.mobile.Assurance
+import com.adobe.marketing.mobile.edge.media.Media
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Deep links handling
+        val intent = intent
+        val data = intent.data
+
+        if (data != null) {
+            Assurance.startSession(data.toString())
+        }
+
+        val versionTextView = findViewById<TextView>(R.id.version)
+        versionTextView.text = Media.extensionVersion()
 
         val startPlayerButton = findViewById<Button>(R.id.startVideoPlayer)
         startPlayerButton.setOnClickListener {

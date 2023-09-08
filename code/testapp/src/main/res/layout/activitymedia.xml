@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".MediaActivity">
 
-    <com.adobe.mediaanalyticstestapp.player.ObservableVideoView
+    <com.adobe.edge.media.testapp.player.ObservableVideoView
         android:id="@+id/videoView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -15,7 +15,7 @@
         android:id="@+id/adOverlayView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="28dp"
         android:background="@android:color/background_dark"

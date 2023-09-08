@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin
+package com.adobe.edge.media.testappkotlin
 
 import android.app.Application
 import com.adobe.marketing.mobile.Assurance

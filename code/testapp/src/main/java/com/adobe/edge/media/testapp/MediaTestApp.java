@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.mediaanalyticstestapp;
+package com.adobe.edge.media.testapp;
 
 import android.app.Application;
 import com.adobe.marketing.mobile.AdobeCallback;
@@ -21,7 +21,7 @@ import com.adobe.marketing.mobile.edge.identity.Identity;
 import com.adobe.marketing.mobile.edge.media.Media;
 import java.util.Arrays;
 
-public class MediaAnalyticsTestApp extends Application {
+public class MediaTestApp extends Application {
     private static final String LAUNCH_ENVIRONMENT_FILE_ID = "";
 
     @Override

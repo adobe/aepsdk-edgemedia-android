@@ -9,19 +9,20 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.media.testappkotlin.analytics
+package com.adobe.edge.media.testappkotlin.tracker
 
 import android.util.Log
+import com.adobe.edge.media.testappkotlin.Configuration
+import com.adobe.edge.media.testappkotlin.player.PlayerEvent
+import com.adobe.edge.media.testappkotlin.player.VideoPlayer
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.MediaTracker
-import com.adobe.media.testappkotlin.Configuration
-import com.adobe.media.testappkotlin.player.PlayerEvent
-import com.adobe.media.testappkotlin.player.VideoPlayer
-import java.util.*
+import java.util.Observable
+import java.util.Observer
 
-class MediaAnalyticsProvider(player: VideoPlayer) : Observer {
-    private val LOG_TAG = "MediaAnalyticsProvider"
+class MediaPlayerObserver(player: VideoPlayer) : Observer {
+    private val LOG_TAG = "MediaPlayerObserver"
     private var player: VideoPlayer = player
     private var tracker: MediaTracker
 

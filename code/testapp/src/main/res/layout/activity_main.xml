@@ -8,11 +8,10 @@
         android:id="@+id/assuranceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="100dp"
         android:onClick="setAssurance"
-        android:text="Set Assurance"/>
+        android:text="@string/set_assurance"/>
 
 
     <EditText
@@ -22,7 +21,7 @@
         android:layout_marginTop="20dp"
         android:cursorVisible="true"
         android:gravity="left"
-        android:hint="Enter Assurance Url"
+        android:hint="@string/enter_assurance_url"
         android:text="" />
 
 
@@ -31,6 +30,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Start Video Player"
+        android:text="@string/start_video_player"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/startVideoPlayer"
+        />
 </RelativeLayout>

@@ -97,7 +97,7 @@ public class MediaExtension extends Extension {
      * Handler for the session ID returned by the media backend response dispatched by the Edge
      * extension.
      *
-     * @param event the Edge new media analytics session event containing the backend session ID
+     * @param event the Edge Network response event containing the backend session ID
      */
     void handleMediaEdgeSessionDetails(@NonNull final Event event) {
         String requestEventId =
