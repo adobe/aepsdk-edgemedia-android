@@ -21,6 +21,6 @@ dependencyResolutionManagement {
 rootProject.name = "aepsdk-edgemedia-android"
 include (
         ":edgemedia",
-        // ":testapp"
-        // ":testappkotlin"
+        //":testapp",
+        ":testapp-kotlin"
 )

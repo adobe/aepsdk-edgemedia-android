@@ -9,15 +9,15 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testappkotlin
+package com.adobe.marketing.mobile.edge.media.testapp.kotlin
 
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.adobe.edge.media.testappkotlin.player.PlayerEvent
-import com.adobe.edge.media.testappkotlin.player.VideoPlayer
-import com.adobe.edge.media.testappkotlin.tracker.MediaPlayerObserver
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.PlayerEvent
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.VideoPlayer
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.tracker.MediaPlayerObserver
 import java.util.Observable
 import java.util.Observer
 

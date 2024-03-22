@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testappkotlin
+package com.adobe.marketing.mobile.edge.media.testapp.kotlin
 
 class Configuration {
     companion object {

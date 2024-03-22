@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testappkotlin.player;
+package com.adobe.marketing.mobile.edge.media.testapp.kotlin.player;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +21,9 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.MediaController;
-import com.adobe.edge.media.testappkotlin.Configuration;
-import com.adobe.edge.media.testappkotlin.R;
+
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.Configuration;
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.R;
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import java.util.HashMap;
 import java.util.Map;
