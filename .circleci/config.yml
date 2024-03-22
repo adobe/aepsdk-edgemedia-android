@@ -45,7 +45,7 @@ jobs:
 
   functional-test:
       executor:
-        name: android/android-docker
+        name: android/android-machine
         resource-class: large
         tag: 2024.01.1
 
