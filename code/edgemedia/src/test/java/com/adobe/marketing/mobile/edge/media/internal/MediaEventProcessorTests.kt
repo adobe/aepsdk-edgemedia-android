@@ -27,7 +27,8 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 class MediaEventProcessorTests {
     private var mockState: MediaState = Mockito.mock(MediaState::class.java)

@@ -11,7 +11,7 @@
 
 package com.adobe.marketing.mobile.edge.media;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
 import com.adobe.marketing.mobile.Event;

@@ -1,6 +1,6 @@
 EXTENSION-LIBRARY-FOLDER-NAME = edgemedia
 TEST-APP-FOLDER-NAME = testapp
-KOTLIN-TEST-APP-FOLDER-NAME = testappkotlin
+KOTLIN-TEST-APP-FOLDER-NAME = testapp-kotlin
 
 BUILD-ASSEMBLE-LOCATION = ./ci/assemble
 ROOT_DIR=$(shell git rev-parse --show-toplevel)

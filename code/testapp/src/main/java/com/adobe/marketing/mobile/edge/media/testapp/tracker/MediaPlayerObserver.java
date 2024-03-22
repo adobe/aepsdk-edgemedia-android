@@ -12,12 +12,12 @@
 package com.adobe.marketing.mobile.edge.media.testapp.tracker;
 
 import android.util.Log;
-import com.adobe.marketing.mobile.edge.media.testapp.Configuration;
-import com.adobe.marketing.mobile.edge.media.testapp.player.PlayerEvent;
-import com.adobe.marketing.mobile.edge.media.testapp.player.VideoPlayer;
 import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import com.adobe.marketing.mobile.edge.media.MediaTracker;
+import com.adobe.marketing.mobile.edge.media.testapp.Configuration;
+import com.adobe.marketing.mobile.edge.media.testapp.player.PlayerEvent;
+import com.adobe.marketing.mobile.edge.media.testapp.player.VideoPlayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;

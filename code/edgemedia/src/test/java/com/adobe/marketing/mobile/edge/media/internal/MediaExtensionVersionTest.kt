@@ -19,7 +19,7 @@ import org.junit.Test
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
+import java.util.Properties
 
 class MediaExtensionVersionTest {
     private val gradlePropertiesPath = "../gradle.properties"

@@ -16,7 +16,7 @@ import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMCustomMetadata
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.util.TimeUtils
-import java.util.*
+import java.util.Date
 
 internal class EdgeEventHelper {
 

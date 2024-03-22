@@ -4,6 +4,18 @@ plugins {
     id("com.diffplug.spotless")
 }
 
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    java {
+        target("src/*/java/**/*.java")
+        googleJavaFormat(BuildConstants.Versions.GOOGLE_JAVA_FORMAT).aosp().reflowLongStrings()
+        importOrder()
+        removeUnusedImports()
+        endWithNewline()
+        formatAnnotations()
+        licenseHeader(BuildConstants.ADOBE_LICENSE_HEADER)
+    }
+}
+
 android {
     namespace = "com.adobe.marketing.mobile.edge.media.testapp"
 

@@ -6,6 +6,14 @@ plugins {
     id("com.diffplug.spotless")
 }
 
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    kotlin {
+        target("src/*/java/**/*.kt")
+        ktlint(BuildConstants.Versions.KTLINT)
+        licenseHeader(BuildConstants.ADOBE_LICENSE_HEADER)
+        endWithNewline()
+    }
+}
 
 android {
     namespace = "com.adobe.marketing.mobile.edge.media.testapp.kotlin"

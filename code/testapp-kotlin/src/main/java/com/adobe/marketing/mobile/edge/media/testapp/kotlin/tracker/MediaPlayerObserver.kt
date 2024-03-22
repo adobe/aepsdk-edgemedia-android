@@ -12,12 +12,12 @@
 package com.adobe.marketing.mobile.edge.media.testapp.kotlin.tracker
 
 import android.util.Log
-import com.adobe.marketing.mobile.edge.media.testapp.kotlin.Configuration
-import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.PlayerEvent
-import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.VideoPlayer
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.MediaTracker
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.Configuration
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.PlayerEvent
+import com.adobe.marketing.mobile.edge.media.testapp.kotlin.player.VideoPlayer
 import java.util.Observable
 import java.util.Observer
 
