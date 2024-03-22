@@ -1,3 +1,5 @@
+import com.adobe.marketing.mobile.gradle.BuildConstants
+
 plugins {
     id("aep-library")
 }
@@ -34,5 +36,7 @@ dependencies {
         exclude(group = "com.adobe.marketing.mobile", module = "core")
     }
     androidTestImplementation("com.fasterxml.jackson.core:jackson-databind:2.12.7")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:${BuildConstants.Versions.KOTLIN}")
 }
 
