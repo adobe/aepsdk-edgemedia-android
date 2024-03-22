@@ -1,4 +1,0 @@
-rootProject.name = "edgemedia-sdk"
-include ':edgemedia'
-include ':testapp'
-include ':testappkotlin'
