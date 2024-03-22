@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testapp.player;
+package com.adobe.marketing.mobile.edge.media.testapp.player;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,8 +21,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.MediaController;
-import com.adobe.edge.media.testapp.Configuration;
-import com.adobe.edge.media.testapp.R;
+import com.adobe.marketing.mobile.edge.media.testapp.Configuration;
+import com.adobe.marketing.mobile.edge.media.testapp.R;
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import java.util.HashMap;
 import java.util.Map;

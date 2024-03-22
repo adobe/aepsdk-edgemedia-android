@@ -9,7 +9,7 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testapp.player;
+package com.adobe.marketing.mobile.edge.media.testapp.player;
 
 public enum PlayerEvent {
     VIDEO_LOAD("video_load"),

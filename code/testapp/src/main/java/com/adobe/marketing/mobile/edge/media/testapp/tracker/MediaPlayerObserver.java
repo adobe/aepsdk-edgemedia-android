@@ -9,12 +9,12 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testapp.tracker;
+package com.adobe.marketing.mobile.edge.media.testapp.tracker;
 
 import android.util.Log;
-import com.adobe.edge.media.testapp.Configuration;
-import com.adobe.edge.media.testapp.player.PlayerEvent;
-import com.adobe.edge.media.testapp.player.VideoPlayer;
+import com.adobe.marketing.mobile.edge.media.testapp.Configuration;
+import com.adobe.marketing.mobile.edge.media.testapp.player.PlayerEvent;
+import com.adobe.marketing.mobile.edge.media.testapp.player.VideoPlayer;
 import com.adobe.marketing.mobile.edge.media.Media;
 import com.adobe.marketing.mobile.edge.media.MediaConstants;
 import com.adobe.marketing.mobile.edge.media.MediaTracker;

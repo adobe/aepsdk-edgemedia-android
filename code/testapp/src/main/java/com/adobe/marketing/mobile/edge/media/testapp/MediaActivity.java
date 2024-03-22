@@ -9,15 +9,15 @@
   governing permissions and limitations under the License.
 */
 
-package com.adobe.edge.media.testapp;
+package com.adobe.marketing.mobile.edge.media.testapp;
 
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import com.adobe.edge.media.testapp.player.PlayerEvent;
-import com.adobe.edge.media.testapp.player.VideoPlayer;
-import com.adobe.edge.media.testapp.tracker.MediaPlayerObserver;
+import com.adobe.marketing.mobile.edge.media.testapp.player.PlayerEvent;
+import com.adobe.marketing.mobile.edge.media.testapp.player.VideoPlayer;
+import com.adobe.marketing.mobile.edge.media.testapp.tracker.MediaPlayerObserver;
 import java.util.Observable;
 import java.util.Observer;
 
