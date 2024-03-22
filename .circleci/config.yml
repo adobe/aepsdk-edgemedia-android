@@ -1,14 +1,15 @@
 version: 2.1
 
 orbs:
-  android: circleci/android@2.0
+  android: circleci/android@2.1.2
+  codecov: codecov/codecov@3.2.4
 
 jobs:
   build-and-unit-test:
     executor:
-      name: android/android-machine
+      name: android/android-docker
       resource-class: large
-      tag: 2022.01.1
+      tag: 2024.01.1
 
     steps:
       - checkout
@@ -29,17 +30,6 @@ jobs:
           command: make javadoc
 
       - run:
-          name: Download Codecov Uploader
-          command: |
-            curl -s https://codecov.io/bash > codecov;
-            VERSION=$(grep 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2);
-            for i in 1 256 512
-            do
-              shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM") ||
-              shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov")
-            done
-
-      - run:
           name: Run unit tests
           command: make unit-test-coverage
 
@@ -49,16 +39,15 @@ jobs:
       - store_test_results:
           path: code/edgemedia/build/test-results/testPhoneDebugUnitTest
 
-      - run:
-          name: Upload unit test coverage
-          command: |            
-            bash ./codecov -v -X s3 -c -D "./code/edgemedia/build/reports/coverage/test/phone/debug" -F unit-tests
+      - codecov/upload:          
+          file: ./code/edgemedia/build/reports/coverage/test/phone/debug/report.xml
+          flags: unit-tests
 
   functional-test:
       executor:
-        name: android/android-machine
+        name: android/android-docker
         resource-class: large
-        tag: 2022.01.1
+        tag: 2024.01.1
 
       steps:
         - checkout
@@ -73,22 +62,10 @@ jobs:
 
         - store_test_results:
             path: code/edgemedia/build/outputs/androidTest-results
-
-        - run:
-            name: Download Codecov Uploader
-            command: |
-              curl -s https://codecov.io/bash > codecov;
-              VERSION=$(grep 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2);
-              for i in 1 256 512
-              do
-                shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM") ||
-                shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov")
-              done
-
-        - run:
-            name: Upload coverage report
-            command: |                        
-              bash ./codecov -v -X s3 -c -D "./code/edgemedia/build/reports/coverage/androidTest/phone/debug" -F functional-tests
+        
+        - codecov/upload:
+            file: ./code/edgemedia/build/reports/coverage/androidTest/phone/debug/report.xml            
+            flags: functional-tests
 
 workflows:
   version: 2
