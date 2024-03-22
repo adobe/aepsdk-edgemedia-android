@@ -47,18 +47,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
     
-      # - name: Import GPG key
-      #   env:
-      #     GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
-      #     GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
-      #   run: |
-      #     echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
-      #     echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
+      - name: Import GPG key
+        env:
+          GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
+          GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+        run: |
+          echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
+          echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust --no-tty --batch --yes
 
-      # - name: Publish to Maven Central Repository
-      #   run: make ci-publish
-      #   env:
-      #     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-      #     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-      #     GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      #     GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+      - name: Publish to Maven Central Repository
+        run: make ci-publish
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
