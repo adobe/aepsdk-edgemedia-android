@@ -32,6 +32,9 @@ format:
 	(./code/gradlew -p code/$(TEST-APP-FOLDER-NAME) spotlessApply)
 	(./code/gradlew -p code/$(KOTLIN-TEST-APP-FOLDER-NAME) spotlessApply)
 
+format-license:
+	(./code/gradlew -p code licenseFormat)
+
 unit-test:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) testPhoneDebugUnitTest)
 
