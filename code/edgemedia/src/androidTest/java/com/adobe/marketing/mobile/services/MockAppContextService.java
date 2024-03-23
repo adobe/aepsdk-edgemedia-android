@@ -14,6 +14,7 @@ package com.adobe.marketing.mobile.services;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -46,5 +47,10 @@ public class MockAppContextService implements AppContextService {
     @NonNull @Override
     public AppState getAppState() {
         return appState;
+    }
+
+    @Nullable @Override
+    public ConnectivityManager getConnectivityManager() {
+        return null;
     }
 }
