@@ -39,6 +39,14 @@ workflows:
       - functional-test:
           requires:
             - validate-code
+      - build-test-app:
+          requires:
+            - validate-code
+          filters:
+            branches:
+              only:
+                - main
+                - staging
 
 jobs:
   validate-code:
@@ -71,7 +79,7 @@ jobs:
           cache-prefix: << pipeline.parameters.build-cache-prefix >>
 
       - store_artifacts:
-          path: code/<< pipeline.parameters.build-path >>/build/reports  
+          path: code/<< pipeline.parameters.build-path >>/reports  
           
   build-and-unit-test:
     executor:
