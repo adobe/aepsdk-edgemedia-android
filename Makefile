@@ -6,7 +6,6 @@ init:
 	git config core.hooksPath .githooks
 
 clean:
-	(rm -rf $(AAR_FILE_DIR))
 	(./code/gradlew -p code clean)
 
 checkstyle: 
