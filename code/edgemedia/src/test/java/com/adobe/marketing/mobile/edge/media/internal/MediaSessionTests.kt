@@ -22,7 +22,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito.mock
-import java.util.*
+import java.util.Date
 
 class MediaSessionTests {
     private val id = "testSessionId"
