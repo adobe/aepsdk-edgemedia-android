@@ -53,7 +53,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
 
 1. Installation via [Maven](https://maven.apache.org/) & [Gradle](https://gradle.org/) is the easiest and recommended way to get the AEP SDK into your Android app. Add the Mobile Core, Edge, EdgeIdentity, and EdgeMedia extensions to your project using the app's Gradle file:
 
-    ### Kotlin
+    #### Kotlin
 
     ```kotlin
     implementation(platform("com.adobe.marketing.mobile:sdk-bom:3.+"))
@@ -63,7 +63,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
     implementation("com.adobe.marketing.mobile:edgemedia")
     ```
 
-    ### Groovy
+    #### Groovy
     
     ```groovy
     implementation platform('com.adobe.marketing.mobile:sdk-bom:3.+')
@@ -78,7 +78,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
 
 2. Import the libraries:
 
-   ### Java
+   #### Java
 
    ```java
    import com.adobe.marketing.mobile.MobileCore;
@@ -87,7 +87,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
    import com.adobe.marketing.mobile.edge.media.Media;
    ```
 
-   ### Kotlin
+   #### Kotlin
 
    ```kotlin
    import com.adobe.marketing.mobile.MobileCore
@@ -98,7 +98,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
 
 3. Import the Media library into your project and register it with `MobileCore`
 
-   ### Java
+   #### Java
 
    ```java
    public class MainApp extends Application {
@@ -120,7 +120,7 @@ Optionally, the Media for Edge Network configuration may be set or changed progr
     }
    ```
 
-   ### Kotlin
+   #### Kotlin
 
    ```kotlin
    class MyApp : Application() {
