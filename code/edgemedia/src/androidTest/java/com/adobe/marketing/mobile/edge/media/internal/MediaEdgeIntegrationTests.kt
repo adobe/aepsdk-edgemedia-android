@@ -23,7 +23,6 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.services.HttpMethod
 import com.adobe.marketing.mobile.services.NetworkRequest
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.LogOnErrorRule
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.RegisterMonitorExtensionRule
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.SetupCoreRule
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.assertExpectedEvents
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.createNetworkResponse
@@ -32,6 +31,7 @@ import com.adobe.marketing.mobile.util.FunctionalTestHelper.resetTestExpectation
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.setExpectationEvent
 import com.adobe.marketing.mobile.util.FunctionalTestHelper.setNetworkResponseFor
 import com.adobe.marketing.mobile.util.JsonTestUtils
+import com.adobe.marketing.mobile.util.MonitorExtension
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -74,7 +74,6 @@ class MediaEdgeIntegrationTests {
     var rule: RuleChain = RuleChain
         .outerRule(LogOnErrorRule())
         .around(SetupCoreRule())
-        .around(RegisterMonitorExtensionRule())
 
     @Before
     fun setup() {
@@ -92,7 +91,7 @@ class MediaEdgeIntegrationTests {
 
         val latch = CountDownLatch(1)
         MobileCore.registerExtensions(
-            listOf(Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION)
+            listOf(Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION, MonitorExtension.EXTENSION)
         ) {
             latch.countDown()
         }
