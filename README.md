@@ -22,8 +22,6 @@ Please refer to the [Migrating from Media to Media for Edge Network guide](Docum
 
 To open and run the project, open the `code/settings.gradle` file in Android Studio
 
-### Development
-
 #### Run the test application
 
 To configure and run the test app for this project, follow the [getting started guide for the test app](Documentation/getting-started-test-app.md).
