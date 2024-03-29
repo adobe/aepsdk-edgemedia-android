@@ -21,7 +21,7 @@ See the [Getting started](./getting-started.md) guide for instructions on settin
 Configure a new Assurance session by setting the Base URL to `testapp://main` and launch Assurance in the demo app by running the following command in your terminal:
 
 ```bash
-$ adb shell am start -W -a android.intent.action.VIEW -d "testapp://main?adb_validation_sessionid=ADD_YOUR_SESSION_ID_HERE" com.adobe.edge.media.testappkotlin
+$ adb shell am start -W -a android.intent.action.VIEW -d "testapp://main?adb_validation_sessionid=ADD_YOUR_SESSION_ID_HERE" com.adobe.marketing.mobile.edge.media.testapp.kotlin
 ```
 
 > **Note**  
