@@ -20,6 +20,7 @@ import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.services.HttpMethod
 import com.adobe.marketing.mobile.util.FunctionalTestHelper
+import com.adobe.marketing.mobile.util.MonitorExtension
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -44,7 +45,6 @@ class MediaEdgeLocationHintIntegrationTests {
     var rule: RuleChain = RuleChain
         .outerRule(FunctionalTestHelper.LogOnErrorRule())
         .around(FunctionalTestHelper.SetupCoreRule())
-        .around(FunctionalTestHelper.RegisterMonitorExtensionRule())
 
     @Before
     fun setup() {
@@ -70,7 +70,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
         val latch = CountDownLatch(1)
         MobileCore.registerExtensions(
-            listOf(Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION)
+            listOf(Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION, MonitorExtension.EXTENSION)
         ) {
             latch.countDown()
         }
