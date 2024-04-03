@@ -17,6 +17,9 @@ plugins {
     id("com.diffplug.spotless")
 }
 
+val mavenCoreVersion: String by project
+val mavenEdgeVersion: String by project
+
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
     kotlin {
         target("src/*/java/**/*.kt")
@@ -69,16 +72,8 @@ dependencies {
     implementation("com.google.android.material:material:1.8.0")
 
     implementation(project(":edgemedia"))
-    implementation("com.adobe.marketing.mobile:core:3.0.0-SNAPSHOT")
-    implementation("com.adobe.marketing.mobile:edge:3.0.0-SNAPSHOT") {
-        exclude(group = "com.adobe.marketing.mobile", module = "core")
-        exclude(group = "com.adobe.marketing.mobile", module = "edgeidentity")
-
-    }
-    implementation("com.adobe.marketing.mobile:edgeidentity:3.0.0-SNAPSHOT") {
-        exclude(group = "com.adobe.marketing.mobile", module = "core")
-    }
-    implementation("com.adobe.marketing.mobile:assurance:3.0.0-SNAPSHOT") {
-        exclude(group = "com.adobe.marketing.mobile", module = "core")
-    }
+    implementation("com.adobe.marketing.mobile:core:$mavenCoreVersion")
+    implementation("com.adobe.marketing.mobile:edge:$mavenEdgeVersion")
+    implementation("com.adobe.marketing.mobile:edgeidentity:3.0.0")
+    implementation("com.adobe.marketing.mobile:assurance:3.0.0")
 }
