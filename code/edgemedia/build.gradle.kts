@@ -37,6 +37,7 @@ dependencies {
     androidTestImplementation("com.adobe.marketing.mobile:edgeidentity:3.0.0")
     androidTestImplementation("com.fasterxml.jackson.core:jackson-databind:2.12.7")
 
+    testImplementation("com.github.adobe:aepsdk-testutils-android:fa7735dab1")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:${BuildConstants.Versions.KOTLIN}")
 }
 
