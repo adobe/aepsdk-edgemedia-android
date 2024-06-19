@@ -20,6 +20,8 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMSessionDetails
+import com.adobe.marketing.mobile.util.JSONAsserts
+import com.adobe.marketing.mobile.util.JSONAsserts.assertExactMatch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -384,15 +386,22 @@ class MediaRealTimeSessionTests {
         session.queue(event)
 
         assertTrue("Timeout waiting for dispatcher.", latch.await(2, TimeUnit.SECONDS))
-        assertNotNull(dispatchedEvent)
 
-        dispatchedEvent?.let { dispatched ->
-            val flatMap = flatten(dispatched.eventData)
-            assertEquals("media.sessionStart", flatMap["xdm.eventType"])
-            assertEquals("testPlayer", flatMap["xdm.mediaCollection.sessionDetails.playerName"])
-            assertEquals("testChannel", flatMap["xdm.mediaCollection.sessionDetails.channel"])
-            assertEquals("testVersion", flatMap["xdm.mediaCollection.sessionDetails.appVersion"])
+        val expected = """
+        {
+          "xdm": {
+            "eventType": "media.sessionStart",
+            "mediaCollection": {
+              "sessionDetails": {
+                "playerName": "testPlayer",
+                "channel": "testChannel",
+                "appVersion": "testVersion"
+              }
+            }
+          }
         }
+        """
+        assertExactMatch(expected, dispatchedEvent?.eventData)
     }
 
     @Test
@@ -418,14 +427,21 @@ class MediaRealTimeSessionTests {
         session.queue(event)
 
         assertTrue("Timeout waiting for dispatcher.", latch.await(2, TimeUnit.SECONDS))
-        assertNotNull(dispatchedEvent)
 
-        dispatchedEvent?.let { dispatched ->
-            val flatMap = flatten(dispatched.eventData)
-            assertEquals("testPlayer", flatMap["xdm.mediaCollection.sessionDetails.playerName"])
-            assertEquals("myChannel", flatMap["xdm.mediaCollection.sessionDetails.channel"]) // channel is same from event
-            assertEquals("testVersion", flatMap["xdm.mediaCollection.sessionDetails.appVersion"])
+        val expected = """
+        {
+          "xdm": {
+            "mediaCollection": {
+              "sessionDetails": {
+                "playerName": "testPlayer",
+                "channel": "myChannel",
+                "appVersion": "testVersion"
+              }
+            }
+          }
         }
+        """
+        assertExactMatch(expected, dispatchedEvent?.eventData)
     }
 
     @Test
@@ -448,14 +464,21 @@ class MediaRealTimeSessionTests {
         session.queue(event)
 
         assertTrue("Timeout waiting for dispatcher.", latch.await(2, TimeUnit.SECONDS))
-        assertNotNull(dispatchedEvent)
 
-        dispatchedEvent?.let { dispatched ->
-            val flatMap = flatten(dispatched.eventData)
-            assertEquals("media.adStart", flatMap["xdm.eventType"])
-            assertEquals("testPlayer", flatMap["xdm.mediaCollection.advertisingDetails.playerName"])
-            assertEquals("sessionId", flatMap["xdm.mediaCollection.sessionID"])
+        val expected = """
+        {
+          "xdm": {
+            "eventType": "media.adStart",
+            "mediaCollection": {
+              "advertisingDetails": {
+                "playerName": "testPlayer"
+              },
+              "sessionID": "sessionId"
+            }
+          }
         }
+        """
+        assertExactMatch(expected, dispatchedEvent?.eventData)
     }
 
     @Test
@@ -558,29 +581,24 @@ class MediaRealTimeSessionTests {
         assertTrue("[${forType.value}] Timeout waiting for dispatcher.", latch.await(2, TimeUnit.SECONDS))
         assertNotNull("[${forType.value}] Did not dispatch event!", dispatchedEvent)
 
-        dispatchedEvent?.let { dispatched ->
-            val flatMap = flatten(dispatched.eventData)
-            assertEquals(
-                "[${forType.value}] event name does not match.",
-                "Edge Media - ${XDMMediaEventType.getTypeString(forType)}",
-                dispatched.name
-            )
-            assertEquals(
-                "[${forType.value}] event type does not match.",
-                XDMMediaEventType.getTypeString(forType),
-                flatMap["xdm.eventType"]
-            )
-            assertEquals(
-                "[${forType.value}] backend session ID does not match.",
-                "sessionId",
-                flatMap["xdm.mediaCollection.sessionID"]
-            )
-            assertEquals(
-                "[${forType.value}] overwrite path does not match.",
-                "/va/v1/${forType.value}",
-                flatMap["request.path"]
-            )
+        assertEquals(
+            "[${forType.value}] event name does not match.",
+            "Edge Media - ${XDMMediaEventType.getTypeString(forType)}", dispatchedEvent?.name
+        )
+        val expected = """
+        {
+          "xdm": {
+            "eventType": "${XDMMediaEventType.getTypeString(forType)}",
+            "mediaCollection": {
+              "sessionID": "sessionId"
+            }
+          },
+          "request": {
+            "path": "/va/v1/${forType.value}"
+          }
         }
+        """
+        assertExactMatch(expected, dispatchedEvent?.eventData)
     }
 
     private fun getXDMMediaEvent(forType: XDMMediaEventType): XDMMediaEvent {
@@ -602,19 +620,5 @@ class MediaRealTimeSessionTests {
         }
 
         return XDMMediaEvent(schema)
-    }
-
-    private fun flatten(map: Map<String, Any>, prefix: String = ""): Map<String, Any> {
-        val keyPrefix = if (prefix.isEmpty()) prefix else "$prefix."
-        val flattened = mutableMapOf<String, Any>()
-        map.forEach { (key, value) ->
-            val expandedKey = "$keyPrefix$key"
-            if (value is Map<*, *>) {
-                flattened += flatten(value as Map<String, Any>, expandedKey)
-            } else {
-                flattened[expandedKey] = value
-            }
-        }
-        return flattened
     }
 }
