@@ -15,6 +15,7 @@ import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
+import com.adobe.marketing.mobile.edge.media.internal.EdgeEventHelper.Companion.generateEdgeEvent
 import org.junit.Before
 import org.junit.Test
 
@@ -89,14 +90,14 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 5, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 20, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 35, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 5, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 20, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 35, backendSessionId)
         )
 
         assertEqualEvents(expected, dispatchedEvents)
@@ -113,14 +114,14 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackSessionEnd()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 5, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 20, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_END, 20, 35, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 5, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 20, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_END, 20, 35, backendSessionId)
         )
 
         assertEqualEvents(expected, dispatchedEvents)
@@ -139,15 +140,15 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.BUFFER_START, 5, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 5, 20, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 25, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 40, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.BUFFER_START, 5, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 5, 20, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 25, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 40, backendSessionId)
         )
 
         assertEqualEvents(expected, dispatchedEvents)
@@ -167,15 +168,15 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 5, 20, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 25, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 40, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 5, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 5, 20, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 25, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 40, backendSessionId)
         )
 
         assertEqualEvents(expected, dispatchedEvents)
@@ -192,13 +193,13 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 0, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 0, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
         )
 
         // verify
@@ -218,16 +219,16 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 0, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 15, 15, backendSessionId, chapterInfo2.toObjectMap(), chapterMetadata2),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 21, 21, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 30, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 30, 30, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 0, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 15, 15, backendSessionId, chapterInfo2.toObjectMap(), chapterMetadata2),
+            generateEdgeEvent(XDMMediaEventType.PING, 21, 21, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 30, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 30, 30, backendSessionId)
         )
 
         // verify
@@ -248,16 +249,16 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, customStateInfo.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 5, 5, backendSessionId, customStateInfo.toObjectMap(), null, null, false),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateMute.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateFullScreen.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 15, 15, backendSessionId, standardStateMute.toObjectMap(), null, null, false),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, customStateInfo.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 5, 5, backendSessionId, customStateInfo.toObjectMap(), null, null, false),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateMute.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateFullScreen.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 15, 15, backendSessionId, standardStateMute.toObjectMap(), null, null, false),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
         )
 
         // verify
@@ -276,14 +277,14 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, customStateInfo.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateMute.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateFullScreen.toObjectMap(), null, null, true),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, customStateInfo.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateMute.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 10, 10, backendSessionId, standardStateFullScreen.toObjectMap(), null, null, true),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 15, backendSessionId)
         )
 
         // verify
@@ -304,16 +305,16 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         // We will have states only till state_10
         for (i in 1..10) {
             val info = StateInfo.create("state_$i")
-            expectedStateStartEvents.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, info.toObjectMap(), null, null, true))
+            expectedStateStartEvents.add(generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 0, 0, backendSessionId, info.toObjectMap(), null, null, true))
         }
 
         val expectedEvents: MutableList<Event> = mutableListOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId)
         )
 
         expectedEvents.addAll(expectedStateStartEvents)
-        expectedEvents.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 0, 0, backendSessionId))
+        expectedEvents.add(generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 0, 0, backendSessionId))
 
         // verify
         assertEqualEvents(expectedEvents, dispatchedEvents)
@@ -333,13 +334,13 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         val errorInfo2 = mapOf("error.id" to "custom.error.code", "error.source" to "player")
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.ERROR, 5, 5, backendSessionId, errorInfo1),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.ERROR, 20, 20, backendSessionId, errorInfo2),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 20, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.ERROR, 5, 5, backendSessionId, errorInfo1),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 11, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.ERROR, 20, 20, backendSessionId, errorInfo2),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 20, 20, backendSessionId)
         )
 
         // verify
@@ -364,26 +365,26 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         resumedMediaInfo["media.resumed"] = true
 
         val expected: MutableList<Event> = mutableListOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId)
         )
 
         val pingList: MutableList<Event> = mutableListOf()
         for (i in 11..86400 step 10) {
-            pingList.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, i, i.toLong(), backendSessionId))
+            pingList.add(generateEdgeEvent(XDMMediaEventType.PING, i, i.toLong(), backendSessionId))
         }
 
         expected.addAll(pingList)
-        expected.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_END, 86400, 86400, backendSessionId))
+        expected.add(generateEdgeEvent(XDMMediaEventType.SESSION_END, 86400, 86400, backendSessionId))
         // Session2
 
         val expected2: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 86400, 86400, backendSessionId, resumedMediaInfo, mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 86400, 86400, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 86401, 86401, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 86411, 86411, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 86420, 86420, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 86400, 86400, backendSessionId, resumedMediaInfo, mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 86400, 86400, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 86401, 86401, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 86411, 86411, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 86420, 86420, backendSessionId)
         )
         expected.addAll(expected2)
 
@@ -401,18 +402,18 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         incrementTrackerTime(1800, false)
 
         val expected: MutableList<Event> = mutableListOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 3, 3, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 3, 3, backendSessionId)
         )
         val pingList: MutableList<Event> = mutableListOf()
         for (i in 3 until 1793 step 10) {
-            pingList.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
+            pingList.add(generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
         }
 
         expected.addAll(pingList)
-        expected.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_END, 3, 1803, backendSessionId))
+        expected.add(generateEdgeEvent(XDMMediaEventType.SESSION_END, 3, 1803, backendSessionId))
 
         // verify
         assertEqualEvents(expected, dispatchedEvents)
@@ -441,42 +442,42 @@ class TrackerScenarioPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: MutableList<Event> = mutableListOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 3, 3, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 3, 3, backendSessionId)
         )
 
         val pingList1: MutableList<Event> = mutableListOf()
         for (i in 3 until 603 step 10) {
-            pingList1.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
+            pingList1.add(generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
         }
 
         expected.addAll(pingList1)
-        expected.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 3, 603, backendSessionId, standardStateCC.toObjectMap(), null, null, true))
+        expected.add(generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 3, 603, backendSessionId, standardStateCC.toObjectMap(), null, null, true))
 
         val pingList2: MutableList<Event> = mutableListOf()
         for (i in 603 until 1203 step 10) {
-            pingList2.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
+            pingList2.add(generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
         }
         expected.addAll(pingList2)
-        expected.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 3, 1203, backendSessionId, standardStateCC.toObjectMap(), null, null, false))
+        expected.add(generateEdgeEvent(XDMMediaEventType.STATES_UPDATE, 3, 1203, backendSessionId, standardStateCC.toObjectMap(), null, null, false))
 
         val pingList3: MutableList<Event> = mutableListOf()
         for (i in 1203 until 1793 step 10) {
-            pingList3.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
+            pingList3.add(generateEdgeEvent(XDMMediaEventType.PING, 3, (i + 10).toLong(), backendSessionId))
         }
         expected.addAll(pingList3)
-        expected.add(EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_END, 3, 1803, backendSessionId))
+        expected.add(generateEdgeEvent(XDMMediaEventType.SESSION_END, 3, 1803, backendSessionId))
 
         val resumedMediaInfo = mediaInfoWithDefaultPreroll.toObjectMap()
         resumedMediaInfo["media.resumed"] = true
 
         val expected2 = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 3, 1803, backendSessionId, resumedMediaInfo, mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 3, 1803, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 4, 1804, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 6, 1806, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 3, 1803, backendSessionId, resumedMediaInfo, mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 3, 1803, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 4, 1804, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 6, 1806, backendSessionId)
         )
         expected.addAll(expected2)
 
