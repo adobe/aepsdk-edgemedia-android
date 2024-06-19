@@ -14,8 +14,8 @@ package com.adobe.marketing.mobile.edge.media.internal
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
-import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.EdgeEventHelper.Companion.generateEdgeEvent
+import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import org.junit.Before
 import org.junit.Test
 
