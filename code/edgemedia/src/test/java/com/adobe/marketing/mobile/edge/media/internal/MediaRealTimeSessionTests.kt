@@ -20,7 +20,6 @@ import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEvent
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaSchema
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMSessionDetails
-import com.adobe.marketing.mobile.util.JSONAsserts
 import com.adobe.marketing.mobile.util.JSONAsserts.assertExactMatch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
