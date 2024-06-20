@@ -12,7 +12,7 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import com.adobe.marketing.mobile.Event
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 
 open class TrackerScenarioTestBase {
@@ -75,20 +75,20 @@ open class TrackerScenarioTestBase {
      * Assert two lists of [Event]s are equal by comparing the Event name, type, source, and data.
      */
     fun assertEqualEvents(expectedEvents: List<Event>, actualEvents: List<Event>) {
-        Assert.assertEquals(
+        assertEquals(
             "Number of dispatched events must be equal.",
             expectedEvents.size,
             actualEvents.size
         )
 
-        for (i in 1 until expectedEvents.size) {
+        for (i in expectedEvents.indices) {
             val expected = expectedEvents[i]
             val actual = actualEvents[i]
 
-            Assert.assertEquals("Event name must match.", expected.name, actual.name)
-            Assert.assertEquals("Event type must match.", expected.type, actual.type)
-            Assert.assertEquals("Event source must match.", expected.source, actual.source)
-            Assert.assertEquals("Event data must match.", expected.eventData, actual.eventData)
+            assertEquals("Event name must match.", expected.name, actual.name)
+            assertEquals("Event type must match.", expected.type, actual.type)
+            assertEquals("Event source must match.", expected.source, actual.source)
+            assertEquals("Event data must match.", expected.eventData, actual.eventData)
         }
     }
 }
