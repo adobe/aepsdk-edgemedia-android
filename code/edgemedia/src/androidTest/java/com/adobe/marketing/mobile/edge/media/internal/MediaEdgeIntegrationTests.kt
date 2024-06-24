@@ -21,16 +21,16 @@ import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import com.adobe.marketing.mobile.services.HttpConnecting
+import com.adobe.marketing.mobile.services.HttpMethod.POST
 import com.adobe.marketing.mobile.services.NetworkRequest
 import com.adobe.marketing.mobile.services.ServiceProvider
-import com.adobe.marketing.mobile.services.HttpMethod.POST
-import com.adobe.marketing.mobile.util.TestHelper
-import com.adobe.marketing.mobile.util.TestHelper.LogOnErrorRule
-import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
-import com.adobe.marketing.mobile.util.TestHelper.SetupCoreRule
 import com.adobe.marketing.mobile.util.JsonTestUtils
 import com.adobe.marketing.mobile.util.MockNetworkService
 import com.adobe.marketing.mobile.util.MonitorExtension
+import com.adobe.marketing.mobile.util.TestHelper
+import com.adobe.marketing.mobile.util.TestHelper.LogOnErrorRule
+import com.adobe.marketing.mobile.util.TestHelper.SetupCoreRule
+import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -106,7 +106,7 @@ class MediaEdgeIntegrationTests {
 
     @After
     fun tearDown() {
-        mockNetworkService.reset();
+        mockNetworkService.reset()
     }
 
     @Test

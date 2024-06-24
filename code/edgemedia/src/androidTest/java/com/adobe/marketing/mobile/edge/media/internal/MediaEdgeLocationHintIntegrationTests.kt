@@ -12,23 +12,22 @@
 package com.adobe.marketing.mobile.edge.media.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.adobe.marketing.mobile.services.HttpConnecting
-import com.adobe.marketing.mobile.services.ServiceProvider
-import com.adobe.marketing.mobile.util.MockNetworkService
-import com.adobe.marketing.mobile.services.HttpMethod.POST
 import com.adobe.marketing.mobile.Edge
 import com.adobe.marketing.mobile.EventSource
 import com.adobe.marketing.mobile.EventType
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
+import com.adobe.marketing.mobile.services.HttpConnecting
+import com.adobe.marketing.mobile.services.HttpMethod.POST
+import com.adobe.marketing.mobile.services.ServiceProvider
+import com.adobe.marketing.mobile.util.MockNetworkService
 import com.adobe.marketing.mobile.util.MonitorExtension
 import com.adobe.marketing.mobile.util.TestHelper
 import com.adobe.marketing.mobile.util.TestHelper.LogOnErrorRule
 import com.adobe.marketing.mobile.util.TestHelper.SetupCoreRule
-import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
 import com.adobe.marketing.mobile.util.TestHelper.assertExpectedEvents
-
+import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -85,7 +84,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
     @After
     fun tearDown() {
-        mockNetworkService.reset();
+        mockNetworkService.reset()
     }
 
     @Test
