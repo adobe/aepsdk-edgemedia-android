@@ -35,7 +35,6 @@ dependencies {
     implementation("com.adobe.marketing.mobile:edge:$mavenEdgeVersion")
 
     androidTestImplementation("com.adobe.marketing.mobile:edgeidentity:3.0.0")
-    androidTestImplementation("com.fasterxml.jackson.core:jackson-databind:2.12.7")
     androidTestImplementation("com.github.adobe:aepsdk-testutils-android:99bdd27d04")
 
     testImplementation("com.github.adobe:aepsdk-testutils-android:99bdd27d04")

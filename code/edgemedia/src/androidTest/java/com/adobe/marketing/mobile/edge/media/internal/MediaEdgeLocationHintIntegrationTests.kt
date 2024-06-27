@@ -18,7 +18,6 @@ import com.adobe.marketing.mobile.EventType
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
-import com.adobe.marketing.mobile.services.HttpConnecting
 import com.adobe.marketing.mobile.services.HttpMethod.POST
 import com.adobe.marketing.mobile.services.ServiceProvider
 import com.adobe.marketing.mobile.util.MockNetworkService
@@ -84,7 +83,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
     @After
     fun tearDown() {
-        mockNetworkService.reset()
+        resetTestExpectations()
     }
 
     @Test
@@ -94,7 +93,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
         val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"
 
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(sessionStartUrlWithLocationHint, POST, responseConnection)
 
         // test
@@ -104,8 +103,6 @@ class MediaEdgeLocationHintIntegrationTests {
         tracker.updateCurrentPlayhead(7)
         tracker.trackPause()
         tracker.trackComplete()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -122,7 +119,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
         val sessionStartUrlWithoutLocationHint = "https://edge.adobedc.net/ee/va/v1/sessionStart"
 
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(sessionStartUrlWithoutLocationHint, POST, responseConnection)
 
         // test
@@ -134,8 +131,6 @@ class MediaEdgeLocationHintIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        mockNetworkService.assertAllNetworkRequestExpectations()
-
         val networkRequests = mockNetworkService.getAllNetworkRequests()
         Assert.assertEquals(4, networkRequests.size)
         Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/va/v1/sessionStart"))

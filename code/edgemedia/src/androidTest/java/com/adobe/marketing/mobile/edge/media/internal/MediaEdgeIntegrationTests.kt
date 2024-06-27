@@ -20,7 +20,6 @@ import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
-import com.adobe.marketing.mobile.services.HttpConnecting
 import com.adobe.marketing.mobile.services.HttpMethod.POST
 import com.adobe.marketing.mobile.services.NetworkRequest
 import com.adobe.marketing.mobile.services.ServiceProvider
@@ -106,13 +105,13 @@ class MediaEdgeIntegrationTests {
 
     @After
     fun tearDown() {
-        mockNetworkService.reset()
+        resetTestExpectations()
     }
 
     @Test
     fun testPlayback_singleSession_play_pause_complete() {
 
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
 
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
@@ -124,7 +123,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackPause()
         tracker.trackComplete()
 
-        mockNetworkService.assertAllNetworkRequestExpectations()
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(4, networkRequests.size)
@@ -137,7 +135,7 @@ class MediaEdgeIntegrationTests {
     @Test
     fun testSessionStartErrorResponse_shouldNotSendAnyOtherNetworkRequests() {
 
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(ERROR_RESPONSE_STRING, 400)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(ERROR_RESPONSE_STRING, 400)
 
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
@@ -150,8 +148,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        mockNetworkService.assertAllNetworkRequestExpectations()
-
         val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(1, networkRequests.size)
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
@@ -159,7 +155,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withPrerollAdBreak() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -172,9 +168,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackEvent(Media.Event.AdComplete, null, null)
         tracker.trackEvent(Media.Event.AdBreakComplete, null, null)
         tracker.trackComplete()
-
-        // verify
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -191,7 +184,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withSingleChapter() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -201,8 +194,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackPlay()
         tracker.trackEvent(Media.Event.ChapterComplete, null, null)
         tracker.trackComplete()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -217,7 +208,7 @@ class MediaEdgeIntegrationTests {
     @Test
     fun testPlayback_withBuffer_withSeek_withBitrate_withQoeUpdate_withError() {
 
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -237,8 +228,6 @@ class MediaEdgeIntegrationTests {
         tracker.updateCurrentPlayhead(20)
         tracker.trackComplete()
 
-        mockNetworkService.assertAllNetworkRequestExpectations()
-
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(9, networkRequests.size)
@@ -255,7 +244,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withPrerollAdBreak_noAdComplete_noAdbreakComplete_withSessionEnd() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -265,8 +254,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackEvent(Media.Event.AdStart, adInfo, metadata)
         tracker.trackPlay()
         tracker.trackComplete()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -282,7 +269,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withChapterStart_noChapterComplete_withSessionEnd() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -292,8 +279,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackPlay()
         tracker.updateCurrentPlayhead(12)
         tracker.trackSessionEnd()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -307,7 +292,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withSingleChapter_withMuteState_withCustomState() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -322,8 +307,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackEvent(Media.Event.StateEnd, muteStateInfo, null)
         tracker.trackEvent(Media.Event.ChapterComplete, null, null)
         tracker.trackComplete()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
@@ -341,7 +324,7 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withChapterStart_noChapterComplete_withMuteStateStart_withCustomStateStart_noMuteStateEnd_noCustomStateEnd_withSessionEnd() {
-        val responseConnection: HttpConnecting = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
         mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
@@ -353,8 +336,6 @@ class MediaEdgeIntegrationTests {
         tracker.trackEvent(Media.Event.StateStart, customStateInfo, null)
         tracker.updateCurrentPlayhead(12)
         tracker.trackSessionEnd()
-
-        mockNetworkService.assertAllNetworkRequestExpectations()
 
         // verify
         val networkRequests = mockNetworkService.getAllNetworkRequests()
