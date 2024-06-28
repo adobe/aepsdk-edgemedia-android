@@ -170,7 +170,7 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = mockNetworkService.getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests(4000)
         assertEquals(8, networkRequests.size)
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.AD_BREAK_START, adBreakInfo, backendSessionId = testBackendSessionId)
