@@ -83,7 +83,7 @@ class MediaEdgeLocationHintIntegrationTests {
 
     @After
     fun tearDown() {
-        resetTestExpectations()
+        mockNetworkService.reset()
     }
 
     @Test

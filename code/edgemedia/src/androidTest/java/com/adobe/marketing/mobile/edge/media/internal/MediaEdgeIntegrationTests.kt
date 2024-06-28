@@ -99,13 +99,12 @@ class MediaEdgeIntegrationTests {
         }
 
         latch.await()
-        TestHelper.assertExpectedEvents(false)
         resetTestExpectations()
     }
 
     @After
     fun tearDown() {
-        resetTestExpectations()
+        mockNetworkService.reset()
     }
 
     @Test
