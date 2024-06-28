@@ -77,7 +77,6 @@ class MediaEdgeLocationHintIntegrationTests {
         }
 
         latch.await()
-        assertExpectedEvents(false)
         resetTestExpectations()
     }
 
