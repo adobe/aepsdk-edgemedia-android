@@ -100,12 +100,12 @@ class MediaEdgeIntegrationTests {
 
         latch.await()
         TestHelper.assertExpectedEvents(false)
-        TestHelper.resetTestExpectations()
+        resetTestExpectations()
     }
 
     @After
     fun tearDown() {
-        mockNetworkService.reset()
+        resetTestExpectations()
     }
 
     @Test
@@ -386,5 +386,9 @@ class MediaEdgeIntegrationTests {
         val mediaState = MediaState()
         mediaState.updateState(config)
         return mediaState
+    }
+    private fun resetTestExpectations() {
+        mockNetworkService.reset()
+        TestHelper.resetTestExpectations()
     }
 }
