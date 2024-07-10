@@ -76,7 +76,9 @@ class MediaEdgeLocationHintIntegrationTests {
         }
 
         latch.await()
-        resetTestExpectations()
+        TestHelper.assertExpectedEvents(false)
+        mockNetworkService.reset()
+        TestHelper.resetTestExpectations()
     }
 
     @After
@@ -135,10 +137,5 @@ class MediaEdgeLocationHintIntegrationTests {
         Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/va/v1/play"))
         Assert.assertTrue(networkRequests[2].url.contains("https://edge.adobedc.net/ee/va/v1/pauseStart"))
         Assert.assertTrue(networkRequests[3].url.contains("https://edge.adobedc.net/ee/va/v1/sessionComplete"))
-    }
-
-    private fun resetTestExpectations() {
-        mockNetworkService.reset()
-        TestHelper.resetTestExpectations()
     }
 }
