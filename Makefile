@@ -24,6 +24,9 @@ format:
 format-license:
 	(./code/gradlew -p code licenseFormat)
 
+lint:
+	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) lint)
+
 unit-test:
 	(./code/gradlew -p code/$(EXTENSION-LIBRARY-FOLDER-NAME) testPhoneDebugUnitTest)
 
