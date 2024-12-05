@@ -14,6 +14,7 @@ package com.adobe.marketing.mobile.edge.media.internal
 import com.adobe.marketing.mobile.Event
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
+import com.adobe.marketing.mobile.edge.media.internal.EdgeEventHelper.Companion.generateEdgeEvent
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
 import org.junit.Before
 import org.junit.Test
@@ -125,31 +126,31 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 15, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 16, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 26, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 15, 30, backendSessionId, chapterInfo2.toObjectMap(), chapterMetadata2),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 21, 36, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 30, 45, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 15, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 16, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 26, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 15, 30, backendSessionId, chapterInfo2.toObjectMap(), chapterMetadata2),
+            generateEdgeEvent(XDMMediaEventType.PING, 21, 36, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 30, 45, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 30, 45, backendSessionId, adBreakInfo2.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 30, 45, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 30, 45, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 30, 55, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 30, 60, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 30, 60, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 30, 60, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 30, 60, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 30, 45, backendSessionId, adBreakInfo2.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 30, 45, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 30, 45, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 30, 55, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 30, 60, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 30, 60, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 30, 60, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 30, 60, backendSessionId)
         )
 
         // verify
@@ -170,18 +171,18 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 16, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 26, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 30, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 16, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 26, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 30, backendSessionId)
         )
 
         // verify
@@ -213,33 +214,33 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 15, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 25, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 31, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 41, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 15, 45, backendSessionId, adBreakInfo2.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 15, 45, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 15, 45, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 55, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 60, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 15, 60, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 15, 60, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 70, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 75, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 15, 75, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 15, 75, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 75, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 15, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 25, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 31, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 41, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 15, 45, backendSessionId, adBreakInfo2.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 15, 45, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 15, 45, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 55, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 60, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 15, 60, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 15, 60, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 70, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 75, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 15, 75, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 15, 75, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 75, backendSessionId)
         )
 
         // verify
@@ -279,34 +280,34 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 15, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 25, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 15, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 15, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 25, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 30, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 30, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 30, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 31, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 41, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 45, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 0, 30, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 31, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 41, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_COMPLETE, 15, 45, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 15, 45, backendSessionId, adBreakInfo2.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 51, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 61, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 15, 70, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 15, 70, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 15, 80, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 85, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 15, 85, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 15, 45, backendSessionId, adBreakInfo2.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 51, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 61, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 15, 70, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 15, 70, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 15, 80, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 15, 85, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 15, 85, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 15, 85, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 85, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.PLAY, 15, 85, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 15, 85, backendSessionId)
         )
 
         // verify
@@ -352,32 +353,32 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackSessionEnd()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 6, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_SKIP, 5, 6, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 5, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_SKIP, 5, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 5, 6, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 5, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 5, 6, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 5, 6, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 6, 7, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 16, 17, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 20, 21, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.CHAPTER_SKIP, 25, 22, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 25, 22, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_START, 5, 6, backendSessionId, chapterInfo.toObjectMap(), chapterMetadata),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 6, 7, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 16, 17, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 20, 21, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.CHAPTER_SKIP, 25, 22, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 25, 22, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 25, 22, backendSessionId, adBreakInfo2.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 25, 22, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 25, 22, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 25, 32, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_SKIP, 25, 37, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 25, 37, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_END, 25, 37, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 25, 22, backendSessionId, adBreakInfo2.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 25, 22, backendSessionId, adInfo2.toObjectMap(), adMetadata2, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 25, 22, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 25, 32, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_SKIP, 25, 37, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 25, 37, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_END, 25, 37, backendSessionId)
         )
 
         // verify
@@ -418,22 +419,22 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfoWithDefaultPreroll.toObjectMap(), mediaMetadata, mediaState),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 5, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 10, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 10, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 20, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 25, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 30, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 35, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 36, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 5, 40, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 5, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 10, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 10, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 20, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.BUFFER_START, 0, 25, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 30, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PAUSE_START, 0, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 35, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 36, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 5, 40, backendSessionId)
         )
 
         // verify
@@ -463,24 +464,24 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 1, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 2, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 3, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 4, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 1, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 2, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 3, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 4, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 16, 21, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 16, 21, backendSessionId),
 
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 31, 36, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 31, 36, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.PING, 31, 36, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 31, 36, backendSessionId)
         )
 
         // verify
@@ -510,18 +511,18 @@ class TrackerScenarioAdPlaybackTests : TrackerScenarioTestBase() {
         mediaTracker.trackComplete()
 
         val expected: List<Event> = listOf(
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 11, 16, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 21, 26, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.PING, 31, 36, backendSessionId),
-            EdgeEventHelper.generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 31, 36, backendSessionId)
+            generateEdgeEvent(XDMMediaEventType.SESSION_START, 0, 0, backendSessionId, mediaInfo.toObjectMap(), mediaMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_START, 0, 0, backendSessionId, adBreakInfo.toObjectMap()),
+            generateEdgeEvent(XDMMediaEventType.AD_START, 0, 0, backendSessionId, adInfo.toObjectMap(), adMetadata, mediaState),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 0, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_COMPLETE, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.AD_BREAK_COMPLETE, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 0, 5, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PLAY, 1, 6, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 11, 16, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 21, 26, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.PING, 31, 36, backendSessionId),
+            generateEdgeEvent(XDMMediaEventType.SESSION_COMPLETE, 31, 36, backendSessionId)
         )
 
         // verify
