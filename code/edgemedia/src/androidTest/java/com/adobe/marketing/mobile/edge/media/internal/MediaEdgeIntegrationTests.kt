@@ -20,18 +20,18 @@ import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
 import com.adobe.marketing.mobile.edge.media.MediaConstants
 import com.adobe.marketing.mobile.edge.media.internal.xdm.XDMMediaEventType
-import com.adobe.marketing.mobile.services.HttpMethod
+import com.adobe.marketing.mobile.services.HttpMethod.POST
 import com.adobe.marketing.mobile.services.NetworkRequest
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.LogOnErrorRule
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.SetupCoreRule
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.assertExpectedEvents
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.createNetworkResponse
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.getAllNetworkRequests
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.resetTestExpectations
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.setExpectationEvent
-import com.adobe.marketing.mobile.util.FunctionalTestHelper.setNetworkResponseFor
+import com.adobe.marketing.mobile.services.ServiceProvider
 import com.adobe.marketing.mobile.util.JsonTestUtils
+import com.adobe.marketing.mobile.util.MockNetworkService
 import com.adobe.marketing.mobile.util.MonitorExtension
+import com.adobe.marketing.mobile.util.TestHelper
+import com.adobe.marketing.mobile.util.TestHelper.LogOnErrorRule
+import com.adobe.marketing.mobile.util.TestHelper.SetupCoreRule
+import com.adobe.marketing.mobile.util.TestHelper.assertExpectedEvents
+import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -44,6 +44,8 @@ import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class MediaEdgeIntegrationTests {
+
+    private val mockNetworkService = MockNetworkService()
     companion object {
         private const val EDGE_CONFIG_ID = "1234abcd-abcd-1234-5678-123456abcdef"
         private const val SESSION_START_URL = "https://edge.adobedc.net/ee/va/v1/sessionStart"
@@ -77,6 +79,7 @@ class MediaEdgeIntegrationTests {
 
     @Before
     fun setup() {
+        ServiceProvider.getInstance().networkService = mockNetworkService
         setExpectationEvent(EventType.CONFIGURATION, EventSource.REQUEST_CONTENT, 1)
         setExpectationEvent(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT, 1)
         setExpectationEvent(EventType.HUB, EventSource.SHARED_STATE, 4)
@@ -98,17 +101,21 @@ class MediaEdgeIntegrationTests {
 
         latch.await()
         assertExpectedEvents(false)
-        resetTestExpectations()
+        mockNetworkService.reset()
+        TestHelper.resetTestExpectations()
+    }
+
+    @After
+    fun tearDown() {
+        mockNetworkService.reset()
     }
 
     @Test
     fun testPlayback_singleSession_play_pause_complete() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -119,9 +126,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(4, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.PAUSE_START, backendSessionId = testBackendSessionId, playhead = 7)
@@ -130,12 +136,10 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testSessionStartErrorResponse_shouldNotSendAnyOtherNetworkRequests() {
-        val responseConnection = createNetworkResponse(ERROR_RESPONSE_STRING, 400)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+
+        val responseConnection = mockNetworkService.createMockNetworkResponse(ERROR_RESPONSE_STRING, 400)
+
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -146,20 +150,15 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(1, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
     }
 
     @Test
     fun testPlayback_withPrerollAdBreak() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -173,9 +172,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(8, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.AD_BREAK_START, adBreakInfo, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.AD_START, adInfo, metadata, configuration, testBackendSessionId, qoeInfo)
@@ -188,12 +186,8 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withSingleChapter() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -204,9 +198,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(5, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.CHAPTER_START, chapterInfo, metadata, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)
@@ -216,12 +209,9 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withBuffer_withSeek_withBitrate_withQoeUpdate_withError() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -241,9 +231,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(9, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.BUFFER_START, backendSessionId = testBackendSessionId, playhead = 5)
@@ -257,12 +246,8 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withPrerollAdBreak_noAdComplete_noAdbreakComplete_withSessionEnd() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -273,9 +258,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(7, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.AD_BREAK_START, adBreakInfo, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.AD_START, adInfo, metadata, configuration, testBackendSessionId)
@@ -287,12 +271,8 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withChapterStart_noChapterComplete_withSessionEnd() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -303,9 +283,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackSessionEnd()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(5, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.CHAPTER_START, chapterInfo, metadata, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)
@@ -315,12 +294,8 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withSingleChapter_withMuteState_withCustomState() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -336,9 +311,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(9, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.CHAPTER_START, chapterInfo, metadata, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)
@@ -352,12 +326,8 @@ class MediaEdgeIntegrationTests {
 
     @Test
     fun testPlayback_withChapterStart_noChapterComplete_withMuteStateStart_withCustomStateStart_noMuteStateEnd_noCustomStateEnd_withSessionEnd() {
-        val responseConnection = createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        setNetworkResponseFor(
-            SESSION_START_URL,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(SESSION_START_URL, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -370,9 +340,8 @@ class MediaEdgeIntegrationTests {
         tracker.trackSessionEnd()
 
         // verify
-        val networkRequests = getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         assertEquals(7, networkRequests.size)
-
         assertXDMData(networkRequests[0], XDMMediaEventType.SESSION_START, mediaInfo, metadata, configuration)
         assertXDMData(networkRequests[1], XDMMediaEventType.CHAPTER_START, chapterInfo, metadata, backendSessionId = testBackendSessionId)
         assertXDMData(networkRequests[2], XDMMediaEventType.PLAY, backendSessionId = testBackendSessionId)

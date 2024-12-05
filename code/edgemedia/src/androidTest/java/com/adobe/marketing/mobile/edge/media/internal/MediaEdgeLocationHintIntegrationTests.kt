@@ -18,9 +18,15 @@ import com.adobe.marketing.mobile.EventType
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
-import com.adobe.marketing.mobile.services.HttpMethod
-import com.adobe.marketing.mobile.util.FunctionalTestHelper
+import com.adobe.marketing.mobile.services.HttpMethod.POST
+import com.adobe.marketing.mobile.services.ServiceProvider
+import com.adobe.marketing.mobile.util.MockNetworkService
 import com.adobe.marketing.mobile.util.MonitorExtension
+import com.adobe.marketing.mobile.util.TestHelper
+import com.adobe.marketing.mobile.util.TestHelper.LogOnErrorRule
+import com.adobe.marketing.mobile.util.TestHelper.SetupCoreRule
+import com.adobe.marketing.mobile.util.TestHelper.setExpectationEvent
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -31,6 +37,7 @@ import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class MediaEdgeLocationHintIntegrationTests {
+    private val mockNetworkService = MockNetworkService()
     companion object {
         private const val EDGE_CONFIG_ID = "1234abcd-abcd-1234-5678-123456abcdef"
         private const val SUCCESS_RESPONSE_STRING =
@@ -43,22 +50,15 @@ class MediaEdgeLocationHintIntegrationTests {
     @Rule
     @JvmField
     var rule: RuleChain = RuleChain
-        .outerRule(FunctionalTestHelper.LogOnErrorRule())
-        .around(FunctionalTestHelper.SetupCoreRule())
+        .outerRule(LogOnErrorRule())
+        .around(SetupCoreRule())
 
     @Before
     fun setup() {
-        FunctionalTestHelper.setExpectationEvent(
-            EventType.CONFIGURATION,
-            EventSource.REQUEST_CONTENT,
-            1
-        )
-        FunctionalTestHelper.setExpectationEvent(
-            EventType.CONFIGURATION,
-            EventSource.RESPONSE_CONTENT,
-            1
-        )
-        FunctionalTestHelper.setExpectationEvent(EventType.HUB, EventSource.SHARED_STATE, 4)
+        ServiceProvider.getInstance().networkService = mockNetworkService
+        setExpectationEvent(EventType.CONFIGURATION, EventSource.REQUEST_CONTENT, 1)
+        setExpectationEvent(EventType.CONFIGURATION, EventSource.RESPONSE_CONTENT, 1)
+        setExpectationEvent(EventType.HUB, EventSource.SHARED_STATE, 4)
 
         MobileCore.updateConfiguration(
             mapOf(
@@ -76,8 +76,14 @@ class MediaEdgeLocationHintIntegrationTests {
         }
 
         latch.await()
-        FunctionalTestHelper.assertExpectedEvents(false)
-        FunctionalTestHelper.resetTestExpectations()
+        TestHelper.assertExpectedEvents(false)
+        mockNetworkService.reset()
+        TestHelper.resetTestExpectations()
+    }
+
+    @After
+    fun tearDown() {
+        mockNetworkService.reset()
     }
 
     @Test
@@ -87,13 +93,8 @@ class MediaEdgeLocationHintIntegrationTests {
 
         val sessionStartUrlWithLocationHint = "https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"
 
-        val responseConnection =
-            FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        FunctionalTestHelper.setNetworkResponseFor(
-            sessionStartUrlWithLocationHint,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(sessionStartUrlWithLocationHint, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -104,15 +105,12 @@ class MediaEdgeLocationHintIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = FunctionalTestHelper.getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         Assert.assertEquals(4, networkRequests.size)
         Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionStart"))
         Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/play"))
         Assert.assertTrue(networkRequests[2].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/pauseStart"))
         Assert.assertTrue(networkRequests[3].url.contains("https://edge.adobedc.net/ee/$testLocationHint/va/v1/sessionComplete"))
-
-        // clear network requests
-        FunctionalTestHelper.resetTestNetworkService()
     }
 
     @Test
@@ -121,13 +119,8 @@ class MediaEdgeLocationHintIntegrationTests {
 
         val sessionStartUrlWithoutLocationHint = "https://edge.adobedc.net/ee/va/v1/sessionStart"
 
-        val responseConnection =
-            FunctionalTestHelper.createNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
-        FunctionalTestHelper.setNetworkResponseFor(
-            sessionStartUrlWithoutLocationHint,
-            HttpMethod.POST,
-            responseConnection
-        )
+        val responseConnection = mockNetworkService.createMockNetworkResponse(SUCCESS_RESPONSE_STRING, 200)
+        mockNetworkService.setMockResponseFor(sessionStartUrlWithoutLocationHint, POST, responseConnection)
 
         // test
         val tracker = Media.createTracker()
@@ -138,7 +131,7 @@ class MediaEdgeLocationHintIntegrationTests {
         tracker.trackComplete()
 
         // verify
-        val networkRequests = FunctionalTestHelper.getAllNetworkRequests()
+        val networkRequests = mockNetworkService.getAllNetworkRequests()
         Assert.assertEquals(4, networkRequests.size)
         Assert.assertTrue(networkRequests[0].url.contains("https://edge.adobedc.net/ee/va/v1/sessionStart"))
         Assert.assertTrue(networkRequests[1].url.contains("https://edge.adobedc.net/ee/va/v1/play"))
