@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Media {
-    private static final String EXTENSION_VERSION = "3.0.0";
+    private static final String EXTENSION_VERSION = "3.0.1";
 
     private Media() {}
 
