@@ -51,7 +51,7 @@ jobs:
       version: ${{ github.event.inputs.version }}
       branch: ${{ github.event.inputs.branch }}
       dependencies: Core ${{ github.event.inputs.core-dependency }}, Edge ${{ github.event.inputs.edge-dependency }}
-      paths: code/gradle.properties, code/edgemedia/src/phone/java/com/adobe/marketing/mobile/edge/media/Media.java
+      paths: code/gradle.properties, code/edgemedia/src/phone/java/com/adobe/marketing/mobile/edge/media/MediaConstants.java
       update: true
 
         

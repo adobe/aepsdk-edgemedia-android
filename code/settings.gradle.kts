@@ -9,11 +9,13 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
         mavenLocal()
     }
 }
@@ -23,15 +25,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        mavenLocal()
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
         maven { url = uri("https://jitpack.io") }
+        mavenLocal()
     }
 }
 
 rootProject.name = "aepsdk-edgemedia-android"
-include (
-        ":edgemedia",
-        ":testapp",
-        ":testapp-kotlin"
-)
+include(":edgemedia")
+include(":testapp")
+include(":testapp-kotlin")

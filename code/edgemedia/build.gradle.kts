@@ -9,7 +9,6 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import com.adobe.marketing.mobile.gradle.BuildConstants
 
 plugins {
     id("aep-library")
@@ -21,23 +20,34 @@ val mavenEdgeVersion: String by project
 aepLibrary {
     namespace = "com.adobe.marketing.mobile.edge.media"
     enableSpotless = true
-    enableCheckStyle = true
-    enableDokkaDoc = true
+    enableSpotlessPrettierForJava = true
+ 
     publishing {
         gitRepoName = "aepsdk-edgemedia-android"
         addCoreDependency(mavenCoreVersion)
-        addEdgeDependency(mavenEdgeVersion)
     }
 }
 
 dependencies {
     implementation("com.adobe.marketing.mobile:core:$mavenCoreVersion")
     implementation("com.adobe.marketing.mobile:edge:$mavenEdgeVersion")
-
-    androidTestImplementation("com.adobe.marketing.mobile:edgeidentity:3.0.0")
-    androidTestImplementation("com.github.adobe:aepsdk-testutils-android:99bdd27d04")
-
-    testImplementation("com.github.adobe:aepsdk-testutils-android:99bdd27d04")
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect:${BuildConstants.Versions.KOTLIN}")
+    testImplementation("com.github.adobe:aepsdk-testutils-android:0bfafc7296")
+    androidTestImplementation("com.github.adobe:aepsdk-testutils-android:0bfafc7296")
+    
+    // Adobe Core and Edge dependencies for tests
+    testImplementation("com.adobe.marketing.mobile:core:$mavenCoreVersion")
+    testImplementation("com.adobe.marketing.mobile:edge:$mavenEdgeVersion")
+    
+    // JUnit dependencies
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.0")
+    
+    // Mockito dependencies
+    testImplementation("org.mockito:mockito-core:5.3.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    
+    // Kotlin reflection dependencies
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 }
 

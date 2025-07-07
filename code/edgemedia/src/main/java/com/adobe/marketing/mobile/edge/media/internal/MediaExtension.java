@@ -58,12 +58,12 @@ public class MediaExtension extends Extension {
 
     @Nullable @Override
     protected String getFriendlyName() {
-        return MediaInternalConstants.FRIENDLY_NAME;
+        return MediaInternalConstants.EXTENSION_FRIENDLY_NAME;
     }
 
     @Nullable @Override
     protected String getVersion() {
-        return Media.extensionVersion();
+        return MediaInternalConstants.EXTENSION_VERSION;
     }
 
     @Override

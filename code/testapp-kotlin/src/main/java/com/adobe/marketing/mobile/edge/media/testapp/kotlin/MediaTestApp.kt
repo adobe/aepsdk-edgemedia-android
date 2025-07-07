@@ -20,15 +20,36 @@ import com.adobe.marketing.mobile.edge.identity.Identity
 import com.adobe.marketing.mobile.edge.media.Media
 
 class MediaTestApp : Application() {
-    // TODO: Set up the preferred Environment File ID from your mobile property configured in Data Collection UI
-    private val ENVIRONMENT_FILE_ID: String = ""
+    // Environment File ID from Data Collection UI
+    private val ENVIRONMENT_FILE_ID: String = "PR6ba9115b61c84e93b18edbdf784aa9c4"
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Set the application and logging mode
         MobileCore.setApplication(this)
         MobileCore.setLogLevel(LoggingMode.VERBOSE)
-        MobileCore.registerExtensions(listOf(Identity.EXTENSION, Edge.EXTENSION, Media.EXTENSION, Assurance.EXTENSION)) {
-            MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID)
+
+        // Configure with environment file ID
+        MobileCore.configureWithAppID(ENVIRONMENT_FILE_ID)
+
+        // Set media configuration
+        val mediaConfig = mapOf(
+            "edgeMedia.channel" to "android-v5-testapp",
+            "edgeMedia.playerName" to "android-sample-player",
+            "edgeMedia.appVersion" to "v3.0.0"
+        )
+        MobileCore.updateConfiguration(mediaConfig)
+
+        // Register extensions in the correct order:
+        // 1. Identity (required by Edge)
+        // 2. Edge (required by Media)
+        // 3. Media
+        // 4. Assurance (optional, for debugging)
+        MobileCore.registerExtensions(
+            listOf(Identity.EXTENSION, Edge.EXTENSION, Media.EXTENSION, Assurance.EXTENSION)
+        ) {
+            // Extensions are now registered
         }
     }
 }

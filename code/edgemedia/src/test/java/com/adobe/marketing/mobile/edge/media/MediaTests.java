@@ -213,4 +213,15 @@ public class MediaTests {
         Map<String, Object> invalidObject = Media.createStateObject(null);
         assertEquals(new HashMap<String, Object>(), invalidObject);
     }
+
+    @Test
+    public void test_extensionVersionAPI() {
+        // test
+        String extensionVersion = Media.extensionVersion();
+        assertEquals(
+            "The Extension version API should return the correct value",
+            MediaConstants.EXTENSION_VERSION,
+            extensionVersion
+        );
+    }
 }

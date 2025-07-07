@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Adobe. All rights reserved.
+  Copyright 2024 Adobe. All rights reserved.
   This file is licensed to you under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License. You may obtain a copy
   of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -11,10 +11,13 @@
 
 package com.adobe.marketing.mobile.edge.media.internal;
 
+import com.adobe.marketing.mobile.edge.media.MediaConstants;
+
 final class MediaInternalConstants {
-    static final String EXTENSION_NAME = "com.adobe.edge.media";
-    static final String FRIENDLY_NAME = "Edge Media";
-    static final String LOG_TAG = FRIENDLY_NAME;
+    static final String EXTENSION_NAME = MediaConstants.EXTENSION_NAME;
+    static final String EXTENSION_FRIENDLY_NAME = MediaConstants.EXTENSION_FRIENDLY_NAME;
+    static final String EXTENSION_VERSION = MediaConstants.EXTENSION_VERSION;
+    static final String LOG_TAG = EXTENSION_FRIENDLY_NAME;
 
     private MediaInternalConstants() {}
 

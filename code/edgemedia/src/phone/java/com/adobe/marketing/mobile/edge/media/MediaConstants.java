@@ -1,5 +1,5 @@
 /*
-  Copyright 2022 Adobe. All rights reserved.
+  Copyright 2024 Adobe. All rights reserved.
   This file is licensed to you under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License. You may obtain a copy
   of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -11,7 +11,24 @@
 
 package com.adobe.marketing.mobile.edge.media;
 
-public class MediaConstants {
+/**
+ * This class contains public constants for the Media extension.
+ */
+public final class MediaConstants {
+    /**
+     * The version of the Media extension.
+     */
+    public static final String EXTENSION_VERSION = "3.0.1";
+
+    /**
+     * The name of the Media extension.
+     */
+    public static final String EXTENSION_NAME = "com.adobe.edge.media";
+
+    /**
+     * The friendly name of the Media extension.
+     */
+    public static final String EXTENSION_FRIENDLY_NAME = "Edge Media";
 
     private MediaConstants() {}
     /**

@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Media {
-    private static final String EXTENSION_VERSION = "3.0.1";
-
     private Media() {}
 
     public static final Class<? extends Extension> EXTENSION = MediaExtension.class;
@@ -54,7 +52,7 @@ public class Media {
      * @return The version string
      */
     public static @NonNull String extensionVersion() {
-        return EXTENSION_VERSION;
+        return MediaConstants.EXTENSION_VERSION;
     }
 
     /**

@@ -20,19 +20,40 @@ import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.edge.identity.Identity;
 import com.adobe.marketing.mobile.edge.media.Media;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MediaTestApp extends Application {
-    private static final String LAUNCH_ENVIRONMENT_FILE_ID = "";
+    // Replace with your environment file ID from Data Collection UI
+    private static final String LAUNCH_ENVIRONMENT_FILE_ID = "PR6ba9115b61c84e93b18edbdf784aa9c4";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        
+        // Set the application and logging mode
         MobileCore.setApplication(this);
         MobileCore.setLogLevel(LoggingMode.VERBOSE);
 
+        // Configure with environment file ID
+        MobileCore.configureWithAppID(LAUNCH_ENVIRONMENT_FILE_ID);
+
+        // Set media configuration
+        Map<String, Object> mediaConfig = new HashMap<>();
+        mediaConfig.put("edgeMedia.channel", "android-v5-testapp");
+        mediaConfig.put("edgeMedia.playerName", "android-sample-player");
+        mediaConfig.put("edgeMedia.appVersion", "v3.0.0");
+        MobileCore.updateConfiguration(mediaConfig);
+
+        // Register extensions in the correct order:
+        // 1. Identity (required by Edge)
+        // 2. Edge (required by Media)
+        // 3. Media
+        // 4. Assurance (optional, for debugging)
         MobileCore.registerExtensions(
-                Arrays.asList(
-                        Assurance.EXTENSION, Edge.EXTENSION, Identity.EXTENSION, Media.EXTENSION),
-                (AdobeCallback) o -> MobileCore.configureWithAppID(LAUNCH_ENVIRONMENT_FILE_ID));
+                Arrays.asList(Identity.EXTENSION, Edge.EXTENSION, Media.EXTENSION, Assurance.EXTENSION),
+                o -> {
+                    // Extensions are now registered
+                });
     }
 }

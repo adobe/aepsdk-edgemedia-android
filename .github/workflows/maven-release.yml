@@ -44,6 +44,6 @@ jobs:
     with:
       tag: ${{ github.event.inputs.tag }}
       create-github-release: ${{ github.event.inputs.create-github-release == 'true' }}
-      version-validation-paths: code/gradle.properties, code/edgemedia/src/phone/java/com/adobe/marketing/mobile/edge/media/Media.java
+      version-validation-paths: code/gradle.properties, code/edgemedia/src/phone/java/com/adobe/marketing/mobile/edge/media/MediaConstants.java
       version-validation-dependencies: Core ${{ github.event.inputs.core-dependency }}, Edge ${{ github.event.inputs.edge-dependency }}
     secrets: inherit
